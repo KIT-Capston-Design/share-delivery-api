@@ -13,16 +13,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "BLOCK_USER")
-public class BlockUser extends BaseTimeEntity {
+@Table(name = "USER_BLOCK")
+public class UserBlock extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "BLOCK_ID", nullable = false)
    private Long blockId;
 
-   @Column(name = "USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "USER_ID", nullable = false)
    private User user;
 
-   @Column(name = "BLOCKED_USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "BLOCKED_USER_ID", nullable = false)
    private User blockedUser;
 
 

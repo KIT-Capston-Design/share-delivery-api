@@ -22,11 +22,13 @@ public class Friend extends BaseTimeEntity {
    @Column(name = "FRIEND_ID", nullable = false)
    private Long friendId;
 
-   @Column(name = "USER_A_ID", nullable = false)
-   private User userA;
+   @ManyToOne
+   @JoinColumn(name = "USER_ID", nullable = false)
+   private User user;
 
-   @Column(name = "USER_B_ID", nullable = false)
-   private User userB;
+   @ManyToOne
+   @JoinColumn(name = "FRIEND_ID", nullable = false)
+   private User friend;
 
    @Column(name = "STATUS", nullable = false)
    private State status;

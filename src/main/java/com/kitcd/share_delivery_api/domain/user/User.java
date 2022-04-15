@@ -1,16 +1,20 @@
 package com.kitcd.share_delivery_api.domain.user;
 
+import com.kitcd.share_delivery_api.domain.blockUser.UserBlock;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
+import com.kitcd.share_delivery_api.domain.fastDeliveryParticipant.FastDeliveryParticipant;
+import com.kitcd.share_delivery_api.domain.friend.Friend;
 import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -46,5 +50,10 @@ public class User extends BaseTimeEntity {
    @Column(name = "LAST_LOGON_TIME", nullable = false)
    private LocalDateTime lastLogonTime;
 
+   @OneToMany(mappedBy = "user")
+   private List<Friend> friends = new LinkedList<>();
+
+   @OneToMany(mappedBy = "user")
+   private List<UserBlock> UserBlocks = new LinkedList<>();
 
 }
