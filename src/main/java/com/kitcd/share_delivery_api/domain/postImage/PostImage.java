@@ -22,10 +22,12 @@ public class PostImage extends BaseTimeEntity {
    @Column(name = "POST_IMAGE_ID", nullable = false)
    private Long postImageId;
 
-   @Column(name = "POST_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "POST_ID", nullable = false)
    private Post post;
 
-   @Column(name = "IMAGE_FILE_ID", nullable = false)
+   @OneToOne
+   @JoinColumn(name = "IMAGE_FILE_ID", nullable = false)
    private ImageFile imageFile;
 
 

@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.domain.postCategory;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.post.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -9,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -23,5 +26,7 @@ public class PostCategory extends BaseTimeEntity {
    @Column(name = "CATEGORY_NAME", nullable = false)
    private String categoryName;
 
+   @OneToMany(mappedBy = "postCategory")
+   private List<Post> posts = new LinkedList<>();
 
 }

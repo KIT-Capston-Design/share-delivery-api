@@ -21,7 +21,8 @@ public class PaymentDiscount extends BaseTimeEntity {
    @Column(name = "PAYMENT_DISCOUNT_ID", nullable = false)
    private Long paymentDiscountId;
 
-   @Column(name = "PAYMENT_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "PAYMENT_ID", nullable = false)
    private Payment payment;
 
    @Column(name = "PAYMENT_DISCOUNT_NAME", nullable = false)

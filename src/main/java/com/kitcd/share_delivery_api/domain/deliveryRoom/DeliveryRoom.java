@@ -1,9 +1,13 @@
 package com.kitcd.share_delivery_api.domain.deliveryRoom;
 
+import com.kitcd.share_delivery_api.domain.chat.Chat;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
+import com.kitcd.share_delivery_api.domain.order.Order;
+import com.kitcd.share_delivery_api.domain.payment.Payment;
 import com.kitcd.share_delivery_api.domain.receivingLocation.ReceivingLocation;
+import com.kitcd.share_delivery_api.domain.report.Report;
 import com.kitcd.share_delivery_api.domain.storeCategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
@@ -13,6 +17,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -24,13 +30,16 @@ public class DeliveryRoom extends BaseTimeEntity {
    @Column(name = "DELIVERY_ROOM_ID", nullable = false)
    private Long deliveryRoomId;
 
-   @Column(name = "LEADER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "LEADER_ID", nullable = false)
    private User leader;
 
-   @Column(name = "RECEIVING_LOCATION_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "RECEIVING_LOCATION_ID", nullable = false)
    private ReceivingLocation receivingLocation;
 
-   @Column(name = "STORE_CATEGORY_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "STORE_CATEGORY_ID", nullable = false)
    private StoreCategory storeCategory;
 
    @Column(name = "CONTENT", nullable = false)
@@ -53,5 +62,16 @@ public class DeliveryRoom extends BaseTimeEntity {
    @Column(name = "STATUS", nullable = false)
    private DeliveryRoomState status;
 
+   @OneToOne(mappedBy = "deliveryRoom")
+   private Payment payment;
+
+   @OneToMany(mappedBy = "deliveryRoom")
+   private List<Chat> chats = new LinkedList<>();
+
+   @OneToMany(mappedBy = "deliveryRoom")
+   private List<Order> orders = new LinkedList<>();
+
+   @OneToMany(mappedBy = "deliveryRoom")
+   private List<Report> reports = new LinkedList<>();
 
 }

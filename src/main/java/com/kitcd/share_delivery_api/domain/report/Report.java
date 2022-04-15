@@ -25,25 +25,31 @@ public class Report extends BaseTimeEntity {
    @Column(name = "REPORT_ID", nullable = false)
    private Long reportId;
 
-   @Column(name = "REPORT_CATEGORY_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "REPORT_CATEGORY_ID", nullable = false)
    private ReportCategory reportCategory;
 
-   @Column(name = "REPORTER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "REPORTER_ID", nullable = false)
    private User reporter;
 
-   @Column(name = "REPORTED_USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "REPORTED_USER_ID", nullable = false)
    private User reportedUser;
 
-   @Column(name = "POST_ID")
+   @ManyToOne
+   @JoinColumn(name = "POST_ID")
    private Post post;
 
-   @Column(name = "DELIVERY_ROOM_ID")
+   @ManyToOne
+   @JoinColumn(name = "DELIVERY_ROOM_ID")
    private DeliveryRoom deliveryRoom;
 
-   @Column(name = "CHAT_ID")
+   @ManyToOne
+   @JoinColumn(name = "CHAT_ID")
    private Chat chat;
 
-   @Column(name = "DESCRIPTION", nullable = false)
+   @JoinColumn(name = "DESCRIPTION", nullable = false)
    private String description;
 
 

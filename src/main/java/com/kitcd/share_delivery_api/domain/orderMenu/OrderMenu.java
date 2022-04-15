@@ -22,7 +22,8 @@ public class OrderMenu extends BaseTimeEntity {
    @Column(name = "ORDER_MENU_ID", nullable = false)
    private Long orderMenuId;
 
-   @Column(name = "ORDER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "ORDER_ID", nullable = false)
    private Order order;
 
    @OneToOne

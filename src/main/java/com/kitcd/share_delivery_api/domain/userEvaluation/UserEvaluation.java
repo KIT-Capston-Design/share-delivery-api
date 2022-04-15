@@ -22,13 +22,16 @@ public class UserEvaluation extends BaseTimeEntity {
    @Column(name = "USER_EVALUATION_ID", nullable = false)
    private Long userEvaluationId;
 
-   @Column(name = "TARGET_USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "TARGET_USER_ID", nullable = false)
    private User targetUser;
 
-   @Column(name = "EVALUATOR_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "EVALUATOR_ID", nullable = false)
    private User evaluator;
 
-   @Column(name = "EVALUATION_CATEGORY_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "EVALUATION_CATEGORY_ID", nullable = false)
    private EvaluationCategory evaluationCategory;
 
 

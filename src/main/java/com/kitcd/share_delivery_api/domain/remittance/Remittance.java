@@ -23,16 +23,16 @@ public class Remittance extends BaseTimeEntity {
    @Column(name = "REMITTANCE_ID", nullable = false)
    private Long remittanceId;
 
-   @Column(name = "FAST_DELIVERY_TAG_ID", nullable = false)
-   private Long fastDeliveryTagId;
-
-   @Column(name = "PAYMENT_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "PAYMENT_ID", nullable = false)
    private Payment payment;
 
-   @Column(name = "REMITTER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "REMITTER_ID", nullable = false)
    private User remitter;
 
-   @Column(name = "RECIPIENT_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "RECIPIENT_ID", nullable = false)
    private User recipient;
 
    @Column(name = "AMOUNT", nullable = false)

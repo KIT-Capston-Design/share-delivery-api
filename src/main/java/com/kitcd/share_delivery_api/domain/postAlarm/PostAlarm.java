@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -22,10 +20,12 @@ public class PostAlarm extends BaseTimeEntity {
    @Column(name = "POST_ALARM_ID", nullable = false)
    private Long postAlarmId;
 
-   @Column(name = "USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "USER_ID", nullable = false)
    private User user;
 
-   @Column(name = "POST_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "POST_ID", nullable = false)
    private Post post;
 
 

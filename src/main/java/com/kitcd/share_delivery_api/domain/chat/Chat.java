@@ -6,6 +6,7 @@ import com.kitcd.share_delivery_api.domain.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.deliveryRoom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.fastDeliveryRoom.FastDeliveryRoom;
 import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
+import com.kitcd.share_delivery_api.domain.report.Report;
 import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -25,13 +28,16 @@ public class Chat extends BaseTimeEntity {
    @Column(name = "CHAT_ID", nullable = false)
    private Long chatId;
 
-   @Column(name = "DELIVERY_ROOM_ID", nullable = true)
+   @ManyToOne
+   @JoinColumn(name = "DELIVERY_ROOM_ID", nullable = true)
    private DeliveryRoom deliveryRoom;
 
-   @Column(name = "FAST_DELIVERY_ROOM_ID", nullable = true)
+   @ManyToOne
+   @JoinColumn(name = "FAST_DELIVERY_ROOM_ID", nullable = true)
    private FastDeliveryRoom fastDeliveryRoom;
 
-   @Column(name = "USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "USER_ID", nullable = false)
    private User user;
 
    @Column(name = "TEXT", nullable = true)
@@ -40,7 +46,8 @@ public class Chat extends BaseTimeEntity {
    @Embedded
    private Coordinate coordinate;
 
-   @Column(name = "IMAGE_FILE_ID", nullable = true)
+   @OneToOne
+   @JoinColumn(name = "IMAGE_FILE_ID", nullable = true)
    private ImageFile imageFile;
 
    @Enumerated(EnumType.STRING)
@@ -50,6 +57,9 @@ public class Chat extends BaseTimeEntity {
    @Enumerated(EnumType.STRING)
    @Column(name = "CHAT_TYPE", nullable = false)
    private ChatType chatType;
+
+   @OneToMany(mappedBy = "chat")
+   private List<Report> reports = new LinkedList<>();
 
 
 }

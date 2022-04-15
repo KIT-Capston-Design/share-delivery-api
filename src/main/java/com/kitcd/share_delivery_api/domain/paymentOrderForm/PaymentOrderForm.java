@@ -22,10 +22,12 @@ public class PaymentOrderForm extends BaseTimeEntity {
    @Column(name = "PAYMENT_ORDER_FORM_ID", nullable = false)
    private Long paymentOrderFormId;
 
-   @Column(name = "PAYMENT_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "PAYMENT_ID", nullable = false)
    private Payment payment;
 
-   @Column(name = "IMAGE_FILE_ID", nullable = false)
+   @OneToOne
+   @JoinColumn(name = "IMAGE_FILE_ID", nullable = false)
    private ImageFile imageFile;
 
 

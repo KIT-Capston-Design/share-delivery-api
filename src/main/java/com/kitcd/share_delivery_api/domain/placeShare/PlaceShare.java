@@ -22,7 +22,8 @@ public class PlaceShare extends BaseTimeEntity {
    @Column(name = "PLACE_SHARE_ID", nullable = false)
    private Long placeShareId;
 
-   @Column(name = "POST_ID", nullable = false)
+   @OneToOne
+   @JoinColumn(name = "POST_ID", nullable = false)
    private Post post;
 
    @Column(name = "CONTENT", nullable = false)

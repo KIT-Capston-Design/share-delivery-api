@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.domain.evaluationCategory;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.userEvaluation.UserEvaluation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -9,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -26,5 +29,7 @@ public class EvaluationCategory extends BaseTimeEntity {
    @Column(name = "VALUE", nullable = false)
    private Long value;
 
+   @OneToMany(mappedBy = "evaluationCategory")
+   private List<UserEvaluation> evaluations = new LinkedList<>();
 
 }

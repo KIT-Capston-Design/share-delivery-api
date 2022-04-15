@@ -22,10 +22,12 @@ public class PostLike extends BaseTimeEntity {
    @Column(name = "POST_LIKE_ID", nullable = false)
    private Long postLikeId;
 
-   @Column(name = "USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "USER_ID", nullable = false)
    private User user;
 
-   @Column(name = "POST_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "POST_ID", nullable = false)
    private Post post;
 
 

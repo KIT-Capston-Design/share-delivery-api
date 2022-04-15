@@ -23,10 +23,12 @@ public class Comment extends BaseTimeEntity {
    @Column(name = "COMMENT_ID", nullable = false)
    private Long commentId;
 
-   @Column(name = "POST_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "POST_ID", nullable = false)
    private Post post;
 
-   @Column(name = "USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "USER_ID", nullable = false)
    private User user;
 
    @OneToOne
@@ -39,8 +41,9 @@ public class Comment extends BaseTimeEntity {
    @Column(name = "CONTENT", nullable = false)
    private String content;
 
-   @Column(name = "USER_ANNOTATION", nullable = false)
-   private User userAnnotation;
+   @ManyToOne
+   @JoinColumn(name = "ANNOTATED_USER", nullable = false)
+   private User annotatedUser;
 
    @Enumerated(EnumType.STRING)
    @Column(name = "STATUS", nullable = false)

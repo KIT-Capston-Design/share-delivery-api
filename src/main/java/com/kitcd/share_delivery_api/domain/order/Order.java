@@ -4,6 +4,7 @@ import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
 import com.kitcd.share_delivery_api.domain.deliveryRoom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.orderMenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -23,10 +26,12 @@ public class Order extends BaseTimeEntity {
    @Column(name = "ORDER_ID", nullable = false)
    private Long orderId;
 
-   @Column(name = "USER_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "USER_ID", nullable = false)
    private User user;
 
-   @Column(name = "DELIVERY_ROOM_ID", nullable = false)
+   @ManyToOne
+   @JoinColumn(name = "DELIVERY_ROOM_ID", nullable = false)
    private DeliveryRoom deliveryRoom;
 
    @Enumerated(EnumType.STRING)
@@ -37,5 +42,7 @@ public class Order extends BaseTimeEntity {
    @Column(name = "IS_REJECTED", nullable = false)
    private State isRejected;
 
+   @OneToMany(mappedBy = "order")
+   private List<OrderMenu> orderMenus = new LinkedList<>();
 
 }
