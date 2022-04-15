@@ -2,6 +2,8 @@ package com.kitcd.share_delivery_api.domain.user;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.common.State;
+import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,35 +19,32 @@ import java.time.LocalDateTime;
 @Table(name = "USER")
 public class User extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "USER_ID")
+   @Column(name = "USER_ID", nullable = false)
    private Long userId;
 
-   @Column(name = "PHONE_NUMBER")
+   @Column(name = "PHONE_NUMBER", nullable = false)
    private String phoneNumber;
 
-   @Column(name = "NICKNAME")
+   @Column(name = "NICKNAME", nullable = false)
    private String nickname;
 
-   @Column(name = "NAME")
+   @Column(name = "NAME", nullable = false)
    private String name;
 
-   @Column(name = "PROFILE_IMAGE_ID")
-   private String profileImageId;
+   @Column(name = "PROFILE_IMAGE_ID", nullable = false)
+   private ImageFile profileImage;
 
-   @Column(name = "EMAIL")
+   @Column(name = "EMAIL", nullable = false)
    private String email;
 
-   @Column(name = "STATUS")
-   private String status;
+   @Column(name = "STATUS", nullable = false)
+   private State status;
 
-   @Column(name = "BANK")
-   private String bank;
+   @Embedded
+   private BankAccount bankAccount;
 
-   @Column(name = "ACCOUNT")
-   private String account;
-
-   @Column(name = "RECENT_DATE")
-   private java.time.LocalDateTime recentDate;
+   @Column(name = "LAST_LOGON_TIME", nullable = false)
+   private LocalDateTime lastLogonTime;
 
 
 }

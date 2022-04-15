@@ -2,6 +2,8 @@ package com.kitcd.share_delivery_api.domain.placeShare;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.common.Coordinate;
+import com.kitcd.share_delivery_api.domain.post.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,22 +19,19 @@ import java.time.LocalDateTime;
 @Table(name = "PLACE_SHARE")
 public class PlaceShare extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "PLACE_SHARE_ID")
+   @Column(name = "PLACE_SHARE_ID", nullable = false)
    private Long placeShareId;
 
-   @Column(name = "POST_ID")
-   private Long postId;
+   @Column(name = "POST_ID", nullable = false)
+   private Post post;
 
-   @Column(name = "CONTENT")
+   @Column(name = "CONTENT", nullable = false)
    private String content;
 
-   @Column(name = "LATITUDE")
-   private Double latitude;
+   @Embedded
+   private Coordinate coordinate;
 
-   @Column(name = "LONGITUDE")
-   private Double longitude;
-
-   @Column(name = "ADDRESS")
+   @Column(name = "ADDRESS", nullable = false)
    private String address;
 
 

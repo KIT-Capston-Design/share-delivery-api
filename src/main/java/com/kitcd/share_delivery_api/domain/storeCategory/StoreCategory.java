@@ -2,6 +2,8 @@ package com.kitcd.share_delivery_api.domain.storeCategory;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.evaluationCategory.EvaluationCategory;
+import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,19 +19,20 @@ import java.time.LocalDateTime;
 @Table(name = "STORE_CATEGORY")
 public class StoreCategory extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "STORE_CATEGORY_ID")
+   @Column(name = "STORE_CATEGORY_ID", nullable = false)
    private Long storeCategoryId;
 
-   @Column(name = "PARENT_CATEGORY_ID")
-   private Long parentCategoryId;
+   @OneToOne
+   @JoinColumn(name = "PARENT_CATEGORY_ID")
+   private StoreCategory parentCategory;
 
-   @Column(name = "IMAGE_FILE_ID")
-   private Long imageFileId;
+   @Column(name = "IMAGE_FILE_ID", nullable = false)
+   private ImageFile imageFile;
 
-   @Column(name = "CATEGORY_NAME")
+   @Column(name = "CATEGORY_NAME", nullable = false)
    private String categoryName;
 
-   @Column(name = "LEVEL")
+   @Column(name = "LEVEL", nullable = false)
    private Long level;
 
 

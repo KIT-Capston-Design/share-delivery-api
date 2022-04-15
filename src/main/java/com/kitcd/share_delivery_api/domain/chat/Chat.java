@@ -2,6 +2,11 @@ package com.kitcd.share_delivery_api.domain.chat;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.common.Coordinate;
+import com.kitcd.share_delivery_api.domain.deliveryRoom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.fastDeliveryRoom.FastDeliveryRoom;
+import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
+import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,35 +22,34 @@ import java.time.LocalDateTime;
 @Table(name = "CHAT")
 public class Chat extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "CHAT_ID")
+   @Column(name = "CHAT_ID", nullable = false)
    private Long chatId;
 
-   @Column(name = "DELIVERY_ROOM_ID")
-   private Long deliveryRoomId;
+   @Column(name = "DELIVERY_ROOM_ID", nullable = true)
+   private DeliveryRoom deliveryRoom;
 
-   @Column(name = "FAST_DELIVERY_ID")
-   private Long fastDeliveryId;
+   @Column(name = "FAST_DELIVERY_ROOM_ID", nullable = true)
+   private FastDeliveryRoom fastDeliveryRoom;
 
-   @Column(name = "USER_ID")
-   private Long userId;
+   @Column(name = "USER_ID", nullable = false)
+   private User user;
 
-   @Column(name = "TEXT")
+   @Column(name = "TEXT", nullable = true)
    private String text;
 
-   @Column(name = "ROOM_TYPE")
-   private String roomType;
+   @Embedded
+   private Coordinate coordinate;
 
-   @Column(name = "LATITUDE")
-   private Double latitude;
+   @Column(name = "IMAGE_FILE_ID", nullable = true)
+   private ImageFile imageFile;
 
-   @Column(name = "LONGITUDE")
-   private Double longitude;
+   @Enumerated(EnumType.STRING)
+   @Column(name = "ROOM_TYPE", nullable = false)
+   private RoomType roomType;
 
-   @Column(name = "IMAGE_FILE_ID")
-   private Long imageFileId;
-
-   @Column(name = "DTYPE")
-   private Long dtype;
+   @Enumerated(EnumType.STRING)
+   @Column(name = "CHAT_TYPE", nullable = false)
+   private ChatType chatType;
 
 
 }

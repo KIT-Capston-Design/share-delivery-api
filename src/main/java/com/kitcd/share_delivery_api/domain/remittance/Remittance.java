@@ -2,6 +2,9 @@ package com.kitcd.share_delivery_api.domain.remittance;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.common.State;
+import com.kitcd.share_delivery_api.domain.payment.Payment;
+import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,26 +20,26 @@ import java.time.LocalDateTime;
 @Table(name = "REMITTANCE")
 public class Remittance extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "REMITTANCE_ID")
+   @Column(name = "REMITTANCE_ID", nullable = false)
    private Long remittanceId;
 
-   @Column(name = "FAST_DELIVERY_TAG_ID")
+   @Column(name = "FAST_DELIVERY_TAG_ID", nullable = false)
    private Long fastDeliveryTagId;
 
-   @Column(name = "PAYMENT_ID")
-   private Long paymentId;
+   @Column(name = "PAYMENT_ID", nullable = false)
+   private Payment payment;
 
-   @Column(name = "REMITTER_ID")
-   private Long remitterId;
+   @Column(name = "REMITTER_ID", nullable = false)
+   private User remitter;
 
-   @Column(name = "RECIPIENT_ID")
-   private Long recipientId;
+   @Column(name = "RECIPIENT_ID", nullable = false)
+   private User recipient;
 
-   @Column(name = "AMOUNT")
+   @Column(name = "AMOUNT", nullable = false)
    private Long amount;
 
-   @Column(name = "IS_REMITTED")
-   private String isRemitted;
-
+   @Enumerated
+   @Column(name = "IS_REMITTED", nullable = false)
+   private State isRemitted;
 
 }

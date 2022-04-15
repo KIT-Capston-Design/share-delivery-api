@@ -2,6 +2,8 @@ package com.kitcd.share_delivery_api.domain.orderMenu;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.evaluationCategory.EvaluationCategory;
+import com.kitcd.share_delivery_api.domain.order.Order;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,19 +19,20 @@ import java.time.LocalDateTime;
 @Table(name = "ORDER_MENU")
 public class OrderMenu extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "ORDER_MENU_ID")
+   @Column(name = "ORDER_MENU_ID", nullable = false)
    private Long orderMenuId;
 
-   @Column(name = "ORDER_ID")
-   private Long orderId;
+   @Column(name = "ORDER_ID", nullable = false)
+   private Order order;
 
-   @Column(name = "PARENT_MENU_ID")
-   private Long parentMenuId;
+   @OneToOne
+   @JoinColumn(name = "PARENT_MENU_ID")
+   private OrderMenu parentMenu;
 
-   @Column(name = "MENU_NAME")
+   @Column(name = "MENU_NAME", nullable = false)
    private String menuName;
 
-   @Column(name = "AMOUNT")
+   @Column(name = "AMOUNT", nullable = false)
    private Long amount;
 
 

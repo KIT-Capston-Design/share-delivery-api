@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
 @Table(name = "EVALUATION_CATEGORY")
 public class EvaluationCategory extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "EVALUATION_CATEGORY_ID")
+   @Column(name = "EVALUATION_CATEGORY_ID", nullable = false)
    private Long evaluationCategoryId;
 
-   @Column(name = "CATEGORY_NAME")
+   @Column(name = "CATEGORY_NAME", nullable = false)
    private String categoryName;
 
-   @Column(name = "VALUE")
+   @Column(name = "VALUE", nullable = false)
    private Long value;
 
 

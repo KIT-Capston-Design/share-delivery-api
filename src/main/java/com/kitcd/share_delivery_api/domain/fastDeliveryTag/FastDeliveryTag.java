@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 @Table(name = "FAST_DELIVERY_TAG")
 public class FastDeliveryTag extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "FAST_DELIVERY_TAG_ID")
+   @Column(name = "FAST_DELIVERY_TAG_ID", nullable = false)
    private Long fastDeliveryTagId;
 
-   @Column(name = "TAG_NAME")
+   @Column(name = "TAG_NAME", nullable = false)
    private String tagName;
 
 

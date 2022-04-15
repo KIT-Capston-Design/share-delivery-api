@@ -2,6 +2,9 @@ package com.kitcd.share_delivery_api.domain.comment;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.common.State;
+import com.kitcd.share_delivery_api.domain.post.Post;
+import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,29 +20,31 @@ import java.time.LocalDateTime;
 @Table(name = "COMMENT")
 public class Comment extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "COMMENT_ID")
+   @Column(name = "COMMENT_ID", nullable = false)
    private Long commentId;
 
-   @Column(name = "POST_ID")
-   private Long postId;
+   @Column(name = "POST_ID", nullable = false)
+   private Post post;
 
-   @Column(name = "USER_ID")
-   private Long userId;
+   @Column(name = "USER_ID", nullable = false)
+   private User user;
 
-   @Column(name = "PARENT_ID")
-   private Long parentId;
+   @OneToOne
+   @JoinColumn(name = "PARENT_ID", nullable = true)
+   private Comment parent;
 
-   @Column(name = "LIKE")
+   @Column(name = "LIKE", nullable = false)
    private Long like;
 
-   @Column(name = "CONTENT")
+   @Column(name = "CONTENT", nullable = false)
    private String content;
 
-   @Column(name = "ANNOTATION")
-   private String annotation;
+   @Column(name = "USER_ANNOTATION", nullable = false)
+   private User userAnnotation;
 
-   @Column(name = "STATUS")
-   private String status;
+   @Enumerated(EnumType.STRING)
+   @Column(name = "STATUS", nullable = false)
+   private State status;
 
 
 }

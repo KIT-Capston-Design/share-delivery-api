@@ -1,32 +1,29 @@
-package com.kitcd.share_delivery_api.domain.commentLike;
+package com.kitcd.share_delivery_api.domain.blockUser;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.post.Post;
 import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "COMMENT_LIKE")
-public class CommentLike extends BaseTimeEntity {
+@Table(name = "BLOCK_USER")
+public class BlockUser extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "COMMENT_LIKE_ID", nullable = false)
-   private Long commentLikeId;
+   @Column(name = "BLOCK_ID", nullable = false)
+   private Long blockId;
 
    @Column(name = "USER_ID", nullable = false)
    private User user;
 
-   @Column(name = "POST_ID", nullable = false)
-   private Post post;
+   @Column(name = "BLOCKED_USER_ID", nullable = false)
+   private User blockedUser;
 
 
 }

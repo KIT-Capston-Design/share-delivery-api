@@ -2,6 +2,10 @@ package com.kitcd.share_delivery_api.domain.post;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.common.Coordinate;
+import com.kitcd.share_delivery_api.domain.common.State;
+import com.kitcd.share_delivery_api.domain.postCategory.PostCategory;
+import com.kitcd.share_delivery_api.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,41 +21,32 @@ import java.time.LocalDateTime;
 @Table(name = "POST")
 public class Post extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "POST_ID")
+   @Column(name = "POST_ID", nullable = false)
    private Long postId;
 
-   @Column(name = "USER_ID")
-   private Long userId;
+   @Column(name = "USER_ID", nullable = false)
+   private User user;
 
-   @Column(name = "POST_CATEGORY_ID")
-   private Long postCategoryId;
+   @Column(name = "POST_CATEGORY_ID", nullable = false)
+   private PostCategory postCategory;
 
-   @Column(name = "CONTENT")
+   @Column(name = "CONTENT", nullable = false)
    private String content;
 
-   @Column(name = "STATUS")
-   private String status;
+   @Enumerated
+   @Column(name = "STATUS", nullable = false)
+   private State status;
 
-   @Column(name = "LIKE")
+   @Column(name = "LIKE", nullable = false)
    private Long like;
 
-   @Column(name = "VIEW")
-   private Long view;
+   @Column(name = "VIEW_COUNT", nullable = false)
+   private Long view_count;
 
-   @Column(name = "LATITUDE")
-   private Double latitude;
+   @Embedded
+   private Coordinate coordinate;
 
-   @Column(name = "LONGITUDE")
-   private Double longitude;
-
-   @Column(name = "CITY")
-   private String city;
-
-   @Column(name = "STREET")
-   private String street;
-
-   @Column(name = "ZIPCODE")
-   private String zipcode;
-
+   @Column(name = "CITY", nullable = false)
+   private String Address;
 
 }

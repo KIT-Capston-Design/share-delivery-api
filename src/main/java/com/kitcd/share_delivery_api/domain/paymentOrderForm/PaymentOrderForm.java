@@ -2,6 +2,8 @@ package com.kitcd.share_delivery_api.domain.paymentOrderForm;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
+import com.kitcd.share_delivery_api.domain.payment.Payment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,14 +19,14 @@ import java.time.LocalDateTime;
 @Table(name = "PAYMENT_ORDER_FORM")
 public class PaymentOrderForm extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "PAYMENT_ORDER_FORM_ID")
+   @Column(name = "PAYMENT_ORDER_FORM_ID", nullable = false)
    private Long paymentOrderFormId;
 
-   @Column(name = "PAYMENT_ID")
-   private Long paymentId;
+   @Column(name = "PAYMENT_ID", nullable = false)
+   private Payment payment;
 
-   @Column(name = "IMAGE_FILE_ID")
-   private Long imageFileId;
+   @Column(name = "IMAGE_FILE_ID", nullable = false)
+   private ImageFile imageFile;
 
 
 }

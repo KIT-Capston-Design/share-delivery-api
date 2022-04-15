@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.domain.paymentDiscount;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.payment.Payment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,16 +18,16 @@ import java.time.LocalDateTime;
 @Table(name = "PAYMENT_DISCOUNT")
 public class PaymentDiscount extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "PAYMENT_DISCOUNT_ID")
+   @Column(name = "PAYMENT_DISCOUNT_ID", nullable = false)
    private Long paymentDiscountId;
 
-   @Column(name = "PAYMENT_ID")
-   private Long paymentId;
+   @Column(name = "PAYMENT_ID", nullable = false)
+   private Payment payment;
 
-   @Column(name = "PAYMENT_DISCOUNT_NAME")
+   @Column(name = "PAYMENT_DISCOUNT_NAME", nullable = false)
    private String paymentDiscountName;
 
-   @Column(name = "AMOUNT")
+   @Column(name = "AMOUNT", nullable = false)
    private Long amount;
 
 
