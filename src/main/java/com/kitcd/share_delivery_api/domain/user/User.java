@@ -4,7 +4,7 @@ import com.kitcd.share_delivery_api.domain.blockUser.UserBlock;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
-import com.kitcd.share_delivery_api.domain.fastDeliveryParticipant.FastDeliveryParticipant;
+import com.kitcd.share_delivery_api.domain.fastDeliveryParticipation.FastDeliveryParticipation;
 import com.kitcd.share_delivery_api.domain.friend.Friend;
 import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
 import lombok.Getter;
@@ -54,6 +54,9 @@ public class User extends BaseTimeEntity {
    private List<Friend> friends = new LinkedList<>();
 
    @OneToMany(mappedBy = "user")
-   private List<UserBlock> UserBlocks = new LinkedList<>();
+   private List<UserBlock> userBlocks = new LinkedList<>();
 
+
+   @OneToMany(mappedBy = "user")
+   private List<FastDeliveryParticipation> participations = new LinkedList<>();
 }

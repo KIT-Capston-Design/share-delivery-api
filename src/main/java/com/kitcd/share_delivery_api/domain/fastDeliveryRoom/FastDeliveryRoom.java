@@ -2,15 +2,16 @@ package com.kitcd.share_delivery_api.domain.fastDeliveryRoom;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.fastDeliveryParticipation.FastDeliveryParticipation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.LinkedList;
 
+
+//매칭은 레디스 통해 수행하고, 이 테이블은 기록 저장용으로 활용하는 것이 좋을 것 같다.
 @SuperBuilder
 @NoArgsConstructor
 @Getter
@@ -21,14 +22,10 @@ public class FastDeliveryRoom extends BaseTimeEntity {
    @Column(name = "FAST_DELIVERY_ROOM_ID", nullable = false)
    private Long fastDeliveryRoomId;
 
-   @Column(name = "USER_A_ID", nullable = false)
-   private User userA;
+   @Column(name = "Status", nullable = false)
+   private String status;
 
-   @Column(name = "USER_B_ID", nullable = false)
-   private User userB;
-
-   @Column(name = "IS_CLOSED", nullable = false)
-   private String isClosed;
-
+   @OneToMany(mappedBy = "fastDeliveryRoom")
+   private LinkedList<FastDeliveryParticipation> fastDeliveryParticipant = new LinkedList<>();
 
 }
