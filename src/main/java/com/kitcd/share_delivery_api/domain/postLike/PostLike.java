@@ -3,14 +3,12 @@ package com.kitcd.share_delivery_api.domain.postLike;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.post.Post;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -23,8 +21,8 @@ public class PostLike extends BaseTimeEntity {
    private Long postLikeId;
 
    @ManyToOne
-   @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+   private Account account;
 
    @ManyToOne
    @JoinColumn(name = "POST_ID", nullable = false)

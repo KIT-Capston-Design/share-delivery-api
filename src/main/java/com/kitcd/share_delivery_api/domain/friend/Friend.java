@@ -3,14 +3,12 @@ package com.kitcd.share_delivery_api.domain.friend;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -23,12 +21,12 @@ public class Friend extends BaseTimeEntity {
    private Long friendId;
 
    @ManyToOne
-   @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+   private Account account;
 
    @ManyToOne
-   @JoinColumn(name = "FRIEND_ID", nullable = false)
-   private User friend;
+   @JoinColumn(name = "FRIEND_ACCOUNT_ID", nullable = false)
+   private Account friendAccount;
 
    @Column(name = "STATUS", nullable = false)
    private State status;

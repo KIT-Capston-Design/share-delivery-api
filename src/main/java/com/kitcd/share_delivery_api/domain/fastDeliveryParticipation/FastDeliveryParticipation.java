@@ -3,7 +3,7 @@ package com.kitcd.share_delivery_api.domain.fastDeliveryParticipation;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.fastDeliveryRoom.FastDeliveryRoom;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -27,7 +27,7 @@ public class FastDeliveryParticipation extends BaseTimeEntity {
     private FastDeliveryRoom fastDeliveryRoom;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+    private Account account;
 
 }

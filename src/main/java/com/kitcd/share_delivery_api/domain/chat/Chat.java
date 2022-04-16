@@ -7,14 +7,12 @@ import com.kitcd.share_delivery_api.domain.deliveryRoom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.fastDeliveryRoom.FastDeliveryRoom;
 import com.kitcd.share_delivery_api.domain.imageFile.ImageFile;
 import com.kitcd.share_delivery_api.domain.report.Report;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,8 +35,8 @@ public class Chat extends BaseTimeEntity {
    private FastDeliveryRoom fastDeliveryRoom;
 
    @ManyToOne
-   @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+   private Account account;
 
    @Column(name = "TEXT", nullable = true)
    private String text;

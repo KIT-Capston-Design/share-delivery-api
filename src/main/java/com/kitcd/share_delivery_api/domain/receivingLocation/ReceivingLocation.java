@@ -4,15 +4,12 @@ import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.deliveryRoom.DeliveryRoom;
-import com.kitcd.share_delivery_api.domain.paymentOrderForm.PaymentOrderForm;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,8 +24,8 @@ public class ReceivingLocation extends BaseTimeEntity {
    private Long receivingLocationId;
 
    @ManyToOne
-   @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+   private Account account;
 
    @Column(name = "IS_FAVORITE", nullable = false)
    private String isFavorite;

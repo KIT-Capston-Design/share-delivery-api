@@ -1,9 +1,14 @@
+org:
+  hibernate:
+    dialect:
+
+
 spring:
   jpa:
     show_sql: true
 
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
 ---
 spring:

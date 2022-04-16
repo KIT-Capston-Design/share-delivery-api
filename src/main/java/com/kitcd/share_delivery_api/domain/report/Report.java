@@ -6,14 +6,12 @@ import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 import com.kitcd.share_delivery_api.domain.deliveryRoom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.post.Post;
 import com.kitcd.share_delivery_api.domain.reportCategory.ReportCategory;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -31,11 +29,11 @@ public class Report extends BaseTimeEntity {
 
    @ManyToOne
    @JoinColumn(name = "REPORTER_ID", nullable = false)
-   private User reporter;
+   private Account reporter;
 
    @ManyToOne
    @JoinColumn(name = "REPORTED_USER_ID", nullable = false)
-   private User reportedUser;
+   private Account reportedAccount;
 
    @ManyToOne
    @JoinColumn(name = "POST_ID")

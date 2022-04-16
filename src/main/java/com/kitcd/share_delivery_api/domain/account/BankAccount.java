@@ -1,4 +1,4 @@
-package com.kitcd.share_delivery_api.domain.user;
+package com.kitcd.share_delivery_api.domain.account;
 
 import lombok.*;
 

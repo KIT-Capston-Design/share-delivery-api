@@ -1,8 +1,8 @@
-package com.kitcd.share_delivery_api.domain.userBlock;
+package com.kitcd.share_delivery_api.domain.accountBlock;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -13,19 +13,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "USER_BLOCK")
-public class UserBlock extends BaseTimeEntity {
+@Table(name = "ACCOUNT_BLOCK")
+public class AccountBlock extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "BLOCK_ID", nullable = false)
    private Long blockId;
 
    @ManyToOne
-   @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+   private Account account;
 
    @ManyToOne
-   @JoinColumn(name = "BLOCKED_USER_ID", nullable = false)
-   private User blockedUser;
+   @JoinColumn(name = "BLOCKED_ACCOUNT_ID", nullable = false)
+   private Account blockedAccount;
 
 
 }

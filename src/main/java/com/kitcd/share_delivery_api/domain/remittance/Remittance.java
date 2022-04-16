@@ -4,14 +4,12 @@ import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
 import com.kitcd.share_delivery_api.domain.payment.Payment;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -29,11 +27,11 @@ public class Remittance extends BaseTimeEntity {
 
    @ManyToOne
    @JoinColumn(name = "REMITTER_ID", nullable = false)
-   private User remitter;
+   private Account remitter;
 
    @ManyToOne
    @JoinColumn(name = "RECIPIENT_ID", nullable = false)
-   private User recipient;
+   private Account recipient;
 
    @Column(name = "AMOUNT", nullable = false)
    private Long amount;

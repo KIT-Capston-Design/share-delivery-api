@@ -1,34 +1,32 @@
-package com.kitcd.share_delivery_api.domain.userEvaluation;
+package com.kitcd.share_delivery_api.domain.accountEvaluation;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.evaluationCategory.EvaluationCategory;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "USER_EVALUATION")
-public class UserEvaluation extends BaseTimeEntity {
+@Table(name = "ACCOUNT_EVALUATION")
+public class AccountEvaluation extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "USER_EVALUATION_ID", nullable = false)
-   private Long userEvaluationId;
+   @Column(name = "ACCOUNT_EVALUATION_ID", nullable = false)
+   private Long accountEvaluationId;
 
    @ManyToOne
-   @JoinColumn(name = "TARGET_USER_ID", nullable = false)
-   private User targetUser;
+   @JoinColumn(name = "TARGET_ACCOUNT_ID", nullable = false)
+   private Account targetAccount;
 
    @ManyToOne
    @JoinColumn(name = "EVALUATOR_ID", nullable = false)
-   private User evaluator;
+   private Account evaluator;
 
    @ManyToOne
    @JoinColumn(name = "EVALUATION_CATEGORY_ID", nullable = false)

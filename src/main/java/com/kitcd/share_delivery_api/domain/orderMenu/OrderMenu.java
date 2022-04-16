@@ -2,15 +2,13 @@ package com.kitcd.share_delivery_api.domain.orderMenu;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.evaluationCategory.EvaluationCategory;
-import com.kitcd.share_delivery_api.domain.order.Order;
+import com.kitcd.share_delivery_api.domain.entryOrder.EntryOrder;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -24,7 +22,7 @@ public class OrderMenu extends BaseTimeEntity {
 
    @ManyToOne
    @JoinColumn(name = "ORDER_ID", nullable = false)
-   private Order order;
+   private EntryOrder order;
 
    @OneToOne
    @JoinColumn(name = "PARENT_MENU_ID")

@@ -3,20 +3,17 @@ package com.kitcd.share_delivery_api.domain.deliveryRoom;
 import com.kitcd.share_delivery_api.domain.chat.Chat;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.common.State;
-import com.kitcd.share_delivery_api.domain.order.Order;
+import com.kitcd.share_delivery_api.domain.entryOrder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.payment.Payment;
 import com.kitcd.share_delivery_api.domain.receivingLocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.report.Report;
 import com.kitcd.share_delivery_api.domain.storeCategory.StoreCategory;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +29,7 @@ public class DeliveryRoom extends BaseTimeEntity {
 
    @ManyToOne
    @JoinColumn(name = "LEADER_ID", nullable = false)
-   private User leader;
+   private Account leader;
 
    @ManyToOne
    @JoinColumn(name = "RECEIVING_LOCATION_ID", nullable = false)
@@ -69,7 +66,7 @@ public class DeliveryRoom extends BaseTimeEntity {
    private List<Chat> chats = new LinkedList<>();
 
    @OneToMany(mappedBy = "deliveryRoom")
-   private List<Order> orders = new LinkedList<>();
+   private List<EntryOrder> orders = new LinkedList<>();
 
    @OneToMany(mappedBy = "deliveryRoom")
    private List<Report> reports = new LinkedList<>();

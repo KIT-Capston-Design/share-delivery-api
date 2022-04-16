@@ -4,7 +4,6 @@ import com.kitcd.share_delivery_api.domain.chat.Chat;
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.fastDeliveryParticipation.FastDeliveryParticipation;
-import com.kitcd.share_delivery_api.domain.fastDeliveryTag.FastDeliveryTag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -29,7 +28,7 @@ public class FastDeliveryRoom extends BaseTimeEntity {
    private String status;
 
    @OneToMany(mappedBy = "fastDeliveryRoom")
-   private LinkedList<FastDeliveryParticipation> fastDeliveryParticipant = new LinkedList<>();
+   private List<FastDeliveryParticipation> fastDeliveryParticipations = new LinkedList<>();
 
    @OneToMany(mappedBy = "fastDeliveryRoom")
    private List<Chat> chats = new LinkedList<>();

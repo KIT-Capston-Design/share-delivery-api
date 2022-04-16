@@ -12,14 +12,12 @@ import com.kitcd.share_delivery_api.domain.postCategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.postImage.PostImage;
 import com.kitcd.share_delivery_api.domain.postLike.PostLike;
 import com.kitcd.share_delivery_api.domain.report.Report;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class Post extends BaseTimeEntity {
 
    @ManyToOne
    @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   private Account account;
 
    @ManyToOne
    @JoinColumn(name = "POST_CATEGORY_ID", nullable = false)
@@ -48,8 +46,8 @@ public class Post extends BaseTimeEntity {
    @Column(name = "STATUS", nullable = false)
    private State status;
 
-   @Column(name = "LIKE", nullable = false)
-   private Long like;
+   @Column(name = "LIKE_COUNT", nullable = false)
+   private Long likeCount;
 
    @Column(name = "VIEW_COUNT", nullable = false)
    private Long view_count;

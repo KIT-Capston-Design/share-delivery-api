@@ -1,18 +1,16 @@
-package com.kitcd.share_delivery_api.domain.order;
+package com.kitcd.share_delivery_api.domain.entryOrder;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
 import com.kitcd.share_delivery_api.domain.deliveryRoom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.orderMenu.OrderMenu;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,15 +18,15 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "ORDER")
-public class Order extends BaseTimeEntity {
+@Table(name = "ENTRY_ORDER_TABLE")
+public class EntryOrder extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "ORDER_ID", nullable = false)
-   private Long orderId;
+   @Column(name = "ENTRY_ORDER_ID", nullable = false)
+   private Long entryOrderId;
 
    @ManyToOne
-   @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+   private Account account;
 
    @ManyToOne
    @JoinColumn(name = "DELIVERY_ROOM_ID", nullable = false)
@@ -36,7 +34,7 @@ public class Order extends BaseTimeEntity {
 
    @Enumerated(EnumType.STRING)
    @Column(name = "ORDER_TYPE", nullable = false)
-   private OrderType orderType;
+   private EntryOrderType orderType;
 
    @Enumerated(EnumType.STRING)
    @Column(name = "IS_REJECTED", nullable = false)

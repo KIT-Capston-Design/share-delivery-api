@@ -4,14 +4,12 @@ import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.common.State;
 import com.kitcd.share_delivery_api.domain.post.Post;
-import com.kitcd.share_delivery_api.domain.user.User;
+import com.kitcd.share_delivery_api.domain.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -28,22 +26,22 @@ public class Comment extends BaseTimeEntity {
    private Post post;
 
    @ManyToOne
-   @JoinColumn(name = "USER_ID", nullable = false)
-   private User user;
+   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+   private Account account;
 
    @OneToOne
    @JoinColumn(name = "PARENT_ID", nullable = true)
    private Comment parent;
 
-   @Column(name = "LIKE", nullable = false)
-   private Long like;
+   @Column(name = "LIKE_COUNT", nullable = false)
+   private Long likeCount;
 
    @Column(name = "CONTENT", nullable = false)
    private String content;
 
    @ManyToOne
-   @JoinColumn(name = "ANNOTATED_USER", nullable = false)
-   private User annotatedUser;
+   @JoinColumn(name = "ANNOTATED_ACCOUNT", nullable = true)
+   private Account annotatedAccount;
 
    @Enumerated(EnumType.STRING)
    @Column(name = "STATUS", nullable = false)
