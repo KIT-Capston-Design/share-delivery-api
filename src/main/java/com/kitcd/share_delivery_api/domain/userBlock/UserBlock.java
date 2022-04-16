@@ -1,4 +1,4 @@
-package com.kitcd.share_delivery_api.domain.blockUser;
+package com.kitcd.share_delivery_api.domain.userBlock;
 
 import com.kitcd.share_delivery_api.domain.common.BaseTimeEntity;
 

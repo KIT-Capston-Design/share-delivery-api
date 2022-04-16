@@ -1,6 +1,6 @@
 package com.kitcd.share_delivery_api.domain.user;
 
-import com.kitcd.share_delivery_api.domain.blockUser.UserBlock;
+import com.kitcd.share_delivery_api.domain.userBlock.UserBlock;
 import com.kitcd.share_delivery_api.domain.chat.Chat;
 import com.kitcd.share_delivery_api.domain.comment.Comment;
 import com.kitcd.share_delivery_api.domain.commentLike.CommentLike;
