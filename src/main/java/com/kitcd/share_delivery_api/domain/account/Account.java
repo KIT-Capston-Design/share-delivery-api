@@ -41,26 +41,29 @@ public class Account extends BaseTimeEntity {
    @Column(name = "PHONE_NUMBER", nullable = false)
    private String phoneNumber;
 
-   @Column(name = "NICKNAME", nullable = false)
+   @Column(name = "PASSWORD", nullable = false)
+   private String password;
+
+   @Column(name = "NICKNAME", nullable = true)
    private String nickname;
 
-   @Column(name = "NAME", nullable = false)
+   @Column(name = "NAME", nullable = true)
    private String name;
 
    @OneToOne
-   @JoinColumn(name = "PROFILE_IMAGE_ID", nullable = false)
+   @JoinColumn(name = "PROFILE_IMAGE_ID", nullable = true)
    private ImageFile profileImage;
 
-   @Column(name = "EMAIL", nullable = false)
+   @Column(name = "EMAIL", nullable = true)
    private String email;
 
-   @Column(name = "STATUS", nullable = false)
+   @Column(name = "STATUS", nullable = true)
    private State status;
 
    @Embedded
    private BankAccount bankAccount;
 
-   @Column(name = "LAST_LOGON_TIME", nullable = false)
+   @Column(name = "LAST_LOGON_TIME", nullable = true)
    private LocalDateTime lastLogonTime;
 
    @OneToMany(mappedBy = "account")
@@ -116,6 +119,5 @@ public class Account extends BaseTimeEntity {
 
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
-
 
 }

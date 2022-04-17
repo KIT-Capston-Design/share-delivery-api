@@ -15,9 +15,9 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class BankAccount {
-    @Column(name = "BANK", nullable = false)
+    @Column(name = "BANK", nullable = true)
     private String bank;
 
-    @Column(name = "ACCOUNT_NUMBER", nullable = false)
+    @Column(name = "ACCOUNT_NUMBER", nullable = true)
     private String accountNumber;
 }
