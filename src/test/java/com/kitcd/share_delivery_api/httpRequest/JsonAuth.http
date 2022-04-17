@@ -1,7 +1,19 @@
+
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+
+{
+  "phoneNumber": "123456",
+  "password": "1234"
+}
+
+
+###
+
 POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "phoneNumber": "user",
-  "password": "1234"
+  "phoneNumber": "12345",
+  "password": "123442"
 }
