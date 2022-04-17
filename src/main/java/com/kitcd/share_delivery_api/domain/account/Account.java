@@ -22,6 +22,7 @@ import com.kitcd.share_delivery_api.domain.accountEvaluation.AccountEvaluation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class Account extends BaseTimeEntity {
    @Column(name = "ACCOUNT_ID", nullable = false)
    private Long accountId;
 
-   @Column(name = "PHONE_NUMBER", nullable = false)
+   @Column(name = "PHONE_NUMBER", nullable = false, unique = true)
    private String phoneNumber;
 
    @Column(name = "PASSWORD", nullable = false)
@@ -57,8 +58,13 @@ public class Account extends BaseTimeEntity {
    @Column(name = "EMAIL", nullable = true)
    private String email;
 
+   @Enumerated(EnumType.STRING)
    @Column(name = "STATUS", nullable = true)
    private State status;
+
+   @Enumerated(EnumType.STRING)
+   @Column(name = "ROLE", nullable = true)
+   private RoleType role;
 
    @Embedded
    private BankAccount bankAccount;
@@ -119,5 +125,9 @@ public class Account extends BaseTimeEntity {
 
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
+
+   public void encodePassword(PasswordEncoder passwordEncoder) {
+      this.password = passwordEncoder.encode(this.password);
+   }
 
 }
