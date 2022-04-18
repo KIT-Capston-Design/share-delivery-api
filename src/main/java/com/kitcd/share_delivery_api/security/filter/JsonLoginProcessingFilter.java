@@ -17,7 +17,7 @@ import java.io.IOException;
 //json으로 로그인 시도의 경우 처리 필터
 public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JsonLoginProcessingFilter(){
         super(new AntPathRequestMatcher("/api/login")); // 필터 동작 조건 1

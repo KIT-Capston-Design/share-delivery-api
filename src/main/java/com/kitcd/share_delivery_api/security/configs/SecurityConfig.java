@@ -9,6 +9,7 @@ import com.kitcd.share_delivery_api.security.handler.JsonLoginAuthEntryPoint;
 import com.kitcd.share_delivery_api.security.provider.JsonAuthProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -25,6 +27,10 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -83,12 +89,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+                .formLogin().disable()
+                .httpBasic().disable()
+        ;
+
+        http
                 .antMatcher("/api/**") // `api/` 이하 URL에 한해서 설정 클래스 동작
                 .authorizeRequests()
                 .antMatchers("/api/accounts").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterAt(jsonLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(jsonLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+        ;
 
 
         /* 미인증, 인가예외 핸들러 등록 */
@@ -98,10 +110,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(jsonLoginAuthEntryPoint())
         ;
 
-        http.csrf().disable(); // 스프링 시큐리티 기본 보안 설정 상 post 요청 시에 csrf 토큰 요구하기에 비활성화 해주어야 한다.
+
+        http.cors().and().csrf().disable(); // Enable CORS and disable CSRF //TODO: 왜 CORS는 활성화 하는 것일까?
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Set session management to stateless
 
     }
 
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
+//        config.addAllowedOrigin("*");
+//        config.addAllowedHeader("*");
+//        config.addAllowedMethod("*");
+//        source.registerCorsConfiguration("/**", config);
+//        return new CorsFilter(source);
+//    }
 
 
 }
