@@ -6,17 +6,15 @@ import com.kitcd.share_delivery_api.security.handler.JsonAccessDeniedHandler;
 import com.kitcd.share_delivery_api.security.handler.JsonAuthFailureHandler;
 import com.kitcd.share_delivery_api.security.handler.JsonAuthSuccessHandler;
 import com.kitcd.share_delivery_api.security.handler.JsonLoginAuthEntryPoint;
-import com.kitcd.share_delivery_api.security.provider.JsonAuthProvider;
+import com.kitcd.share_delivery_api.security.provider.JsonAuthenticationProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,9 +25,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 
 @Configuration
@@ -60,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationProvider jsonAuthProvider(){
-        return new JsonAuthProvider();
+        return new JsonAuthenticationProvider();
     }
 
     @Bean

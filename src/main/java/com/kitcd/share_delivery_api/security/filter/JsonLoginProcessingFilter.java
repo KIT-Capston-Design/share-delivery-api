@@ -2,7 +2,7 @@ package com.kitcd.share_delivery_api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitcd.share_delivery_api.dto.Account.AccountLoginDTO;
-import com.kitcd.share_delivery_api.security.token.JsonAuthToken;
+import com.kitcd.share_delivery_api.security.token.JsonAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -39,9 +39,9 @@ public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingF
         }
 
         // 토큰 만들고 AuthenticationManger에 위임하여 인증 처리 진행
-        JsonAuthToken jsonAuthToken = new JsonAuthToken(accountLoginDTO.getPhoneNumber(), accountLoginDTO.getPassword());
+        JsonAuthenticationToken jsonAuthenticationToken = new JsonAuthenticationToken(accountLoginDTO.getPhoneNumber(), accountLoginDTO.getPassword());
 
-        return getAuthenticationManager().authenticate(jsonAuthToken);
+        return getAuthenticationManager().authenticate(jsonAuthenticationToken);
     }
 
     private boolean isJson(HttpServletRequest request) {

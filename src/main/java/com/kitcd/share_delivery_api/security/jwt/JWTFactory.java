@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JsonWebTokenFactory {
+public class JWTFactory {
 
     private final int SECOND = 1000;
     private final int MINUTE = SECOND * 60;
