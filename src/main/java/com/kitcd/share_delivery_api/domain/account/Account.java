@@ -22,6 +22,7 @@ import com.kitcd.share_delivery_api.domain.accountEvaluation.AccountEvaluation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,29 +39,37 @@ public class Account extends BaseTimeEntity {
    @Column(name = "ACCOUNT_ID", nullable = false)
    private Long accountId;
 
-   @Column(name = "PHONE_NUMBER", nullable = false)
+   @Column(name = "PHONE_NUMBER", nullable = false, unique = true)
    private String phoneNumber;
 
-   @Column(name = "NICKNAME", nullable = false)
+   @Column(name = "PASSWORD", nullable = false)
+   private String password;
+
+   @Column(name = "NICKNAME", nullable = true)
    private String nickname;
 
-   @Column(name = "NAME", nullable = false)
+   @Column(name = "NAME", nullable = true)
    private String name;
 
    @OneToOne
-   @JoinColumn(name = "PROFILE_IMAGE_ID", nullable = false)
+   @JoinColumn(name = "PROFILE_IMAGE_ID", nullable = true)
    private ImageFile profileImage;
 
-   @Column(name = "EMAIL", nullable = false)
+   @Column(name = "EMAIL", nullable = true)
    private String email;
 
-   @Column(name = "STATUS", nullable = false)
+   @Enumerated(EnumType.STRING)
+   @Column(name = "STATUS", nullable = true)
    private State status;
+
+   @Enumerated(EnumType.STRING)
+   @Column(name = "ROLE", nullable = true)
+   private RoleType role;
 
    @Embedded
    private BankAccount bankAccount;
 
-   @Column(name = "LAST_LOGON_TIME", nullable = false)
+   @Column(name = "LAST_LOGON_TIME", nullable = true)
    private LocalDateTime lastLogonTime;
 
    @OneToMany(mappedBy = "account")
@@ -117,5 +126,8 @@ public class Account extends BaseTimeEntity {
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
 
+   public void encodePassword(PasswordEncoder passwordEncoder) {
+      this.password = passwordEncoder.encode(this.password);
+   }
 
 }

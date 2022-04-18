@@ -1,14 +1,21 @@
-org:
-  hibernate:
-    dialect:
-
 
 spring:
   jpa:
-    show_sql: true
-
     hibernate:
       ddl-auto: update
+
+    properties:
+      hibernate:
+        format_sql: true #To beautify or pretty print the SQL
+        show_sql: true
+
+jwt:
+  issuer: kitcd.share-delivery
+  secret-key: test
+  refresh-secret-key: test
+  expiry-period: 60 # 분 단위
+  refresh-expiry-period: 43200 # 분 단위
+
 
 ---
 spring:
@@ -22,3 +29,8 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
