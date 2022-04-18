@@ -24,7 +24,7 @@ public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingF
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
 
         if(!isJson(request)){ // 필터 동작 조건 2
             throw new IllegalStateException("Authentication is not supported");
@@ -38,7 +38,7 @@ public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingF
             throw new IllegalArgumentException("PhoneNumber or Password is empty");
         }
 
-        // 토큰 만들고 AuthenticationManger에 위임하여 인증 처리 진행
+        // 토큰 만들고 AuthenticationManager에 위임하여 인증 처리 진행
         JsonAuthenticationToken jsonAuthenticationToken = new JsonAuthenticationToken(accountLoginDTO.getPhoneNumber(), accountLoginDTO.getPassword());
 
         return getAuthenticationManager().authenticate(jsonAuthenticationToken);

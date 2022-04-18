@@ -1,11 +1,13 @@
 package com.kitcd.share_delivery_api.security.configs;
 
 
+import com.kitcd.share_delivery_api.security.filter.JWTAuthenticationFilter;
 import com.kitcd.share_delivery_api.security.filter.JsonLoginProcessingFilter;
-import com.kitcd.share_delivery_api.security.handler.JsonAccessDeniedHandler;
+import com.kitcd.share_delivery_api.security.handler.CustomAccessDeniedHandler;
 import com.kitcd.share_delivery_api.security.handler.JsonAuthFailureHandler;
 import com.kitcd.share_delivery_api.security.handler.JsonAuthSuccessHandler;
-import com.kitcd.share_delivery_api.security.handler.JsonLoginAuthEntryPoint;
+import com.kitcd.share_delivery_api.security.handler.CustomLoginAuthEntryPoint;
+import com.kitcd.share_delivery_api.security.provider.JWTAuthenticationProvider;
 import com.kitcd.share_delivery_api.security.provider.JsonAuthenticationProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -45,19 +48,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationEntryPoint jsonLoginAuthEntryPoint() {
-        return new JsonLoginAuthEntryPoint();
+        return new CustomLoginAuthEntryPoint();
     }
 
     @Bean
     public AccessDeniedHandler jsonAccessDeniedHandler() {
-        return new JsonAccessDeniedHandler();
+        return new CustomAccessDeniedHandler();
     }
 
     @Bean
-    public AuthenticationProvider jsonAuthProvider(){
+    public AuthenticationProvider jsonAuthenticationProvider(){
         return new JsonAuthenticationProvider();
     }
 
+    @Bean
+    public AuthenticationProvider JWTAuthenticationProvider(){
+        return new JWTAuthenticationProvider();
+    }
     @Bean
     public JsonLoginProcessingFilter jsonLoginProcessingFilter() throws Exception {
         JsonLoginProcessingFilter jsonLoginProcessingFilter = new JsonLoginProcessingFilter();
@@ -71,13 +78,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        return new JWTAuthenticationFilter(authenticationManagerBean());
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth){
-        auth.authenticationProvider(jsonAuthProvider());
+        auth.authenticationProvider(jsonAuthenticationProvider());
+        auth.authenticationProvider(JWTAuthenticationProvider());
     }
 
     @Override
@@ -91,10 +104,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/api/**") // `api/` 이하 URL에 한해서 설정 클래스 동작
                 .authorizeRequests()
+                .antMatchers("/api/test").hasRole("USER")
                 .antMatchers("/api/accounts").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterAt(jsonLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter(), JsonLoginProcessingFilter.class)
         ;
 
 
@@ -106,7 +121,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ;
 
 
-        http.cors().and().csrf().disable(); // Enable CORS and disable CSRF //TODO: 왜 CORS는 활성화 하는 것일까?
+        http.cors().and().csrf().disable(); // Enable CORS and disable CSRF //TODO: 왜 CORS는 활성화 하라는 것 ?
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Set session management to stateless
 
     }

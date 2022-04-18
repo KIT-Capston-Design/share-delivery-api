@@ -13,7 +13,7 @@ public class AccountRegDTO {
 
     private String password;
 
-    private final RoleType role = RoleType.USER;
+    private final RoleType role = RoleType.ROLE_USER;
 
     public Account toEntity() {
         return Account.builder()

@@ -17,3 +17,11 @@ Content-Type: application/json
   "phoneNumber": "12345",
   "password": "1234"
 }
+
+###
+
+GET http://localhost:8080/api/test
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjEyMzQ1Iiwicm9sZSI6IlVTRVIiLCJpc3MiOiJraXRjZC5zaGFyZS1kZWxpdmVyeSIsImV4cCI6MTY1MDI5NDAzNn0.vuyY-D9AB47zz7gKZ1MoQSMRxFMOIV6C-9Iny-aBFqk
+
+

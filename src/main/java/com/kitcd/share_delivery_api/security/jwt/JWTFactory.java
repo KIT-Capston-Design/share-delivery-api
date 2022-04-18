@@ -20,11 +20,23 @@ public class JWTFactory {
     private final int SECOND = 1000;
     private final int MINUTE = SECOND * 60;
 
-    @Value("${jwt.issuer}") private String issuer;
-    @Value("${jwt.secret-key}") private String secretKey;
-    @Value("${jwt.refresh-secret-key}") private String refreshSecretKey;
-    @Value("${jwt.expiry-period}") private long expiryPeriod;
-    @Value("${jwt.refresh-expiry-period}") private long refreshExpiryPeriod;
+    private final String issuer;
+    private final String secretKey;
+    private final String refreshSecretKey;
+    private final long expiryPeriod;
+    private final long refreshExpiryPeriod;
+
+    public JWTFactory(@Value("${jwt.issuer}") String issuer,
+                      @Value("${jwt.secret-key}") String secretKey,
+                      @Value("${jwt.refresh-secret-key}") String refreshSecretKey,
+                      @Value("${jwt.expiry-period}") long expiryPeriod,
+                      @Value("${jwt.refresh-expiry-period}") long refreshExpiryPeriod) {
+        this.issuer = issuer;
+        this.secretKey = secretKey;
+        this.refreshSecretKey = refreshSecretKey;
+        this.expiryPeriod = expiryPeriod;
+        this.refreshExpiryPeriod = refreshExpiryPeriod;
+    }
 
 
     public String createAccessToken(Account account){
@@ -43,7 +55,7 @@ public class JWTFactory {
             Algorithm algorithm = Algorithm.HMAC256(key);
             token = JWT.create() // Token Builder
                     .withIssuer(issuer)
-                    .withClaim("accountId", account.getAccountId())
+                    .withClaim("phoneNumber", account.getPhoneNumber())
                     .withClaim("role", account.getRole().toString())
                     .withExpiresAt(createExpirationDate(period))
                     .sign(algorithm);
