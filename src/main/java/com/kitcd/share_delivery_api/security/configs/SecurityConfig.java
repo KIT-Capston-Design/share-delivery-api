@@ -36,6 +36,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
+    private JWTAuthenticationProvider jwtAuthenticationProvider;
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(){
         return new JsonAuthSuccessHandler();
@@ -62,10 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationProvider JWTAuthenticationProvider(){
-        return new JWTAuthenticationProvider();
-    }
-    @Bean
     public JsonLoginProcessingFilter jsonLoginProcessingFilter() throws Exception {
         JsonLoginProcessingFilter jsonLoginProcessingFilter = new JsonLoginProcessingFilter();
         jsonLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
@@ -90,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth){
         auth.authenticationProvider(jsonAuthenticationProvider());
-        auth.authenticationProvider(JWTAuthenticationProvider());
+        auth.authenticationProvider(jwtAuthenticationProvider);
     }
 
     @Override
