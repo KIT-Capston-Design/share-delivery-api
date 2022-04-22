@@ -1,0 +1,32 @@
+
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+
+{
+  "phoneNumber": "1234567",
+  "password": "1234"
+}
+
+
+###
+
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "phoneNumber": "1234567",
+  "password": "1234"
+}
+
+###
+
+GET http://localhost:8080/api/test
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjEyMzQ1NjciLCJyb2xlIjoiUk9MRV9VU0VSIiwiaXNzIjoia2l0Y2Quc2hhcmUtZGVsaXZlcnkiLCJleHAiOjE2NTA2MzczODd9.s5v4KByh5puVNezegVENUka4pfWjdKj5A-GqcVZcimc
+
+
+###
+
+GET http://localhost:8080/api/test
+Content-Type: application/json
+Authorization: Beaer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjEyMzQ1Iiwicm9sZSI6IlJPTEVfVVNFUiIsImlzcyI6ImtpdGNkLnNoYXJlLWRlbGl2ZXJ5IiwiZXhwIjoxNjUwMzMwODc3fQ.RLZGpcKZVvh7RYSLACgky8mVwYiWdOarJxlCIbdnfHk

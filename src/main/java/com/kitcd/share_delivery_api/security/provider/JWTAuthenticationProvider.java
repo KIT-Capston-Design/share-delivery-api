@@ -12,6 +12,8 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import com.kitcd.share_delivery_api.security.service.AccountContext;
 import com.kitcd.share_delivery_api.security.token.JWTAuthenticationToken;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,15 +26,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@RequiredArgsConstructor
+@Component
 @Slf4j
 public class JWTAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    @Value("${jwt.issuer}") private String issuer;
-    @Value("${jwt.secret-key}") private String secretKey;
-
+    @Value("${jwt.issuer}") private final String issuer;
+    @Value("${jwt.secret-key}") private final String secretKey;
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
