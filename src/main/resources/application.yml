@@ -9,6 +9,11 @@ spring:
         format_sql: true #To beautify or pretty print the SQL
         show_sql: true
 
+  redis:
+    host: localhost
+    port: 6379 # default port : 6379
+
+
 jwt:
   issuer: kitcd.share-delivery
   secret-key: test
