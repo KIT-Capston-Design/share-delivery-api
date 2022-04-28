@@ -1,6 +1,6 @@
 package com.kitcd.share_delivery_api.controller;
 
-import com.kitcd.share_delivery_api.domain.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.Account.AccountRegDTO;
 import com.kitcd.share_delivery_api.service.Account.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;

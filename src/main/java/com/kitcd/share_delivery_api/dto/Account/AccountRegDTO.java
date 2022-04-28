@@ -1,7 +1,7 @@
 package com.kitcd.share_delivery_api.dto.Account;
 
-import com.kitcd.share_delivery_api.domain.account.Account;
-import com.kitcd.share_delivery_api.domain.account.RoleType;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.account.RoleType;
 import lombok.Getter;
 import lombok.Setter;
 

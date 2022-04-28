@@ -1,6 +1,6 @@
 package com.kitcd.share_delivery_api.security.service;
 
-import com.kitcd.share_delivery_api.domain.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

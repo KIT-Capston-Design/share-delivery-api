@@ -3,7 +3,7 @@ package com.kitcd.share_delivery_api.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.kitcd.share_delivery_api.domain.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

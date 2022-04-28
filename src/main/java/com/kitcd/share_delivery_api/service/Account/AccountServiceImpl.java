@@ -1,7 +1,7 @@
 package com.kitcd.share_delivery_api.service.Account;
 
-import com.kitcd.share_delivery_api.domain.account.Account;
-import com.kitcd.share_delivery_api.domain.account.AccountRepository;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

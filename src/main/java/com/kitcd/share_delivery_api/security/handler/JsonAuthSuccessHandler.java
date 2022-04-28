@@ -1,7 +1,7 @@
 package com.kitcd.share_delivery_api.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kitcd.share_delivery_api.domain.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 
 import com.kitcd.share_delivery_api.security.dto.JWTDTO;
 import com.kitcd.share_delivery_api.security.jwt.JWTFactory;
