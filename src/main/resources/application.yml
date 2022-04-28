@@ -13,13 +13,21 @@ spring:
     host: localhost
     port: 6379 # default port : 6379
 
-
 jwt:
   issuer: kitcd.share-delivery
   secret-key: test
   refresh-secret-key: test
   expiry-period: 60 # 분 단위
   refresh-expiry-period: 43200 # 분 단위
+
+
+open-api:
+  nave-sms:
+    service-id: ncp:sms:kr:284668113016:share-delivery
+    access-key: vOlJIc5R5dei8BSJDi6W
+    secret-key: AnFai2cjRale7UYVFdO5Dr0EZvgcRziBcBIQCJks
+    sender-phone-number: '01085762079' # 발신자번호 : 사전 인증 된 휴대전호로만 설정가능
+
 
 
 ---

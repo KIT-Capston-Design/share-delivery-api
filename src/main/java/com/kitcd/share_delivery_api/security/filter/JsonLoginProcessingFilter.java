@@ -1,7 +1,7 @@
 package com.kitcd.share_delivery_api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kitcd.share_delivery_api.dto.Account.AccountLoginDTO;
+import com.kitcd.share_delivery_api.dto.account.AccountLoginDTO;
 import com.kitcd.share_delivery_api.security.token.JsonAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -9,7 +9,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.ObjectUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

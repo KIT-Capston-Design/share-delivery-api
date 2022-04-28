@@ -1,8 +1,8 @@
 package com.kitcd.share_delivery_api.controller;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
-import com.kitcd.share_delivery_api.dto.Account.AccountRegDTO;
-import com.kitcd.share_delivery_api.service.Account.AccountServiceImpl;
+import com.kitcd.share_delivery_api.dto.account.AccountRegDTO;
+import com.kitcd.share_delivery_api.service.impl.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

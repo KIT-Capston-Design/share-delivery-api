@@ -1,4 +1,4 @@
-package com.kitcd.share_delivery_api.dto.Account;
+package com.kitcd.share_delivery_api.dto.account;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.RoleType;

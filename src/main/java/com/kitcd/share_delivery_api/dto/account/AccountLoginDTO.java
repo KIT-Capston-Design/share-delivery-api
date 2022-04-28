@@ -1,4 +1,4 @@
-package com.kitcd.share_delivery_api.dto.Account;
+package com.kitcd.share_delivery_api.dto.account;
 
 import lombok.Getter;
 import lombok.Setter;
