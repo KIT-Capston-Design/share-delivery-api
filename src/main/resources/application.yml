@@ -29,7 +29,6 @@ open-api:
     sender-phone-number: '01085762079' # 발신자번호 : 사전 인증 된 휴대전호로만 설정가능
 
 
-
 ---
 spring:
   config:

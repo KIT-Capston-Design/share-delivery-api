@@ -1,11 +1,9 @@
 package com.kitcd.share_delivery_api.controller.auth;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
+import com.kitcd.share_delivery_api.dto.sens.SMSResponseDTO;
+import com.kitcd.share_delivery_api.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @GetMapping("/verification-sms")
-    public ResponseEntity<?> requestVerificationSMS(@RequestParam @Pattern(regexp = "^010[\\d]{8}") String phoneNumber){
+    private final AuthService authService;
 
-        return new ResponseEntity<>(phoneNumber, HttpStatus.OK);
+    @GetMapping("/verification-sms")
+    public ResponseEntity<?> sendVerificationSMS(@RequestParam @Pattern(regexp = "^010[\\d]{8}") String phoneNumber){
+
+        SMSResponseDTO responseDTO = authService.sendVerificationSMS(phoneNumber);
+
+        //SENS로부터의 응답이 202이 아닐 경우 500
+        int resStatusValue = responseDTO.getStatusCode();
+        if(resStatusValue != HttpStatus.ACCEPTED.value()){
+            resStatusValue = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        }
+
+        return ResponseEntity.status(resStatusValue).body(responseDTO);
     }
 }

@@ -31,7 +31,7 @@ public class AuthControllerTest {
     private MockMvc mvc;
 
     @Test
-    public void givenValidPhoneNumber_whenRequestVerificationSMS_thenHttpOK() throws Exception {
+    public void givenValidPhoneNumber_whenVerificationSMS_thenHttpOK() throws Exception {
         //given
         String url = "/api/auth/verification-sms";
         String phoneNumber = "01085762079";
@@ -44,7 +44,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void givenInvalidPhoneNumber_whenRequestVerificationSMS_thenBadRequest() throws Exception {
+    public void givenInvalidPhoneNumber_whenVerificationSMS_thenBadRequest() throws Exception {
         //given
         String url = "/api/auth/verification-sms";
         String phoneNumber = "010857620799";

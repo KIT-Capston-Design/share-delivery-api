@@ -46,9 +46,6 @@ public class SENSServiceImpl implements SENSService {
         List<MessageDTO> messages = new ArrayList<>();
         messages.add(new MessageDTO(recipientPhoneNumber, content));
 
-        log.warn(senderPhoneNumber);
-
-
         SMSRequestDTO smsReq = SMSRequestDTO.builder()
                 .type("SMS")
                 .contentType("COMM")
@@ -75,13 +72,11 @@ public class SENSServiceImpl implements SENSService {
             // header + body
             HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
 
-            log.warn(httpEntity.toString());
-
             RestTemplate restTemplate = new RestTemplate();
             return restTemplate.postForObject(new URI(origin + uri), httpEntity, SMSResponseDTO.class);
 
         } catch (URISyntaxException | JsonProcessingException | NoSuchAlgorithmException | InvalidKeyException e){
-            log.error("SMS 발송 준비 중 예외", e);
+            log.error("SMS 발송 준비 중 예외 발생", e);
         }
 
         return null;

@@ -1,6 +1,7 @@
 package com.kitcd.share_delivery_api.security.configs;
 
 
+import ch.qos.logback.core.net.ssl.SecureRandomFactoryBean;
 import com.kitcd.share_delivery_api.security.filter.JWTAuthenticationFilter;
 import com.kitcd.share_delivery_api.security.filter.JsonLoginProcessingFilter;
 import com.kitcd.share_delivery_api.security.handler.CustomAccessDeniedHandler;
@@ -28,6 +29,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.security.SecureRandom;
 
 
 @Configuration
@@ -83,6 +86,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public SecureRandom secureRandom(){
+        return new SecureRandom();
     }
 
     @Override

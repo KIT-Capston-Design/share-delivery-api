@@ -19,4 +19,10 @@ public class AccountServiceImpl implements AccountService {
         account.encodePassword(this.passwordEncoder);
         return this.accountRepository.save(account);
     }
+
+    @Override
+    public Account findByPhoneNumber(String phoneNumber) {
+        return accountRepository.findByPhoneNumber(phoneNumber);
+    }
+
 }
