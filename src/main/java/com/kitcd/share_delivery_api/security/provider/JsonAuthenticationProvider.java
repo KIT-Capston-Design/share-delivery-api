@@ -1,7 +1,9 @@
 package com.kitcd.share_delivery_api.security.provider;
 
+import com.kitcd.share_delivery_api.domain.redis.auth.VerificationType;
 import com.kitcd.share_delivery_api.security.service.AccountContext;
 import com.kitcd.share_delivery_api.security.token.JsonAuthenticationToken;
+import com.kitcd.share_delivery_api.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,22 +17,23 @@ public class JsonAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private AuthService authService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String loginId = authentication.getName(); //loginId == phoneNumber
-        String password = (String)authentication.getCredentials();
+        String phoneNumber = authentication.getName(); //loginId == phoneNumber
+        String verificationCode = (String)authentication.getCredentials();
 
 
-        //id 검증
-        AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(loginId);
+        //휴대폰 번호 검증
+        AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(phoneNumber);
 
-        //pw 검증
-        if(!passwordEncoder.matches(password, accountContext.getPassword())){
-            throw new BadCredentialsException("Invalid Password");
+        //인증코드 검증
+        if(!authService.verifyCode(phoneNumber, verificationCode, VerificationType.LOGIN)){
+            throw new BadCredentialsException("Invalid Verification Code");
         }
 
         /* 여기서 추가 검증 절차 진행 가능 */

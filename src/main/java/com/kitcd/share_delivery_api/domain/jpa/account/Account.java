@@ -42,9 +42,6 @@ public class Account extends BaseTimeEntity {
    @Column(name = "PHONE_NUMBER", nullable = false, unique = true)
    private String phoneNumber;
 
-   @Column(name = "PASSWORD", nullable = false)
-   private String password;
-
    @Column(name = "NICKNAME", nullable = true)
    private String nickname;
 
@@ -125,9 +122,5 @@ public class Account extends BaseTimeEntity {
 
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
-
-   public void encodePassword(PasswordEncoder passwordEncoder) {
-      this.password = passwordEncoder.encode(this.password);
-   }
 
 }

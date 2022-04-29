@@ -12,11 +12,9 @@ import org.springframework.stereotype.Service;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Account saveAccount(Account account) {
-        account.encodePassword(this.passwordEncoder);
         return this.accountRepository.save(account);
     }
 

@@ -11,14 +11,11 @@ public class AccountRegDTO {
 
     private String phoneNumber;
 
-    private String password;
-
     private final RoleType role = RoleType.ROLE_USER;
 
     public Account toEntity() {
         return Account.builder()
                 .phoneNumber(this.phoneNumber)
-                .password(this.password)
                 .role(this.role)
                 .build();
     }

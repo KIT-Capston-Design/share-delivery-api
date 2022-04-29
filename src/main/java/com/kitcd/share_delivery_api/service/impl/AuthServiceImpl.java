@@ -2,19 +2,20 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.redis.auth.VerificationSMS;
 import com.kitcd.share_delivery_api.domain.redis.auth.VerificationSMSRedisRepository;
+import com.kitcd.share_delivery_api.domain.redis.auth.VerificationType;
 import com.kitcd.share_delivery_api.dto.sens.SMSResponseDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
 import com.kitcd.share_delivery_api.service.AuthService;
 import com.kitcd.share_delivery_api.service.SENSService;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Objects;
 
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -43,6 +44,18 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return responseDTO;
+    }
+
+    // true : 성공, false : 실패
+    public Boolean verifyCode(String phoneNumber, String code, VerificationType verificationType){
+
+        VerificationSMS sms = verificationSMSRedisRepository.findVerificationSMSByPhoneNumber(phoneNumber);
+
+        if(sms == null)
+            return false;
+
+        //인증 타입과 코드 동일한지 검증
+        return sms.getVerificationType().equals(verificationType) && sms.getVerificationCode().equals(code);
     }
 
 }

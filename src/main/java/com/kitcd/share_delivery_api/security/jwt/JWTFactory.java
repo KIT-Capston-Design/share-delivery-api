@@ -54,7 +54,7 @@ public class JWTFactory {
             log.error(exception.getMessage());
         }
 
-        log.info("created a token for " + account.getAccountId());
+        log.info("created a token for user " + account.getAccountId());
 
         return token;
     }
