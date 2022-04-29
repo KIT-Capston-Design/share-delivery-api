@@ -5,6 +5,7 @@ import com.kitcd.share_delivery_api.security.service.AccountContext;
 import com.kitcd.share_delivery_api.security.token.JsonAuthenticationToken;
 import com.kitcd.share_delivery_api.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -21,18 +22,19 @@ public class JsonAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private AuthService authService;
 
+    @Value("${open-api.naver-sms.activate}") private Boolean smsIsActivated;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         String phoneNumber = authentication.getName(); //loginId == phoneNumber
         String verificationCode = (String)authentication.getCredentials();
 
-
         //휴대폰 번호 검증
         AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(phoneNumber);
 
         //인증코드 검증
-        if(!authService.verifyCode(phoneNumber, verificationCode, VerificationType.LOGIN)){
+        if(smsIsActivated && !authService.verifyCode(phoneNumber, verificationCode, VerificationType.LOGIN)){
             throw new BadCredentialsException("Invalid Verification Code");
         }
 

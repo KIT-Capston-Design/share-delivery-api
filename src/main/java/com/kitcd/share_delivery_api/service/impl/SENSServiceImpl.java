@@ -31,10 +31,10 @@ import java.util.List;
 @Service
 public class SENSServiceImpl implements SENSService {
 
-    @Value("${open-api.nave-sms.service-id}") private final String serviceId;
-    @Value("${open-api.nave-sms.access-key}") private final String accessKey;
-    @Value("${open-api.nave-sms.secret-key}") private final String secretKey;
-    @Value("${open-api.nave-sms.sender-phone-number}")private final String senderPhoneNumber;
+    @Value("${open-api.naver-sms.service-id}") private final String serviceId;
+    @Value("${open-api.naver-sms.access-key}") private final String accessKey;
+    @Value("${open-api.naver-sms.secret-key}") private final String secretKey;
+    @Value("${open-api.naver-sms.sender-phone-number}")private final String senderPhoneNumber;
 
     public SMSResponseDTO sendSMS(String recipientPhoneNumber, String content){
         final String origin = "https://sens.apigw.ntruss.com"; // Naver SENS

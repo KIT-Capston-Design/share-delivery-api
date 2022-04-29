@@ -10,6 +10,7 @@ import com.kitcd.share_delivery_api.service.SENSService;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccountService accountService;
     private final SecureRandom secureRandom;
     private final VerificationSMSRedisRepository verificationSMSRedisRepository;
+
 
     public SMSResponseDTO sendVerificationSMS(String phoneNumber) {
 

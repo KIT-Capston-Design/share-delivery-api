@@ -5,6 +5,7 @@ import javax.validation.constraints.Pattern;
 import com.kitcd.share_delivery_api.dto.sens.SMSResponseDTO;
 import com.kitcd.share_delivery_api.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,11 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
+    @Value("${open-api.naver-sms.activate}") private Boolean smsIsActivated;
 
     private final AuthService authService;
 
     @GetMapping("/verification-sms")
     public ResponseEntity<?> sendVerificationSMS(@RequestParam @Pattern(regexp = "^010[\\d]{8}") String phoneNumber){
+        if(!smsIsActivated){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This api is deactivated.");
+        }
 
         SMSResponseDTO responseDTO = authService.sendVerificationSMS(phoneNumber);
 
