@@ -1,7 +1,7 @@
 package com.kitcd.share_delivery_api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kitcd.share_delivery_api.dto.account.AccountLoginDTO;
+import com.kitcd.share_delivery_api.dto.account.loginDTO;
 import com.kitcd.share_delivery_api.security.token.JsonAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,15 +30,15 @@ public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingF
         }
 
         // 두 조건 모두 통과 시 id/verificationCode 통해 인증
-        AccountLoginDTO accountLoginDTO = objectMapper.readValue(request.getReader(), AccountLoginDTO.class);//json 바디 가져와서 dto로 가공
+        loginDTO loginDTO = objectMapper.readValue(request.getReader(), loginDTO.class);//json 바디 가져와서 dto로 가공
 
         //빈 문자열 체크
-        if(ObjectUtils.isEmpty(accountLoginDTO.getPhoneNumber()) || ObjectUtils.isEmpty(accountLoginDTO.getVerificationCode())){
-            throw new IllegalArgumentException("PhoneNumber or VerificationCode is empty");
+        if(ObjectUtils.isEmpty(loginDTO.getPhoneNumber()) || ObjectUtils.isEmpty(loginDTO.getVerificationCode()) || ObjectUtils.isEmpty(loginDTO.getFcmToken())){
+            throw new IllegalArgumentException("phoneNumber or VerificationCode or FcmToken is empty");
         }
 
         // 토큰 만들고 AuthenticationManager에 위임하여 인증 처리 진행
-        JsonAuthenticationToken jsonAuthenticationToken = new JsonAuthenticationToken(accountLoginDTO.getPhoneNumber(), accountLoginDTO.getVerificationCode());
+        JsonAuthenticationToken jsonAuthenticationToken = new JsonAuthenticationToken(loginDTO.getPhoneNumber(), loginDTO.getVerificationCode(), loginDTO.getFcmToken());
 
         return getAuthenticationManager().authenticate(jsonAuthenticationToken);
     }

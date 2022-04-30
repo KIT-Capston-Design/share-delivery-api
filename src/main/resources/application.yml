@@ -17,7 +17,7 @@ jwt:
   secret-key: test
   refresh-secret-key: test
   expiry-period: 60 # 분 단위
-  refresh-expiry-period: 43200 # 분 단위
+  refresh-expiry-period: 43200 # 분 단위 # 43200 : 30일
 
 
 open-api:
