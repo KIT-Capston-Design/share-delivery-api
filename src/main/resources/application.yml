@@ -12,6 +12,15 @@ spring:
     host: localhost
     port: 6379 # default port : 6379
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "sharedelivery32@gmail.com"
+    password: "@qwer1234"
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 jwt:
   issuer: kitcd.share-delivery
   secret-key: test
@@ -44,5 +53,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+
+
 

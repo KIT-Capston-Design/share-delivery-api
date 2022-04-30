@@ -120,4 +120,7 @@ public class Account extends BaseTimeEntity {
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
 
+   public void addEmail(String email){
+      this.email = email;
+   }
 }
