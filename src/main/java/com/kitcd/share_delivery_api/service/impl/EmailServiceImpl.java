@@ -2,14 +2,13 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
-import com.kitcd.share_delivery_api.domain.redis.auth.VerificationEmail;
-import com.kitcd.share_delivery_api.domain.redis.auth.VerificationEmailRedisRepository;
-import com.kitcd.share_delivery_api.domain.redis.auth.VerificationType;
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationemail.VerificationEmail;
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationemail.VerificationEmailRedisRepository;
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationemail.VerificationType;
 import com.kitcd.share_delivery_api.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -52,7 +51,10 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public boolean verificationEmail(String email, String authNum){
         VerificationEmail verificationEmail = verificationEmailRedisRepository.findVerificationEmailByEmail(email);
-        if(authNum.equals(verificationEmail.getVerificationCode()) || verificationEmail == null){
+        if(verificationEmail == null){
+            return false;
+        }
+        if(authNum.equals(verificationEmail.getVerificationCode())){
             return false;
         }
         return true;

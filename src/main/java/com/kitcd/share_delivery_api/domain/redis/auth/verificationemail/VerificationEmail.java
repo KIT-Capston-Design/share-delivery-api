@@ -1,6 +1,7 @@
-package com.kitcd.share_delivery_api.domain.redis.auth;
+package com.kitcd.share_delivery_api.domain.redis.auth.verificationemail;
 
 
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationemail.VerificationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
