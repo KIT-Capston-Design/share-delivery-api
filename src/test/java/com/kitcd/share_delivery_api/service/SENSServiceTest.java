@@ -25,7 +25,7 @@ public class SENSServiceTest {
         SMSResponseDTO responseDTO = sensService.sendSMS(to, content);
 
         //then
-        assertEquals(HttpStatus.ACCEPTED.value(), Integer.parseInt(responseDTO.getStatusCode()));
+        assertEquals(HttpStatus.ACCEPTED.value(), responseDTO.getStatusCode());
 
     }
 }

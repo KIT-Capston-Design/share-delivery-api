@@ -9,22 +9,25 @@ public class JsonAuthenticationToken extends AbstractAuthenticationToken {
 //    private static final long serialVersionUID = 520L;
     private final Object principal;
     private Object credentials;
+    private String fcmToken;
 
 
     // 인증 이전 입력 정보 담는
-    public JsonAuthenticationToken(Object principal, Object credentials) {
+    public JsonAuthenticationToken(Object principal, Object credentials, String fcmToken) {
             super(null);
             this.principal = principal;
             this.credentials = credentials;
+            this.fcmToken = fcmToken;
         this.setAuthenticated(false);
     }
 
 
     //인증 이후 결과 담는 (권한정보 추가)
-    public JsonAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public JsonAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities, String fcmToken) {
         super(authorities);
         this.principal = principal;
         this.credentials = credentials;
+        this.fcmToken = fcmToken;
         super.setAuthenticated(true);
     }
 
@@ -36,6 +39,9 @@ public class JsonAuthenticationToken extends AbstractAuthenticationToken {
         return this.principal;
     }
 
+    public String getFcmToken() {
+        return fcmToken;
+    }
 
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
