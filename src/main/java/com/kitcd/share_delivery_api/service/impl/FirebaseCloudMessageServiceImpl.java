@@ -36,7 +36,6 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     public Response sendMessageTo(String targetToken, String title, String body) throws IOException {
 
         String message = makeMessage(targetToken, title, body);
-        System.out.println(message);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
@@ -47,8 +46,6 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                 .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                 .build();
-
-        System.out.println(request);
 
         return client.newCall(request).execute();
     }

@@ -21,7 +21,7 @@ public class FirebaseCloudMessageServiceTest {
     void FCM_Push_메시지_테스트() throws IOException {
 
         //given
-        String targetToken = "DD3292C6-D2E1-48E7-9EA5-4C0961886D06";
+        String targetToken = "d5QmtyFjQ1eSQmC0tVgNv5:APA91bG79SkgaMV1XVtKAHVEJsqhvudSzy7_LLwZcrHOLgifydY_rviqLV0FQ9yXkMzh-CI8HpHNQa7P4Rfm0uzPkOLi-gWR6Q8AlFoivH4cO-Rrr_mod8p8RfJjeBSgcTwQ4WI4ReNV";
         String testMsgTitle = "test title";
         String testMsgBody = "test body";
 
