@@ -1,7 +1,6 @@
 package com.kitcd.share_delivery_api.dto.sens;
 
-import com.kitcd.share_delivery_api.domain.redis.auth.VerificationType;
-import jdk.jfr.Timestamp;
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

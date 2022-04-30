@@ -1,8 +1,10 @@
 package com.kitcd.share_delivery_api.service.impl;
 
-import com.kitcd.share_delivery_api.domain.redis.auth.VerificationSMS;
-import com.kitcd.share_delivery_api.domain.redis.auth.VerificationSMSRedisRepository;
-import com.kitcd.share_delivery_api.domain.redis.auth.VerificationType;
+import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformation;
+import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationSMS;
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationSMSRedisRepository;
+import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
 import com.kitcd.share_delivery_api.dto.sens.SMSResponseDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
 import com.kitcd.share_delivery_api.service.AuthService;
@@ -10,7 +12,6 @@ import com.kitcd.share_delivery_api.service.SENSService;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,11 @@ public class AuthServiceImpl implements AuthService {
     private final AccountService accountService;
     private final SecureRandom secureRandom;
     private final VerificationSMSRedisRepository verificationSMSRedisRepository;
+    private final LoggedOnInformationRedisRepository loggedOnInformationRedisRepository;
 
+    public void saveLoggedOnInformation(LoggedOnInformation loggedOnInformation){
+        loggedOnInformationRedisRepository.save(loggedOnInformation);
+    }
 
     public SMSResponseDTO sendVerificationSMS(String phoneNumber) {
 

@@ -1,4 +1,4 @@
-package com.kitcd.share_delivery_api.domain.redis.auth;
+package com.kitcd.share_delivery_api.domain.redis.auth.verificationsms;
 
 
 import lombok.Getter;
