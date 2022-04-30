@@ -45,9 +45,6 @@ public class Account extends BaseTimeEntity {
    @Column(name = "NICKNAME", nullable = true)
    private String nickname;
 
-   @Column(name = "NAME", nullable = true)
-   private String name;
-
    @OneToOne
    @JoinColumn(name = "PROFILE_IMAGE_ID", nullable = true)
    private ImageFile profileImage;
