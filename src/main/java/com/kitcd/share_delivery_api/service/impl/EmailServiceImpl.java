@@ -33,10 +33,14 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Async
-    public void sendEmail(String email){
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(email);
+    public void sendEmail(String email) throws EntityExistsException{
+        if(accountRepository.findByEmail(email) != null){
+            throw new EntityExistsException("이메일이 존재합니다.");
+        }
 
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage(); //메일 틀 만들기
+
+        simpleMailMessage.setTo(email);
         simpleMailMessage.setSubject("공유배달 이메일 인증");
         StringBuilder sb = new StringBuilder();
         sb.append("인증번호 : ");
@@ -61,10 +65,8 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public Account AccountAddEmail(String phoneNum, String email) throws EntityExistsException {
-        if(accountRepository.findByEmail(email) != null){
-            throw new EntityExistsException("이메일이 존재합니다.");
-        }
+    public Account AccountAddEmail(String phoneNum, String email){
+
         Account user = accountRepository.findByPhoneNumber(phoneNum);
         user.addEmail(email);
         accountRepository.save(user);

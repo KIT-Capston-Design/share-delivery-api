@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityExistsException;
 import javax.validation.constraints.Pattern;
 
 @Validated
@@ -29,8 +30,12 @@ public class EmailController {
                                                            (regexp = "/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i\n")
                                                            String email)
     {
-        emailService.sendEmail(email);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("성공적으로 인증메일이 전송되었습니다.");
+        try {
+            emailService.sendEmail(email);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("성공적으로 인증메일이 전송되었습니다.");
+        }catch (EntityExistsException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("이메일이 존재합니다.");
+        }
     }
 
     @PostMapping("/verification-email")

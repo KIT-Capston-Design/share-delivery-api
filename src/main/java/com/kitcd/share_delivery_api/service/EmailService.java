@@ -8,7 +8,7 @@ import javax.persistence.EntityExistsException;
 
 public interface EmailService {
     @Async
-    void sendEmail(String email);
+    void sendEmail(String email) throws EntityExistsException ;
 
     boolean verificationEmail(String email, String randNum);
 
