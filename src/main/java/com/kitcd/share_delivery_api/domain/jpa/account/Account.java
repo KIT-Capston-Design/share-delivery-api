@@ -42,7 +42,7 @@ public class Account extends BaseTimeEntity {
    @Column(name = "PHONE_NUMBER", nullable = false, unique = true)
    private String phoneNumber;
 
-   @Column(name = "NICKNAME", nullable = true)
+   @Column(name = "NICKNAME", nullable = true, unique = true)
    private String nickname;
 
    @OneToOne
@@ -62,9 +62,6 @@ public class Account extends BaseTimeEntity {
 
    @Embedded
    private BankAccount bankAccount;
-
-   @Column(name = "LAST_LOGON_TIME", nullable = true)
-   private LocalDateTime lastLogonTime;
 
    @OneToMany(mappedBy = "account")
    private List<Friend> friends = new LinkedList<>();
@@ -120,4 +117,8 @@ public class Account extends BaseTimeEntity {
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
 
+
+   public void setDefaultNickname(){
+      this.nickname = "유저" + accountId;
+   }
 }
