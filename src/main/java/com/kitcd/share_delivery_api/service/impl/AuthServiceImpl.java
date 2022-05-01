@@ -12,6 +12,7 @@ import com.kitcd.share_delivery_api.service.SENSService;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final SecureRandom secureRandom;
     private final VerificationSMSRedisRepository verificationSMSRedisRepository;
     private final LoggedOnInformationRedisRepository loggedOnInformationRedisRepository;
+
 
     public void saveLoggedOnInformation(LoggedOnInformation loggedOnInformation){
         loggedOnInformationRedisRepository.save(loggedOnInformation);
@@ -58,11 +60,26 @@ public class AuthServiceImpl implements AuthService {
 
         VerificationSMS sms = verificationSMSRedisRepository.findVerificationSMSByPhoneNumber(phoneNumber);
 
+        //인증번호를 요청한 이력이 없을 경우 인증 실패 (false 리턴)
         if(sms == null)
             return false;
 
-        //인증 타입과 코드 동일한지 검증
-        return sms.getVerificationType().equals(verificationType) && sms.getVerificationCode().equals(code);
+        //인증 타입과 코드가 동일한지 검증
+        Boolean result = sms.getVerificationType().equals(verificationType) && sms.getVerificationCode().equals(code);
+
+        //인증 성공 시
+        // 로그인의 경우 레디스에서 인증번호 데이터 삭제
+        // 회원가입의 경우 로그인도 동일한 인증번호로 수행 할 것이므로 레디스에 저장된 VerificationSMS 타입 LOGIN으로 변경
+        if(result) {
+            if (VerificationType.LOGIN.equals(sms.getVerificationType())) {
+                verificationSMSRedisRepository.delete(sms);
+            } else if (VerificationType.SIGNUP.equals(sms.getVerificationType())) {
+                sms.typeUpdateForLogin(); // typeUpdateForLogin() : 타입 SIGNUP 에서 LOGIN으로 변경
+                verificationSMSRedisRepository.save(sms);
+            }
+        }
+
+        return result;
     }
 
 }

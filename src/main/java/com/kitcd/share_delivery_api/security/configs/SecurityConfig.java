@@ -110,7 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/api/**") // `api/` 이하 URL에 한해서 설정 클래스 동작
                 .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/auth/**", "/api/accounts").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterAt(jsonLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)

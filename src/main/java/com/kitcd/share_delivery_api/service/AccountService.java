@@ -1,8 +1,9 @@
 package com.kitcd.share_delivery_api.service;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
 
 public interface AccountService {
-    Account saveAccount(Account account);
+    Account signUp(AccountRegistrationDTO dto);
     Account findByPhoneNumber(String phoneNumber);
 }

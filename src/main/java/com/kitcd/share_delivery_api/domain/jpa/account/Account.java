@@ -42,7 +42,7 @@ public class Account extends BaseTimeEntity {
    @Column(name = "PHONE_NUMBER", nullable = false, unique = true)
    private String phoneNumber;
 
-   @Column(name = "NICKNAME", nullable = true)
+   @Column(name = "NICKNAME", nullable = true, unique = true)
    private String nickname;
 
    @OneToOne
@@ -119,6 +119,11 @@ public class Account extends BaseTimeEntity {
 
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
+
+
+   public void setDefaultNickname(){
+      this.nickname = "유저" + accountId;
+   }
 
    public void addEmail(String email){
       this.email = email;
