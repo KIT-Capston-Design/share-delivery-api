@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.domain.jpa.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kitcd.share_delivery_api.domain.jpa.accountBlock.AccountBlock;
 import com.kitcd.share_delivery_api.domain.jpa.chat.Chat;
 import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
@@ -63,57 +64,75 @@ public class Account extends BaseTimeEntity {
    @Embedded
    private BankAccount bankAccount;
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<Friend> friends = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<AccountBlock> accountBlocks = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<FastDeliveryParticipation> participations = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<ReceivingLocation> receivingLocations = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "remitter")
    private List<Remittance> remittances = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "recipient")
    private List<Remittance> collections = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "leader")
    private List<DeliveryRoom> leadingDeliveryRoom = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<Chat> chats = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<EntryOrder> orders = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "targetAccount")
    private List<AccountEvaluation> receivedEvaluations = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "evaluator")
    private List<AccountEvaluation> performedEvaluations = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<Post> posts = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<PostLike> postLikes = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<Comment> comments = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<CommentLike> commentLikes = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "account")
    private List<PostAlarm> postAlarms = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "reporter")
    private List<Report> receivedReports = new LinkedList<>();
 
+   @JsonIgnore
    @OneToMany(mappedBy = "reportedAccount")
    private List<Report> performedReport = new LinkedList<>();
 
