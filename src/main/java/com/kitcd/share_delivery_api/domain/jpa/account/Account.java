@@ -63,6 +63,9 @@ public class Account extends BaseTimeEntity {
    @Embedded
    private BankAccount bankAccount;
 
+   @Column(name = "LAST_LOGON_TIME", nullable = true)
+   private LocalDateTime lastLogonTime;
+
    @OneToMany(mappedBy = "account")
    private List<Friend> friends = new LinkedList<>();
 
@@ -120,5 +123,9 @@ public class Account extends BaseTimeEntity {
 
    public void setDefaultNickname(){
       this.nickname = "유저" + accountId;
+   }
+
+   public void addEmail(String email){
+      this.email = email;
    }
 }

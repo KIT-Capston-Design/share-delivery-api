@@ -12,6 +12,15 @@ spring:
     host: localhost
     port: 6379 # default port : 6379
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "sharedelivery32@gmail.com"
+    password: "@qwer1234"
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 jwt:
   issuer: kitcd.share-delivery
   secret-key: test
@@ -45,4 +54,26 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: khj
+
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE # mysql compatible h2
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+
+
+
 
