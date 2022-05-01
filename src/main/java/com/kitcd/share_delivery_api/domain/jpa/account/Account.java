@@ -63,9 +63,6 @@ public class Account extends BaseTimeEntity {
    @Embedded
    private BankAccount bankAccount;
 
-   @Column(name = "LAST_LOGON_TIME", nullable = true)
-   private LocalDateTime lastLogonTime;
-
    @OneToMany(mappedBy = "account")
    private List<Friend> friends = new LinkedList<>();
 
