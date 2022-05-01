@@ -1,17 +1,17 @@
 package com.kitcd.share_delivery_api.domain.jpa.post;
 
 import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
-import com.kitcd.share_delivery_api.domain.jpa.commentLike.CommentLike;
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLike;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
-import com.kitcd.share_delivery_api.domain.jpa.placeShare.PlaceShare;
-import com.kitcd.share_delivery_api.domain.jpa.postAlarm.PostAlarm;
-import com.kitcd.share_delivery_api.domain.jpa.postImage.PostImage;
+import com.kitcd.share_delivery_api.domain.jpa.placeshare.PlaceShare;
+import com.kitcd.share_delivery_api.domain.jpa.postalarm.PostAlarm;
+import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
-import com.kitcd.share_delivery_api.domain.jpa.postCategory.PostCategory;
-import com.kitcd.share_delivery_api.domain.jpa.postLike.PostLike;
+import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

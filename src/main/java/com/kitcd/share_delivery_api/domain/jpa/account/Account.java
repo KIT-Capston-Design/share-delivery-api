@@ -1,32 +1,30 @@
 package com.kitcd.share_delivery_api.domain.jpa.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kitcd.share_delivery_api.domain.jpa.accountBlock.AccountBlock;
+import com.kitcd.share_delivery_api.domain.jpa.accounblock.AccountBlock;
 import com.kitcd.share_delivery_api.domain.jpa.chat.Chat;
 import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
-import com.kitcd.share_delivery_api.domain.jpa.commentLike.CommentLike;
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLike;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
-import com.kitcd.share_delivery_api.domain.jpa.deliveryRoom.DeliveryRoom;
-import com.kitcd.share_delivery_api.domain.jpa.fastDeliveryParticipation.FastDeliveryParticipation;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.fastdeliveryparticipation.FastDeliveryParticipation;
 import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
-import com.kitcd.share_delivery_api.domain.jpa.imageFile.ImageFile;
-import com.kitcd.share_delivery_api.domain.jpa.entryOrder.EntryOrder;
-import com.kitcd.share_delivery_api.domain.jpa.accountEvaluation.AccountEvaluation;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
+import com.kitcd.share_delivery_api.domain.jpa.accountevaluation.AccountEvaluation;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
-import com.kitcd.share_delivery_api.domain.jpa.postAlarm.PostAlarm;
-import com.kitcd.share_delivery_api.domain.jpa.postLike.PostLike;
-import com.kitcd.share_delivery_api.domain.jpa.receivingLocation.ReceivingLocation;
+import com.kitcd.share_delivery_api.domain.jpa.postalarm.PostAlarm;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
+import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -2,10 +2,10 @@ package com.kitcd.share_delivery_api.domain.jpa.payment;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.jpa.deliveryRoom.DeliveryRoom;
-import com.kitcd.share_delivery_api.domain.jpa.paymentDiscount.PaymentDiscount;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.paymentdiscount.PaymentDiscount;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
-import com.kitcd.share_delivery_api.domain.jpa.paymentOrderForm.PaymentOrderForm;
+import com.kitcd.share_delivery_api.domain.jpa.paymentorderform.PaymentOrderForm;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

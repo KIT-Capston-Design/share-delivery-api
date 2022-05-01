@@ -3,9 +3,9 @@ package com.kitcd.share_delivery_api.domain.jpa.report;
 import com.kitcd.share_delivery_api.domain.jpa.chat.Chat;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.jpa.deliveryRoom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
-import com.kitcd.share_delivery_api.domain.jpa.reportCategory.ReportCategory;
+import com.kitcd.share_delivery_api.domain.jpa.reportcategory.ReportCategory;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

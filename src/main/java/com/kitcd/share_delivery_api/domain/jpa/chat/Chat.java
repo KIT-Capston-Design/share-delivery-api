@@ -3,9 +3,9 @@ package com.kitcd.share_delivery_api.domain.jpa.chat;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
-import com.kitcd.share_delivery_api.domain.jpa.deliveryRoom.DeliveryRoom;
-import com.kitcd.share_delivery_api.domain.jpa.fastDeliveryRoom.FastDeliveryRoom;
-import com.kitcd.share_delivery_api.domain.jpa.imageFile.ImageFile;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.fastdeliveryroom.FastDeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import lombok.Getter;
