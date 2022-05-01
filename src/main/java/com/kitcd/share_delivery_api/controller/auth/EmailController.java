@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityExistsException;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
 @Validated
@@ -25,11 +26,7 @@ public class EmailController {
 
 
     @GetMapping("/verification-email")
-    public ResponseEntity<?> sendVerificationEmail(@RequestParam
-                                                   @Pattern
-                                                           (regexp = "/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i\n")
-                                                           String email)
-    {
+    public ResponseEntity<?> sendVerificationEmail(@RequestParam @Email String email) {
         try {
             emailService.sendEmail(email);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("성공적으로 인증메일이 전송되었습니다.");
