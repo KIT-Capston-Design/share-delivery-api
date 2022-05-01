@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,6 +51,9 @@ public class DeliveryRoom extends BaseTimeEntity {
 
    @Column(name = "STORE_ID_KEY")
    private String storeIdKey;
+
+   @Column(name = "LIMIT_TIME", nullable = false)
+   private LocalDateTime limitTime;
 
    @Enumerated(EnumType.STRING)
    @Column(name = "LINK_PLATFORM_TYPE", nullable = false)

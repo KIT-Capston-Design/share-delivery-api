@@ -20,6 +20,9 @@ repositories {
 
 dependencies {
 
+	implementation 'org.hibernate:hibernate-spatial'
+	implementation 'org.locationtech.jts:jts-core:1.18.2' //Point Type 위한
+
 	implementation 'com.google.firebase:firebase-admin:8.1.0'
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 

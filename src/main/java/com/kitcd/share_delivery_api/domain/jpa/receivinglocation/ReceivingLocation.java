@@ -5,9 +5,12 @@ import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -30,11 +33,12 @@ public class ReceivingLocation extends BaseTimeEntity {
    @Column(name = "IS_FAVORITE", nullable = false)
    private String isFavorite;
 
-   @Column(name = "NAME", nullable = false)
-   private String name;
+   @Column(name = "DESCRIPTION", nullable = false)
+   private String description;
 
-   @Embedded
-   private Coordinate coordinate;
+   @Type(type = "org.hibernate.spatial.JTSGeometryType")
+   @Column(name = "LOCATION", nullable = false)
+   private Point location;
 
    @Column(name = "ADDRESS", nullable = false)
    private String address;
@@ -43,4 +47,11 @@ public class ReceivingLocation extends BaseTimeEntity {
    private List<DeliveryRoom> deliveryRooms = new LinkedList<>();
 
 
+   public LocationDTO toLocationDTO(){
+      return LocationDTO.builder()
+              .latitude(location.getY())
+              .longitude(location.getX())
+              .description(description)
+              .build();
+   }
 }
