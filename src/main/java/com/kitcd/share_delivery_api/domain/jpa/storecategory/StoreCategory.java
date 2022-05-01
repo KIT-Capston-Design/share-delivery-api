@@ -23,21 +23,11 @@ public class StoreCategory extends BaseTimeEntity {
    private Long storeCategoryId;
 
    @OneToOne
-   @JoinColumn(name = "PARENT_CATEGORY_ID")
-   private StoreCategory parentCategory;
-
-   @OneToOne
-   @JoinColumn(name = "IMAGE_FILE_ID", nullable = false)
+   @JoinColumn(name = "IMAGE_FILE_ID")
    private ImageFile imageFile;
 
    @Column(name = "CATEGORY_NAME", nullable = false)
    private String categoryName;
 
-   @Column(name = "LEVEL", nullable = false)
-   private Long level;
-
-
-   @OneToMany(mappedBy = "storeCategory")
-   private List<DeliveryRoom> deliveryRooms = new LinkedList<>();
 
 }
