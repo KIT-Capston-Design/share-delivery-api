@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @AllArgsConstructor
 public class DeliveryRoomDTO {
 
@@ -26,7 +27,7 @@ public class DeliveryRoomDTO {
     @Getter
     public static class Leader{
         private String nickname;
-        private Long mannerScore;
+        private Double mannerScore;
 
     }
 }

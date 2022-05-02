@@ -36,7 +36,6 @@ public class ReceivingLocation extends BaseTimeEntity {
    @Column(name = "DESCRIPTION", nullable = false)
    private String description;
 
-   @Type(type = "org.hibernate.spatial.JTSGeometryType")
    @Column(name = "LOCATION", nullable = false)
    private Point location;
 
@@ -49,8 +48,8 @@ public class ReceivingLocation extends BaseTimeEntity {
 
    public LocationDTO toLocationDTO(){
       return LocationDTO.builder()
-              .latitude(location.getY())
-              .longitude(location.getX())
+//              .latitude(location.getY())
+//              .longitude(location.getX())
               .description(description)
               .build();
    }
