@@ -28,7 +28,7 @@ public class ReceivingLocation extends BaseTimeEntity {
    private Account account;
 
    @Column(name = "IS_FAVORITE", nullable = false)
-   private String isFavorite;
+   private Boolean isFavorite;
 
    @Column(name = "NAME", nullable = false)
    private String name;

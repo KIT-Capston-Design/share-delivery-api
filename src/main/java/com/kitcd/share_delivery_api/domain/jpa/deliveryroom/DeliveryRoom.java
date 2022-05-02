@@ -71,4 +71,7 @@ public class DeliveryRoom extends BaseTimeEntity {
    @OneToMany(mappedBy = "deliveryRoom")
    private List<Report> reports = new LinkedList<>();
 
+   public void plusOrder(EntryOrder order){
+      orders.add(order);
+   }
 }
