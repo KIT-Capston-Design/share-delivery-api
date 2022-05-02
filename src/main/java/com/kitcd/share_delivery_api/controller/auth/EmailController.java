@@ -16,6 +16,8 @@ import javax.persistence.EntityExistsException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
+import static com.kitcd.share_delivery_api.controller.common.CurrentLoggedInSession.getAccount;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -44,9 +46,4 @@ public class EmailController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증번호가 일치하지 않습니다.");
     }
 
-    private Account getAccount() {
-        AccountContext userData = (AccountContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Account user = userData.getAccount();
-        return user;
-    }
 }
