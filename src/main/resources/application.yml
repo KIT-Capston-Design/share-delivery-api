@@ -1,0 +1,82 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        format_sql: true #To beautify or pretty print the SQL
+        show_sql: true
+
+  redis:
+    host: localhost
+    port: 6379 # default port : 6379
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "sharedelivery32@gmail.com"
+    password: "@qwer1234"
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+jwt:
+  issuer: kitcd.share-delivery
+  secret-key: test
+  refresh-secret-key: test
+  expiry-period: 60 # 분 단위
+  refresh-expiry-period: 43200 # 분 단위 # 43200 : 30일
+
+
+open-api:
+  naver-sms:
+    activate: true # false시 인증sms 발송하는 api 비활성화되며 로그인시 어떤 인증코드 입력해도 통과됨
+    service-id: ncp:sms:kr:284668113016:share-delivery
+    access-key: vOlJIc5R5dei8BSJDi6W
+    secret-key: AnFai2cjRale7UYVFdO5Dr0EZvgcRziBcBIQCJks
+    sender-phone-number: '01085762079' # 발신자번호 : 사전 인증 된 휴대전호로만 설정가능
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: hyunkim
+
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/share_delivery_api
+    driver-class-name: org.mariadb.jdbc.Driver
+    #    url: jdbc:h2:tcp://localhost/~/test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE # mysql compatible h2
+    #    driver-class-name: org.h2.Driver
+    username: hyunkim
+    password: 640310
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      dialect:
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: khj
+
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE # mysql compatible h2
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+
+
+
+
