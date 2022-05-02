@@ -31,7 +31,7 @@ jwt:
 
 open-api:
   naver-sms:
-    activate: false # false시 인증sms 발송하는 api 비활성화되며 로그인시 어떤 인증코드 입력해도 통과됨
+    activate: true # false시 인증sms 발송하는 api 비활성화되며 로그인시 어떤 인증코드 입력해도 통과됨
     service-id: ncp:sms:kr:284668113016:share-delivery
     access-key: vOlJIc5R5dei8BSJDi6W
     secret-key: AnFai2cjRale7UYVFdO5Dr0EZvgcRziBcBIQCJks
