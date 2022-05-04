@@ -1,5 +1,10 @@
 package com.kitcd.share_delivery_api.service.impl;
 
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderTableRepository;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenuRepository;
 import com.kitcd.share_delivery_api.dto.ordermenu.OptionMenuRequestDTO;
@@ -21,11 +26,17 @@ public class OrderMenuServiceImpl implements OrderMenuService {
 
     private final OrderMenuRepository orderMenuRepository;
 
+    private final EntryOrderTableRepository entryOrderTableRepository;
+
+
     @Override
-    public List<OrderMenu> enrollMainMenu(List<OrderMenuRequestDTO> orderMenus, List<OptionMenuRequestDTO> optionMenus) {
+    public List<OrderMenu> enrollMainMenu(List<OrderMenuRequestDTO> orderMenus, List<OptionMenuRequestDTO> optionMenus, Account account, Long deliveryRoomId) {
+        EntryOrder entryOrder = entryOrderTableRepository.findByAccount_AccountIdAndDeliveryRoom_DeliveryRoomId(account.getAccountId(), deliveryRoomId);
+
         List<OrderMenu> mainMenus = orderMenus.stream().map(i -> OrderMenu.builder() // orderMenu 부모 먼저 작성
                 .amount(i.getAmount())
                 .menuName(i.getMenuName())
+                .order(entryOrder)
                 .build()).collect(Collectors.toList());
 
         orderMenuRepository.saveAll(mainMenus);
@@ -34,6 +45,7 @@ public class OrderMenuServiceImpl implements OrderMenuService {
                 .menuName(i.getOptionName())
                 .amount(i.getAmount())
                 .parentMenu(mainMenus.stream().filter(j -> j.getMenuName().equals(i.getParent())).findAny().orElse(null))
+                .order(entryOrder)
                 .build()).collect(Collectors.toList());
 
         orderMenuRepository.saveAll(optionMenuList);

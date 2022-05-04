@@ -5,6 +5,7 @@ import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomEnrollRequestDTO;
@@ -35,7 +36,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationByNameAndCoordinate(dto.getReceivingLocation().getDescription(), location);
 
-        List<OrderMenu> orderMenus = orderMenuService.enrollMainMenu(dto.getMenuList(), dto.getOptionList());
+
 
         DeliveryRoom room = DeliveryRoom.builder()
                 .content(dto.getContent())
@@ -49,7 +50,9 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         deliveryRoomRepository.save(room);
 
-        entryOrderService.enrollEntryOrder(orderMenus, account, room);
+        List<OrderMenu> orderMenus = orderMenuService.enrollMainMenu(dto.getMenuList(), dto.getOptionList(), account, room.getDeliveryRoomId());
+
+        entryOrderService.enrollEntryOrder(orderMenus, account, room, EntryOrderType.APPLIED);
 
     }
 }
