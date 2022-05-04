@@ -30,8 +30,8 @@ public class ReceivingLocation extends BaseTimeEntity {
    @Column(name = "IS_FAVORITE", nullable = false)
    private Boolean isFavorite;
 
-   @Column(name = "NAME", nullable = false)
-   private String name;
+   @Column(name = "DESCRIPTION", nullable = false)
+   private String description;
 
    @Embedded
    private Coordinate coordinate;

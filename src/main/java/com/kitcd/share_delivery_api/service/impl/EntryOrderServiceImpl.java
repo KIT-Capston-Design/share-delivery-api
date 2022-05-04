@@ -24,13 +24,13 @@ public class EntryOrderServiceImpl implements EntryOrderService {
     private final EntryOrderTableRepository entryOrderTableRepository;
 
     @Override
-    public EntryOrder enrollEntryOrder(List<OrderMenu> menus, Account account, DeliveryRoom room) {
+    public EntryOrder enrollEntryOrder(List<OrderMenu> menus, Account account, DeliveryRoom room, EntryOrderType entryOrderType) {
         EntryOrder entryOrder = EntryOrder.builder()
                 .orderMenus(menus)
                 .account(account)
                 .isRejected(State.NORMAL)
                 .deliveryRoom(room)
-                .orderType(EntryOrderType.CONFIRM) // 주문자니까 궂이 입금 안해도 된다는 전제.
+                .orderType(entryOrderType)
                 .build();
 
         entryOrderTableRepository.save(entryOrder);
