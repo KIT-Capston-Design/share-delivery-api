@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class GeometryUtil {
 
     // baseLocation으로부터 distance만큼 azumuth으로 떨어진 좌표를 계산 // azimuth : 방위각
-    public Location calculate(Location baseLocation, Double distance, Double azimuth) {
+    public static Location calculate(Location baseLocation, Double distance, Double azimuth) {
 
         Double radianLatitude = toRadian(baseLocation.getLatitude());
         Double radianLongitude = toRadian(baseLocation.getLongitude());
@@ -32,23 +32,23 @@ public class GeometryUtil {
 
     }
 
-    private Double toRadian(Double coordinate) {
+    private static Double toRadian(Double coordinate) {
         return coordinate * Math.PI / 180.0;
     }
 
-    private Double toDegree(Double coordinate) {
+    private static Double toDegree(Double coordinate) {
         return coordinate * 180.0 / Math.PI;
     }
 
-    private Double sin(Double coordinate) {
+    private static Double sin(Double coordinate) {
         return Math.sin(coordinate);
     }
 
-    private Double cos(Double coordinate) {
+    private static Double cos(Double coordinate) {
         return Math.cos(coordinate);
     }
 
-    private Double normalizeLongitude(Double longitude) {
+    private static Double normalizeLongitude(Double longitude) {
         return (longitude + 540) % 360 - 180;
     }
 }
