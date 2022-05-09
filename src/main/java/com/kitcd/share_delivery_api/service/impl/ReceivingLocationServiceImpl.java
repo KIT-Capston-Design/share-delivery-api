@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @Transactional
@@ -20,19 +22,18 @@ public class ReceivingLocationServiceImpl implements ReceivingLocationService {
     private final ReceivingLocationRepository receivingLocationRepository;
 
     @Override
-    public ReceivingLocation getReceivingLocationByNameAndCoordinate(String description, Coordinate location) {
-        return receivingLocationRepository.findByDescriptionAndCoordinate(description, location);
+    public ReceivingLocation getReceivingLocationById(Long id) throws IllegalStateException{
+        Optional<ReceivingLocation> data = receivingLocationRepository.findById(id);
+        if(data.isEmpty()){
+            throw new IllegalStateException("아이디가 적합하지 않습니다.");
+        }else{
+            return data.get();
+        }
     }
 
     @Override
     public ReceivingLocationDTO enrollReceivingLocation(Account account, ReceivingLocationDTO dto) {
-        ReceivingLocation receivingLocation = ReceivingLocation.builder()
-                .account(account)
-                .coordinate(dto.createCoordinate())
-                .description(dto.getDescription())
-                .address(dto.getAddress())
-                .isFavorite(dto.getIsFavorite())
-                .build();
+        ReceivingLocation receivingLocation = dto.toEntity(dto, account);
         receivingLocationRepository.save(receivingLocation);
         return  new ReceivingLocationDTO(receivingLocation);
     }

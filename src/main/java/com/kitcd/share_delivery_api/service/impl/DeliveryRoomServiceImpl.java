@@ -32,27 +32,21 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
     @Override
     public void deliveryRoomCreate(DeliveryRoomEnrollRequestDTO dto, Account account) {
-        Coordinate location = new Coordinate(dto.getReceivingLocation().getLat(), dto.getReceivingLocation().getLng());
+        Coordinate location = dto.getReceivingLocation().createCoordinate();
+        try{
+            ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationById(dto.getReceivingLocation().getId());
 
-        ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationByNameAndCoordinate(dto.getReceivingLocation().getDescription(), location);
+            DeliveryRoom room = dto.toEntity(dto, account);
 
+            deliveryRoomRepository.save(room);
 
+            List<OrderMenu> orderMenus = orderMenuService.enrollMainMenu(dto.getMenuList(), dto.getOptionList(), account, room.getDeliveryRoomId());
 
-        DeliveryRoom room = DeliveryRoom.builder()
-                .content(dto.getContent())
-                .receivingLocation(receivingLocation) //저장한다음 연관관계 매핑
-                .leader(account)
-                .limitPerson(dto.getLimitPerson())
-                .linkPlatformType(dto.getLinkPlatformType())
-                .status(DeliveryRoomState.WAITING)
-                .storeCategory(dto.getStoreCategory())
-                .build();
+            entryOrderService.enrollEntryOrder(orderMenus, account, room, EntryOrderType.APPLIED);
 
-        deliveryRoomRepository.save(room);
-
-        List<OrderMenu> orderMenus = orderMenuService.enrollMainMenu(dto.getMenuList(), dto.getOptionList(), account, room.getDeliveryRoomId());
-
-        entryOrderService.enrollEntryOrder(orderMenus, account, room, EntryOrderType.APPLIED);
+        }catch (IllegalStateException e){
+            throw new IllegalStateException(e.getMessage());
+        }
 
     }
 }
