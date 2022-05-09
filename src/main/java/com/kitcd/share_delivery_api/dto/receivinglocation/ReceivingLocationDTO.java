@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.dto.receivinglocation;
 
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import lombok.AllArgsConstructor;
@@ -29,5 +30,15 @@ public class ReceivingLocationDTO {
 
     public Coordinate createCoordinate() {
         return new Coordinate(lat, lng);
+    }
+    public ReceivingLocation toEntity(ReceivingLocationDTO dto, Account account){
+        ReceivingLocation receivingLocation = ReceivingLocation.builder()
+                .account(account)
+                .coordinate(dto.createCoordinate())
+                .description(dto.getDescription())
+                .address(dto.getAddress())
+                .isFavorite(dto.getIsFavorite())
+                .build();
+        return receivingLocation;
     }
 }
