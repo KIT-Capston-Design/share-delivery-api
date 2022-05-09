@@ -26,12 +26,8 @@ public class OrderMenuServiceImpl implements OrderMenuService {
 
     private final OrderMenuRepository orderMenuRepository;
 
-    private final EntryOrderTableRepository entryOrderTableRepository;
-
-
     @Override
-    public List<OrderMenu> enrollMainMenu(List<OrderMenuRequestDTO> orderMenus, List<OptionMenuRequestDTO> optionMenus, Account account, Long deliveryRoomId) {
-        EntryOrder entryOrder = entryOrderTableRepository.findByAccount_AccountIdAndDeliveryRoom_DeliveryRoomId(account.getAccountId(), deliveryRoomId);
+    public List<OrderMenu> enrollMenu(EntryOrder entryOrder, List<OrderMenuRequestDTO> orderMenus) {
 
         List<OrderMenu> mainMenus = orderMenus.stream().map(i -> OrderMenu.builder() // orderMenu 부모 먼저 작성
                 .amount(i.getAmount())
@@ -41,16 +37,6 @@ public class OrderMenuServiceImpl implements OrderMenuService {
 
         orderMenuRepository.saveAll(mainMenus);
 
-        List<OrderMenu> optionMenuList = optionMenus.stream().map(i -> OrderMenu.builder() //옵션들 추가
-                .menuName(i.getOptionName())
-                .amount(i.getAmount())
-                .parentMenu(mainMenus.stream().filter(j -> j.getMenuName().equals(i.getParent())).findAny().orElse(null))
-                .order(entryOrder)
-                .build()).collect(Collectors.toList());
-
-        orderMenuRepository.saveAll(optionMenuList);
-
-        mainMenus.addAll(optionMenuList); // 두 개의 리스트 합치기
         return mainMenus;
     }
 }

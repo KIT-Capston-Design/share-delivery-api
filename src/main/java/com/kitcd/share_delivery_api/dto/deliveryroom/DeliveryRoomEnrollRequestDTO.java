@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter
@@ -24,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DeliveryRoomEnrollRequestDTO {
     private String content;
+    @NotBlank
     private Long receivingLocationId;
     private Long limitPerson;
     private StoreCategory storeCategory;
@@ -33,10 +35,10 @@ public class DeliveryRoomEnrollRequestDTO {
     private String shareStoreLink;
     private PlatformType linkPlatformType;
 
-    public DeliveryRoom toEntity(Account leader){ //리더 정보와
+    public DeliveryRoom toEntity(Account leader, ReceivingLocation location){
         DeliveryRoom room = DeliveryRoom.builder()
                 .content(this.getContent())
-                .receivingLocation(receivingLocation.toEntity(leader)) //저장한다음 연관관계 매핑
+                .receivingLocation(location)
                 .leader(leader)
                 .limitPerson(this.getLimitPerson())
                 .linkPlatformType(this.getLinkPlatformType())

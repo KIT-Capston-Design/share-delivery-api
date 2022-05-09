@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Slf4j
 @Service
 @Transactional
@@ -21,7 +23,13 @@ public class ReceivingLocationServiceImpl implements ReceivingLocationService {
 
     @Override
     public ReceivingLocation findByReceivingLocationId(Long id) {
-        return receivingLocationRepository.findByReceivingLocationId(id);
+
+        ReceivingLocation result = receivingLocationRepository.findByReceivingLocationId(id);
+
+        if ( result == null )
+            throw new EntityNotFoundException(ReceivingLocation.class + "Entity Is Not Found");
+
+        return result;
     }
 
     @Override
