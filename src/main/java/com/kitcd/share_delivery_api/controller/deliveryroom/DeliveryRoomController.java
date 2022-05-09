@@ -4,6 +4,10 @@ package com.kitcd.share_delivery_api.controller.deliveryroom;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomEnrollRequestDTO;
+import com.kitcd.share_delivery_api.security.service.AccountContext;
+import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static com.kitcd.share_delivery_api.controller.common.CurrentLoggedInSession.getAccount;
+
+
 import javax.validation.constraints.NotBlank;
 
 @Validated
@@ -21,7 +33,7 @@ import javax.validation.constraints.NotBlank;
 @RequestMapping("/api/delivery-rooms")
 public class DeliveryRoomController {
 
-    private DeliveryRoomService deliveryRoomService;
+    private final DeliveryRoomService deliveryRoomService;
 
     @GetMapping("")
     public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotBlank Double latitude, @RequestParam(name = "lng") @NotBlank Double longitude){
@@ -35,6 +47,11 @@ public class DeliveryRoomController {
 
 
         return ResponseEntity.status(HttpStatus.OK).build();
+
+    @PostMapping("")
+    public ResponseEntity<?> enrollDeliveryRoom(@RequestBody DeliveryRoomEnrollRequestDTO dto){
+        deliveryRoomService.deliveryRoomCreate(dto, getAccount());
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }
