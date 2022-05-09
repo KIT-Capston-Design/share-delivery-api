@@ -33,7 +33,7 @@ public class ReceivingLocationServiceImpl implements ReceivingLocationService {
 
     @Override
     public ReceivingLocationDTO enrollReceivingLocation(Account account, ReceivingLocationDTO dto) {
-        ReceivingLocation receivingLocation = dto.toEntity(dto, account);
+        ReceivingLocation receivingLocation = dto.toEntity(account);
         receivingLocationRepository.save(receivingLocation);
         return  new ReceivingLocationDTO(receivingLocation);
     }
