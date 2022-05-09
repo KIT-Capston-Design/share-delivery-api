@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DeliveryRoomEnrollRequestDTO {
     private String content;
-    private ReceivingLocationDTO receivingLocation;
+    private Long receivingLocationId;
     private Long limitPerson;
     private StoreCategory storeCategory;
     private Long deliveryTip;

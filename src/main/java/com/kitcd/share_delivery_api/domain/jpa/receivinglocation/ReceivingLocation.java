@@ -2,7 +2,6 @@ package com.kitcd.share_delivery_api.domain.jpa.receivinglocation;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
@@ -37,7 +36,7 @@ public class ReceivingLocation extends BaseTimeEntity {
    private String description;
 
    @Column(name = "LOCATION", nullable = false)
-   private Point location;
+   private Point pLocation;
 
    @Column(name = "ADDRESS", nullable = false)
    private String address;

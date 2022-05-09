@@ -41,14 +41,12 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
     @Override
     public void deliveryRoomCreate(DeliveryRoomEnrollRequestDTO dto, Account account) {
-        Location location = new Location(dto.getReceivingLocation().getLat(), dto.getReceivingLocation().getLng());
 
-        ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationByNameAndCoordinate(dto.getReceivingLocation().getDescription(), location);
-
+        ReceivingLocation receivingLocation = receivingLocationService.findByReceivingLocationId(dto.getReceivingLocationId());
 
         DeliveryRoom room = DeliveryRoom.builder()
                 .content(dto.getContent())
-                .receivingLocation(receivingLocation) //저장한다음 연관관계 매핑
+                .receivingLocation(receivingLocation)
                 .leader(account)
                 .limitPerson(dto.getLimitPerson())
                 .linkPlatformType(dto.getLinkPlatformType())
