@@ -1,7 +1,6 @@
 package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.dto.receivinglocation.ReceivingLocationDTO;

@@ -2,7 +2,6 @@ package com.kitcd.share_delivery_api.listener;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
@@ -17,15 +16,14 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategoryRepository;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.Store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -128,11 +126,11 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private ReceivingLocation loadReceivingRocationData(Account account){
-        Coordinate coordinate = new Coordinate(1001.281937, 1003.1424348);
+        Location location = new Location(1001.281937, 1003.1424348);
         String description = "대충 집잎";
         ReceivingLocation receivingLocation = ReceivingLocation.builder()
                 .account(account)
-                .coordinate(coordinate)
+                .location(location)
                 .description(description)
                 .isFavorite(false)
                 .address("대구광역시 수성구 무열로 47")

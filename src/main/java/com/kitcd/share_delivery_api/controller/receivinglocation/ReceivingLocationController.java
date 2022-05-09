@@ -1,7 +1,6 @@
 package com.kitcd.share_delivery_api.controller.receivinglocation;
 
 
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.dto.receivinglocation.ReceivingLocationDTO;
 import com.kitcd.share_delivery_api.service.ReceivingLocationService;
 import lombok.RequiredArgsConstructor;

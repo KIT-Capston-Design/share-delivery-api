@@ -1,8 +1,8 @@
 package com.kitcd.share_delivery_api.dto.receivinglocation;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,18 +23,18 @@ public class ReceivingLocationDTO {
     public ReceivingLocationDTO(ReceivingLocation receivingLocation){
         id = receivingLocation.getReceivingLocationId();
         description = receivingLocation.getDescription();
-        lat = receivingLocation.getCoordinate().getLatitude();
-        lng = receivingLocation.getCoordinate().getLongitude();
+        lat = receivingLocation.getLocation().getLatitude();
+        lng = receivingLocation.getLocation().getLongitude();
         address = receivingLocation.getAddress();
     }
 
-    public Coordinate createCoordinate() {
-        return new Coordinate(lat, lng);
+    public Location createCoordinate() {
+        return new Location(lat, lng);
     }
     public ReceivingLocation toEntity(Account account){
         ReceivingLocation receivingLocation = ReceivingLocation.builder()
                 .account(account)
-                .coordinate(this.createCoordinate())
+                .location(this.createCoordinate())
                 .description(this.getDescription())
                 .address(this.getAddress())
                 .isFavorite(this.getIsFavorite())

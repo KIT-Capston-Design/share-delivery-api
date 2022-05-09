@@ -2,8 +2,8 @@ package com.kitcd.share_delivery_api.domain.jpa.placeshare;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -28,7 +28,7 @@ public class PlaceShare extends BaseTimeEntity {
    private String content;
 
    @Embedded
-   private Coordinate coordinate;
+   private Location location;
 
    @Column(name = "ADDRESS", nullable = false)
    private String address;

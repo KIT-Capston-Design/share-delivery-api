@@ -2,9 +2,9 @@ package com.kitcd.share_delivery_api.domain.jpa.receivinglocation;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -34,7 +34,7 @@ public class ReceivingLocation extends BaseTimeEntity {
    private String description;
 
    @Embedded
-   private Coordinate coordinate;
+   private Location location;
 
    @Column(name = "ADDRESS", nullable = false)
    private String address;

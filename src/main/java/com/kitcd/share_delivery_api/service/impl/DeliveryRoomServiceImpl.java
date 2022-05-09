@@ -1,10 +1,8 @@
 package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
-import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
@@ -13,6 +11,7 @@ import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.service.EntryOrderService;
 import com.kitcd.share_delivery_api.service.OrderMenuService;
 import com.kitcd.share_delivery_api.service.ReceivingLocationService;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
     @Override
     public void deliveryRoomCreate(DeliveryRoomEnrollRequestDTO dto, Account account) {
-        Coordinate location = dto.getReceivingLocation().createCoordinate();
+        Location location = dto.getReceivingLocation().createCoordinate();
         try{
             ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationById(dto.getReceivingLocation().getId());
 
