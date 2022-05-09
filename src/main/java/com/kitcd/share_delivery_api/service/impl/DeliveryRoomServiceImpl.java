@@ -5,7 +5,6 @@ import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
-import com.kitcd.share_delivery_api.domain.jpa.common.Coordinate;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
@@ -42,10 +41,9 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
     @Override
     public void deliveryRoomCreate(DeliveryRoomEnrollRequestDTO dto, Account account) {
-        Coordinate location = new Coordinate(dto.getReceivingLocation().getLat(), dto.getReceivingLocation().getLng());
+        Location location = new Location(dto.getReceivingLocation().getLat(), dto.getReceivingLocation().getLng());
 
         ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationByNameAndCoordinate(dto.getReceivingLocation().getDescription(), location);
-
 
 
         DeliveryRoom room = DeliveryRoom.builder()

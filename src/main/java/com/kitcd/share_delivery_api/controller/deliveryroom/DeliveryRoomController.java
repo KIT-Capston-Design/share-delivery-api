@@ -36,7 +36,7 @@ public class DeliveryRoomController {
     private final DeliveryRoomService deliveryRoomService;
 
     @GetMapping("")
-    public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotBlank Double latitude, @RequestParam(name = "lng") @NotBlank Double longitude){
+    public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotBlank Double latitude, @RequestParam(name = "lng") @NotBlank Double longitude) {
 
         Location location = Location.builder()
                 .latitude(latitude)
@@ -47,6 +47,7 @@ public class DeliveryRoomController {
 
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
     @PostMapping("")
     public ResponseEntity<?> enrollDeliveryRoom(@RequestBody DeliveryRoomEnrollRequestDTO dto){

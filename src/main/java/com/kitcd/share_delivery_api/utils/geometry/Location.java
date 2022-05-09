@@ -1,15 +1,14 @@
 package com.kitcd.share_delivery_api.utils.geometry;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.persistence.Embeddable;
 
-
+@ToString
 @AllArgsConstructor
 @Builder
 @Getter
+@Embeddable
 public class Location {
 
     private Double latitude;
