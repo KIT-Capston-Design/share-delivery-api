@@ -17,10 +17,8 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategoryRepository;
 import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
-import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
 import org.locationtech.jts.geom.Point;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
@@ -28,7 +26,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +35,7 @@ import java.util.Optional;
 @ConfigurationProperties(prefix = "property.test")
 @Component
 @AllArgsConstructor
-public class Test implements ApplicationListener<ContextRefreshedEvent> {
+public class DummyDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
 
     private StoreCategoryRepository storeCategoryRepository;
@@ -51,16 +48,13 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        try{
-            loadAccountData();
-            loadStoreCategoryData();
-            loadReceivingRocationData();
-            loadDeliveryRoomData();
-            loadEntryOrderTableData();
-            loadOrderMenuData();
-        }catch (Exception e){
-            log.error(e.getMessage());
-        }
+        loadAccountData();
+        loadStoreCategoryData();
+        loadReceivingRocationData();
+        loadDeliveryRoomData();
+        loadEntryOrderTableData();
+        loadOrderMenuData();
+
     }
 
     private void loadStoreCategoryData(){
@@ -80,10 +74,10 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void loadAccountData(){
-        Account account = createAccountDataIfNotFound(1L,"01031798788", "김현진");
-        Account account1 = createAccountDataIfNotFound(2L, "01012345678", "홍길동");
-        Account account2 = createAccountDataIfNotFound(3L, "01011112222", "김감찬");
-        Account account3 = createAccountDataIfNotFound(4L,"01011111111", "김알지");
+        createAccountDataIfNotFound(1L,"01000000001", "김현진");
+        createAccountDataIfNotFound(2L, "01000000002", "홍길동");
+        createAccountDataIfNotFound(3L, "01000000003", "김감찬");
+        createAccountDataIfNotFound(4L,"01000000004", "김알지");
     }
 
     private void loadReceivingRocationData(){
@@ -122,6 +116,7 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
         createOrderMenuIfNotFound(7L, 1L, 3L, "싸이 버거", 0L);
         createOrderMenuIfNotFound(8L, 1L, 3L, "치즈 감자로 변경", 7L);
     }
+
     private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long amount, Long entryOrderId, String menuName, Long parentId){
         Optional<OrderMenu> orderMenu = orderMenuRepository.findById(orderMenuId);
 
@@ -134,7 +129,8 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
         Optional<OrderMenu> parentOrder = orderMenuRepository.findById(parentId); //널이어도 되고 아니어도 됨.
 
         if(entryOrder.isEmpty()){
-            throw new EntityExistsException("entryOrder가 존재하지 않습니다.");
+            log.warn("DummyDataLoader.createOrderMenuIfNotFound() : entryOder " + entryOrderId + " is null");
+            return null;
         }
 
         return orderMenuRepository.save(OrderMenu.builder()
@@ -146,10 +142,13 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName){
-        Optional<Account> account = accountRepository.findById(userId);
-        if(account.isPresent()){
-            return account.get();
+
+        Account account = accountRepository.findByPhoneNumber(phoneNum);
+
+        if(account != null){
+            return account;
         }
+
         return accountRepository.save(Account.builder()
                 .nickname(nickName)
                 .phoneNumber(phoneNum)
@@ -177,7 +176,8 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
         //연관관계 확인 위한 필요 객체 확인
         Optional<Account> account = accountRepository.findById(accountId);
         if (account.isEmpty()) {
-            throw new EntityExistsException("존재하지 않는 유저가 있습니다.");
+            log.warn("DummyDataLoader.createReceivingLocationIfNotFound() : account" + accountId + " 가 존재하지 않습니다.");
+            return null;
         }
 
 
@@ -202,17 +202,19 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
 
         //연관관계 확인 위한 필요 객체 확인
         Optional<ReceivingLocation> receivingLocation = receivingLocationRepository.findById(receivingLocationId);
+
         StoreCategory storeCategory = storeCategoryRepository.findByCategoryName(storeCategoryName);
+
         Optional<Account> leader = accountRepository.findById(leaderId);
 
-        if(receivingLocation.isEmpty()){
-            throw new EntityExistsException("존재하지 않는 받는장소가 있습니다.");
-        }
-        if(storeCategory == null){
-            throw new EntityExistsException("존재하지 않는 카테고리가 있습니다.");
-        }
-        if(leader.isEmpty()){
-            throw new EntityExistsException("존재하지 않는 방장입니다.");
+
+        if(receivingLocation.isEmpty() || storeCategory == null ||leader.isEmpty()){
+            log.warn("DummyDataLoader.createDeliveryRoomIfNotFound() : 필요 객체 null");
+            log.warn("  receivingLocation = " + receivingLocation);
+            log.warn("  storeCategoryName = " + storeCategory);
+            log.warn("  leader = " + leader);
+
+            return null;
         }
 
         return deliveryRoomRepository.save(DeliveryRoom.builder()
@@ -238,11 +240,11 @@ public class Test implements ApplicationListener<ContextRefreshedEvent> {
         Optional<Account> account = accountRepository.findById(accountId);
         Optional<DeliveryRoom> deliveryRoom = deliveryRoomRepository.findById(deliveryRoomId);
 
-        if(account.isEmpty()){
-            throw new EntityExistsException("주문 고객이 존재하지 않습니다.");
-        }
-        if(deliveryRoom.isEmpty()){
-            throw new EntityExistsException("배달 방이 존재하지 않습니다.");
+        if(account.isEmpty() || deliveryRoom.isEmpty()){
+            log.warn("DummyDataLoader.createEntryOrderIfNotFound() : 필요 객체 null");
+            log.warn("  account = " + account);
+            log.warn("  deliveryRoom = " + deliveryRoom);
+            return null;
         }
 
         return entryOrderTableRepository.save(EntryOrder.builder()
