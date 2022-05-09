@@ -31,13 +31,13 @@ public class ReceivingLocationDTO {
     public Coordinate createCoordinate() {
         return new Coordinate(lat, lng);
     }
-    public ReceivingLocation toEntity(ReceivingLocationDTO dto, Account account){
+    public ReceivingLocation toEntity(Account account){
         ReceivingLocation receivingLocation = ReceivingLocation.builder()
                 .account(account)
-                .coordinate(dto.createCoordinate())
-                .description(dto.getDescription())
-                .address(dto.getAddress())
-                .isFavorite(dto.getIsFavorite())
+                .coordinate(this.createCoordinate())
+                .description(this.getDescription())
+                .address(this.getAddress())
+                .isFavorite(this.getIsFavorite())
                 .build();
         return receivingLocation;
     }

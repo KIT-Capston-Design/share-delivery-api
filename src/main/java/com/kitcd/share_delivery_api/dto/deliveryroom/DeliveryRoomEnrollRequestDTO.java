@@ -32,15 +32,15 @@ public class DeliveryRoomEnrollRequestDTO {
     private String shareStoreLink;
     private PlatformType linkPlatformType;
 
-    public DeliveryRoom toEntity(DeliveryRoomEnrollRequestDTO dto, Account account){ //리더 정보와
+    public DeliveryRoom toEntity(Account leader){ //리더 정보와
         DeliveryRoom room = DeliveryRoom.builder()
-                .content(dto.getContent())
-                .receivingLocation(receivingLocation.toEntity(receivingLocation, account)) //저장한다음 연관관계 매핑
-                .leader(account)
-                .limitPerson(dto.getLimitPerson())
-                .linkPlatformType(dto.getLinkPlatformType())
+                .content(this.getContent())
+                .receivingLocation(receivingLocation.toEntity(leader)) //저장한다음 연관관계 매핑
+                .leader(leader)
+                .limitPerson(this.getLimitPerson())
+                .linkPlatformType(this.getLinkPlatformType())
                 .status(DeliveryRoomState.WAITING)
-                .storeCategory(dto.getStoreCategory())
+                .storeCategory(this.getStoreCategory())
                 .build();
         return room;
     }

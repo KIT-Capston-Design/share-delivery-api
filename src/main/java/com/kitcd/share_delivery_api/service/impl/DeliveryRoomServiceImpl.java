@@ -36,7 +36,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         try{
             ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationById(dto.getReceivingLocation().getId());
 
-            DeliveryRoom room = dto.toEntity(dto, account);
+            DeliveryRoom room = dto.toEntity(account);
 
             deliveryRoomRepository.save(room);
 
