@@ -28,14 +28,14 @@ public class DeliveryRoomEnrollRequestDTO {
     @NotBlank
     private Long receivingLocationId;
     private Long limitPerson;
-    private StoreCategory storeCategory;
+    private String storeCategory;
     private Long deliveryTip;
     private List<OrderMenuRequestDTO> menuList;
     private List<OptionMenuRequestDTO> optionList;
     private String shareStoreLink;
     private PlatformType linkPlatformType;
 
-    public DeliveryRoom toEntity(Account leader, ReceivingLocation location){
+    public DeliveryRoom toEntity(Account leader, ReceivingLocation location, StoreCategory storeCategory){
         DeliveryRoom room = DeliveryRoom.builder()
                 .content(this.getContent())
                 .receivingLocation(location)
@@ -43,7 +43,7 @@ public class DeliveryRoomEnrollRequestDTO {
                 .limitPerson(this.getLimitPerson())
                 .linkPlatformType(this.getLinkPlatformType())
                 .status(DeliveryRoomState.WAITING)
-                .storeCategory(this.getStoreCategory())
+                .storeCategory(storeCategory)
                 .build();
         return room;
     }

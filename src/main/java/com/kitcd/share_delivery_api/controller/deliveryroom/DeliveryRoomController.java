@@ -1,11 +1,10 @@
 package com.kitcd.share_delivery_api.controller.deliveryroom;
 
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
+import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
-import com.kitcd.share_delivery_api.service.AccountService;
-import com.kitcd.share_delivery_api.service.DeliveryRoomService;
-import com.kitcd.share_delivery_api.service.ReceivingLocationService;
+import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
@@ -41,6 +40,7 @@ public class DeliveryRoomController {
     private final DeliveryRoomService deliveryRoomService;
     private final ReceivingLocationService receivingLocationService;
 
+    private final StoreCategoryService storeCategoryService;
 
     @GetMapping("")
     public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotNull Double latitude, @RequestParam(name = "lng") @NotNull Double longitude, @RequestParam(name = "radius") @NotNull Double radius) {
@@ -62,7 +62,9 @@ public class DeliveryRoomController {
         try {
             ReceivingLocation receivingLocation = receivingLocationService.findByReceivingLocationId(dto.getReceivingLocationId());
 
-            deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation), dto.getMenuList());
+            StoreCategory storeCategory = storeCategoryService.findStoreCategoryWithName(dto.getStoreCategory());
+
+            deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation,storeCategory), dto.getMenuList());
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
 
