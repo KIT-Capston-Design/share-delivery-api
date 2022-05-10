@@ -1,16 +1,23 @@
 package com.kitcd.share_delivery_api.domain.jpa.deliveryroom;
 
+import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.receivinglocation.ReceivingLocationDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Direction;
 import com.kitcd.share_delivery_api.utils.geometry.GeometryUtil;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,27 +28,27 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
 
     @PersistenceContext
     private EntityManager em;
-
-    private GeometryUtil geometryUtil;
-
     @Override
-    public List<DeliveryRoomDTO> findDeliveryRoomDTOWithLocation(Location location, Double distance) {
+    public List<DeliveryRoomDTO> findDeliveryRoomDTOWithLocation(Location location, Double radius) {
 
-        Location northEast = geometryUtil.calculate(location, distance, Direction.NORTHEAST.getAzimuth());
-        Location southWest = geometryUtil.calculate(location, distance, Direction.SOUTHWEST.getAzimuth());
+        Location northEast = GeometryUtil.calculate(location, radius, Direction.NORTHEAST.getAzimuth());
+        Location southWest = GeometryUtil.calculate(location, radius, Direction.SOUTHWEST.getAzimuth());
 
         // 여기서의 LINESTRING : northEast와 southWest를 잇는 선으로써 MBR(Minimum Bounding Rectangle)의 대각선이고
         // MBR 내 위치하는 DeliveryRoom을 조회
 
         String mbr =
                 String.format("'LINESTRING(%f %f, %f %f)')",
-                        northEast.getLatitude(), northEast.getLongitude(), southWest.getLatitude(), southWest.getLongitude());
+                        northEast.getLongitude(), northEast.getLatitude(), southWest.getLongitude(), southWest.getLatitude());
 
-        Query query = em.createNativeQuery("SELECT a.ACCOUNT_ID, r.CONTENT"
-                        + "FROM DELIVERY_ROOM AS r LEFT JOIN ACCOUNT AS a ON r.LEADER_ID = a.ACCOUNT_ID"
-                        + "WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + mbr + ", r.point)", DeliveryRoom.class).setMaxResults(10);
+        Query query = em.createNativeQuery("SELECT a.nickname, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude"
+                        + " FROM ACCOUNT a JOIN DELIVERY_ROOM r ON r.LEADER_ID = a.ACCOUNT_ID JOIN receiving_location rl ON r.receiving_location_id = rl.receiving_location_id"
+                        + " WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + mbr + ", rl.location)").setMaxResults(10);
+
 
         List<Object[]> resultList = query.getResultList();
+
+        System.out.println(resultList.size());
 
         List<DeliveryRoomDTO> deliveryRooms =
                 resultList.stream().map(
@@ -51,18 +58,21 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                                         .mannerScore(36.5)
                                         .build())
                                 .content((String) room[1])
-//                                .person()
-//                                .limitPerson()
-//                                .storeLink()
-//                                .platformType()
-//                                .status()
-//                                .createdDateTime()
-//                                .limitDateTime()
-//                                .receivingLocation()
+                                .limitPerson(((BigInteger)room[2]).longValue())
+                                .storeLink((String)room[3])
+                                .status((String)room[4])
+                                .createdDateTime(((Timestamp) room[5]).toLocalDateTime())
+                                .platformType((String) room[6])
+                                .receivingLocation(LocationDTO.builder()
+                                        .description((String) room[7])
+                                        .address((String)room[8])
+                                        .longitude((Double) room[10])
+                                        .latitude((Double) room[9])
+                                        .build())
                                 .build()
                 ).collect(Collectors.toList());
 
-        return deliveryRooms;
+            return deliveryRooms;
 
     }
 }

@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.listener;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
+import com.kitcd.share_delivery_api.domain.jpa.account.RoleType;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
@@ -17,6 +18,7 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategoryRepository;
 import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
@@ -74,10 +76,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadAccountData(){
-        createAccountDataIfNotFound(1L,"01000000001", "김현진");
-        createAccountDataIfNotFound(2L, "01000000002", "홍길동");
-        createAccountDataIfNotFound(3L, "01000000003", "김감찬");
-        createAccountDataIfNotFound(4L,"01000000004", "김알지");
+        createAccountDataIfNotFound(1L,"01000000001", "김현진", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(2L, "01000000002", "홍길동", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(3L, "01000000003", "김감찬", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(4L,"01000000004", "김알지", RoleType.ROLE_USER);
     }
 
     private void loadReceivingRocationData(){
@@ -141,7 +143,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName){
+    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName, RoleType role){
 
         Account account = accountRepository.findByPhoneNumber(phoneNum);
 
@@ -152,6 +154,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         return accountRepository.save(Account.builder()
                 .nickname(nickName)
                 .phoneNumber(phoneNum)
+                .role(role)
                 .build());
     }
 
@@ -183,9 +186,15 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         Point point = GeometriesFactory.createPoint(latitude, longitude);
 
+        //참조용 좌표
+        Location location = Location.builder()
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
 
         return receivingLocationRepository.save(ReceivingLocation.builder()
                 .pLocation(point)
+                .locationRef(location)
                 .description(description)
                 .account(account.get())
                 .address(address)
@@ -220,7 +229,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         return deliveryRoomRepository.save(DeliveryRoom.builder()
                 .receivingLocation(receivingLocation.get())
                 .content(contents)
-                .shareStoreLink(url)
+                .storeLink(url)
                 .linkPlatformType(linkPlatformType)
                 .status(state)
                 .storeCategory(storeCategory)

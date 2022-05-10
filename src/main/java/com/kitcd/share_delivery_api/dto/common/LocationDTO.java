@@ -14,5 +14,6 @@ public class LocationDTO {
     private Double latitude;
     @NotBlank
     private Double longitude;
+    private String address;
     private String description;
 }

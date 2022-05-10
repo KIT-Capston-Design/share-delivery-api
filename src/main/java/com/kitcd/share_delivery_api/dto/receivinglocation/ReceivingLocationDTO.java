@@ -4,11 +4,9 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -38,6 +36,10 @@ public class ReceivingLocationDTO {
         return ReceivingLocation.builder()
                 .account(account)
                 .pLocation(GeometriesFactory.createPoint(lat, lng))
+                .locationRef(Location.builder()
+                        .latitude(lat)
+                        .longitude(lng)
+                        .build())
                 .description(description)
                 .address(address)
                 .isFavorite(isFavorite)

@@ -1,29 +1,33 @@
 package com.kitcd.share_delivery_api.dto.deliveryroom;
 
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
+import java.time.LocalDateTime;
+
+
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class DeliveryRoomDTO {
 
     private Leader leader;
 
     private String content;
-    private String person;
-    private String limitPerson;
+    private Long person;
+    private Long limitPerson;
     private String storeLink;
     private String platformType;
     private String status;
-    private String createdDateTime;
-    private String limitDateTime;
+    private LocalDateTime createdDateTime;
 
     private LocationDTO receivingLocation;
 
     @Builder
     @AllArgsConstructor
+    @NoArgsConstructor
     @Getter
     public static class Leader{
         private String nickname;

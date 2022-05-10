@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.controller.deliveryroom;
 
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.service.ReceivingLocationService;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Validated
 @RestController
@@ -40,17 +43,16 @@ public class DeliveryRoomController {
 
 
     @GetMapping("")
-    public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotBlank Double latitude, @RequestParam(name = "lng") @NotBlank Double longitude) {
+    public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotNull Double latitude, @RequestParam(name = "lng") @NotNull Double longitude, @RequestParam(name = "radius") @NotNull Double radius) {
 
         Location location = Location.builder()
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
 
-        deliveryRoomService.getDeliveryRooms(location, 1.5);
+        List<DeliveryRoomDTO> deliveryRooms = deliveryRoomService.getDeliveryRooms(location, radius);
 
-
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryRooms);
     }
 
 

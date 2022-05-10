@@ -5,10 +5,10 @@ import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
@@ -37,6 +37,9 @@ public class ReceivingLocation extends BaseTimeEntity {
 
    @Column(name = "LOCATION", nullable = false)
    private Point pLocation;
+
+   @Embedded
+   private Location locationRef;
 
    @Column(name = "ADDRESS", nullable = false)
    private String address;

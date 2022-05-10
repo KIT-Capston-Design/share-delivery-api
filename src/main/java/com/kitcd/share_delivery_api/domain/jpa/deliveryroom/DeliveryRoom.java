@@ -46,8 +46,8 @@ public class DeliveryRoom extends BaseTimeEntity {
    @Column(name = "LIMIT_PERSON", nullable = false)
    private Long limitPerson;
 
-   @Column(name = "SHARE_STORE_LINK", nullable = false)
-   private String shareStoreLink;
+   @Column(name = "STORE_LINK", nullable = false)
+   private String storeLink;
 
    @Column(name = "STORE_ID_KEY")
    private String storeIdKey;
