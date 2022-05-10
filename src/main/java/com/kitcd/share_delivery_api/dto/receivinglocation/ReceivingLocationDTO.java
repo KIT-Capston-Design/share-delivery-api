@@ -2,12 +2,11 @@ package com.kitcd.share_delivery_api.dto.receivinglocation;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
+import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,22 +22,27 @@ public class ReceivingLocationDTO {
     public ReceivingLocationDTO(ReceivingLocation receivingLocation){
         id = receivingLocation.getReceivingLocationId();
         description = receivingLocation.getDescription();
-        lat = receivingLocation.getLocation().getLatitude();
-        lng = receivingLocation.getLocation().getLongitude();
+        lat = receivingLocation.getPLocation().getY();
+        lng = receivingLocation.getPLocation().getX();
         address = receivingLocation.getAddress();
     }
 
-    public Location createCoordinate() {
+    public Location getLocation() {
         return new Location(lat, lng);
     }
+
     public ReceivingLocation toEntity(Account account){
-        ReceivingLocation receivingLocation = ReceivingLocation.builder()
+
+        return ReceivingLocation.builder()
                 .account(account)
-                .location(this.createCoordinate())
-                .description(this.getDescription())
-                .address(this.getAddress())
-                .isFavorite(this.getIsFavorite())
+                .pLocation(GeometriesFactory.createPoint(lat, lng))
+                .locationRef(Location.builder()
+                        .latitude(lat)
+                        .longitude(lng)
+                        .build())
+                .description(description)
+                .address(address)
+                .isFavorite(isFavorite)
                 .build();
-        return receivingLocation;
     }
 }

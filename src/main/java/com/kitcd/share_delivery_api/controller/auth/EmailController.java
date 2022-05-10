@@ -1,22 +1,18 @@
 package com.kitcd.share_delivery_api.controller.auth;
 
 
-import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.account.AccountEmailAddDTO;
-import com.kitcd.share_delivery_api.security.service.AccountContext;
 import com.kitcd.share_delivery_api.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityExistsException;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 
-import static com.kitcd.share_delivery_api.controller.common.CurrentLoggedInSession.getAccount;
+import static com.kitcd.share_delivery_api.utils.ContextHolder.getAccount;
 
 @Validated
 @RestController

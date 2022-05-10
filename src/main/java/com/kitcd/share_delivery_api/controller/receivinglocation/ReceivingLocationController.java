@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.kitcd.share_delivery_api.controller.common.CurrentLoggedInSession.getAccount;
+import static com.kitcd.share_delivery_api.utils.ContextHolder.getAccount;
 
 @Validated
 @RestController

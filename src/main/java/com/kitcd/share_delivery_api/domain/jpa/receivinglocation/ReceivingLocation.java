@@ -4,10 +4,12 @@ import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -33,8 +35,11 @@ public class ReceivingLocation extends BaseTimeEntity {
    @Column(name = "DESCRIPTION", nullable = false)
    private String description;
 
+   @Column(name = "LOCATION", nullable = false)
+   private Point pLocation;
+
    @Embedded
-   private Location location;
+   private Location locationRef;
 
    @Column(name = "ADDRESS", nullable = false)
    private String address;
@@ -43,4 +48,11 @@ public class ReceivingLocation extends BaseTimeEntity {
    private List<DeliveryRoom> deliveryRooms = new LinkedList<>();
 
 
+   public LocationDTO toLocationDTO(){
+      return LocationDTO.builder()
+//              .latitude(location.getY())
+//              .longitude(location.getX())
+              .description(description)
+              .build();
+   }
 }

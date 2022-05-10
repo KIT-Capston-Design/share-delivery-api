@@ -5,12 +5,13 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.dto.receivinglocation.ReceivingLocationDTO;
 import com.kitcd.share_delivery_api.service.ReceivingLocationService;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 
 @Slf4j
 @Service
@@ -21,20 +22,19 @@ public class ReceivingLocationServiceImpl implements ReceivingLocationService {
     private final ReceivingLocationRepository receivingLocationRepository;
 
     @Override
-    public ReceivingLocation getReceivingLocationById(Long id) throws IllegalStateException{
-        Optional<ReceivingLocation> data = receivingLocationRepository.findById(id);
-        if(data.isEmpty()){
-            throw new IllegalStateException("아이디가 적합하지 않습니다.");
-        }else{
-            return data.get();
-        }
+    public ReceivingLocation findByReceivingLocationId(Long id) {
+
+        ReceivingLocation result = receivingLocationRepository.findByReceivingLocationId(id);
+
+        if ( result == null )
+            throw new EntityNotFoundException(ReceivingLocation.class + "Entity Is Not Found");
+
+        return result;
     }
 
     @Override
     public ReceivingLocationDTO enrollReceivingLocation(Account account, ReceivingLocationDTO dto) {
-        ReceivingLocation receivingLocation = dto.toEntity(account);
-        receivingLocationRepository.save(receivingLocation);
-        return  new ReceivingLocationDTO(receivingLocation);
+        return new ReceivingLocationDTO(receivingLocationRepository.save(dto.toEntity(account)));
     }
 
 }

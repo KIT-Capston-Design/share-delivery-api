@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.domain.jpa.chat;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
+
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.fastdeliveryroom.FastDeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;

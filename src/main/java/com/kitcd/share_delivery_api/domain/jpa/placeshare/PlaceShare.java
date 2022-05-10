@@ -28,7 +28,7 @@ public class PlaceShare extends BaseTimeEntity {
    private String content;
 
    @Embedded
-   private Location location;
+   private Location coordinate;
 
    @Column(name = "ADDRESS", nullable = false)
    private String address;

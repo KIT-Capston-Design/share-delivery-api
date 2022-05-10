@@ -1,17 +1,16 @@
 package com.kitcd.share_delivery_api.service.impl;
 
-import com.kitcd.share_delivery_api.domain.jpa.account.Account;
-import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
+import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
+import com.kitcd.share_delivery_api.service.DeliveryRoomService;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
-import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
-import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomEnrollRequestDTO;
-import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.service.EntryOrderService;
 import com.kitcd.share_delivery_api.service.OrderMenuService;
 import com.kitcd.share_delivery_api.service.ReceivingLocationService;
-import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,32 +19,29 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DeliveryRoomServiceImpl implements DeliveryRoomService {
+
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final OrderMenuService orderMenuService;
     private final ReceivingLocationService receivingLocationService;
     private final EntryOrderService entryOrderService;
 
+
+    public List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance){
+        return deliveryRoomRepository.findDeliveryRoomDTOWithLocation(location, distance);
+    }
+
+
     @Override
-    public void deliveryRoomCreate(DeliveryRoomEnrollRequestDTO dto, Account account) {
-        Location location = dto.getReceivingLocation().createCoordinate();
-        try{
-            ReceivingLocation receivingLocation = receivingLocationService.getReceivingLocationById(dto.getReceivingLocation().getId());
+    public DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList) {
 
-            DeliveryRoom room = dto.toEntity(account);
+        DeliveryRoom room = deliveryRoomRepository.save(deliveryRoom);
 
-            deliveryRoomRepository.save(room);
+        entryOrderService.enrollEntryOrder(room, menuList, EntryOrderType.APPLIED);
 
-            List<OrderMenu> orderMenus = orderMenuService.enrollMainMenu(dto.getMenuList(), dto.getOptionList(), account, room.getDeliveryRoomId());
-
-            entryOrderService.enrollEntryOrder(orderMenus, account, room, EntryOrderType.APPLIED);
-
-        }catch (IllegalStateException e){
-            throw new IllegalStateException(e.getMessage());
-        }
-
+        return room;
     }
 }
