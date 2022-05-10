@@ -31,8 +31,8 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
     @Override
     public List<DeliveryRoomDTO> findDeliveryRoomDTOWithLocation(Location location, Double radius) {
 
-        Location northEast = GeometryUtil.calculate(location, radius, Direction.NORTHEAST.getAzimuth());
-        Location southWest = GeometryUtil.calculate(location, radius, Direction.SOUTHWEST.getAzimuth());
+        Location northEast = GeometryUtil.calculate(location, Math.sqrt(2) * radius, Direction.NORTHEAST.getAzimuth());
+        Location southWest = GeometryUtil.calculate(location, Math.sqrt(2) * radius, Direction.SOUTHWEST.getAzimuth());
 
         // 여기서의 LINESTRING : northEast와 southWest를 잇는 선으로써 MBR(Minimum Bounding Rectangle)의 대각선이고
         // MBR 내 위치하는 DeliveryRoom을 조회
