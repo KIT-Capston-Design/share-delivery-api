@@ -52,7 +52,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     public void onApplicationEvent(ContextRefreshedEvent event) {
         loadAccountData();
         loadStoreCategoryData();
-        loadReceivingRocationData();
+        loadReceivingLocationData();
         loadDeliveryRoomData();
         loadEntryOrderTableData();
         loadOrderMenuData();
@@ -82,7 +82,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createAccountDataIfNotFound(4L,"01000000004", "김알지", RoleType.ROLE_USER);
     }
 
-    private void loadReceivingRocationData(){
+    private void loadReceivingLocationData(){
 
         createReceivingLocationIfNotFound(1L,36.14153983156746,128.396133049821,"CU 앞","경북 구미시 대학로 60", false, 1L);
         createReceivingLocationIfNotFound(2L,36.137733124211955,128.39724317877784,"미니스톱 앞","경북 구미시 대학로 19", true, 1L);
@@ -93,10 +93,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadDeliveryRoomData(){
-        createDeliveryRoomIfNotFound(1L, "갓튀후 드실분", 4L, 1L, "CHICKEN", 1L, DeliveryRoomState.WAITING, PlatformType.BAEMIN,"https://baemin.me/JsDPOYYqUd");
-        createDeliveryRoomIfNotFound(2L, "메가커피 드실분", 4L, 2L, "DESERT", 2L, DeliveryRoomState.WAITING, PlatformType.BAEMIN,"https://baemin.me/jpaPFsg-B");
-        createDeliveryRoomIfNotFound(3L, "맘스터치 드실분", 4L, 3L, "FASTFOOD", 3L, DeliveryRoomState.WAITING, PlatformType.BAEMIN,"https://baemin.me/gzJ_2H5-o");
-        createDeliveryRoomIfNotFound(4L, "김밥천국 드실분", 4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.WAITING, PlatformType.YOGIYO,"https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(1L, "갓튀후 드실분", 1L,4L, 1L, "CHICKEN", 1L, DeliveryRoomState.WAITING, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
+        createDeliveryRoomIfNotFound(2L, "메가커피 드실분", 1L,4L, 2L, "DESERT", 2L, DeliveryRoomState.WAITING, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
+        createDeliveryRoomIfNotFound(3L, "맘스터치 드실분", 1L,4L, 3L, "FASTFOOD", 3L, DeliveryRoomState.WAITING, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
+        createDeliveryRoomIfNotFound(4L, "김밥천국 드실분", 1L,4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.WAITING, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
     }
 
     private void loadEntryOrderTableData(){
@@ -202,7 +202,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private DeliveryRoom createDeliveryRoomIfNotFound(Long deliveryRoomId, String contents, Long limitPerson, Long receivingLocationId, String storeCategoryName, Long leaderId, DeliveryRoomState state, PlatformType linkPlatformType, String url){
+    private DeliveryRoom createDeliveryRoomIfNotFound(Long deliveryRoomId, String contents, Long peopleNumber, Long limitPerson, Long receivingLocationId, String storeCategoryName, Long leaderId, DeliveryRoomState state, PlatformType linkPlatformType, String storeName, String url){
 
         Optional<DeliveryRoom> deliveryRoom = deliveryRoomRepository.findById(deliveryRoomId);
         if(deliveryRoom.isPresent()){
@@ -232,8 +232,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .storeLink(url)
                 .linkPlatformType(linkPlatformType)
                 .status(state)
+                        .storeName(storeName)
                 .storeCategory(storeCategory)
                 .leader(leader.get())
+                .peopleNumber(peopleNumber)
                 .limitPerson(limitPerson)
                 .build());
     }

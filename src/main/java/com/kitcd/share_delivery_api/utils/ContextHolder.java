@@ -7,8 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class ContextHolder {
 
     public static Account getAccount() {
-        AccountContext userData = (AccountContext) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Account user = userData.getAccount();
-        return user;
+        return (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

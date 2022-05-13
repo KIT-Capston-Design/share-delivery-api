@@ -1,9 +1,11 @@
 package com.kitcd.share_delivery_api.controller.deliveryroom;
 
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
@@ -34,7 +36,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/delivery-rooms")
+@RequestMapping("/api/")
 public class DeliveryRoomController {
 
     private final DeliveryRoomService deliveryRoomService;
@@ -42,7 +44,15 @@ public class DeliveryRoomController {
 
     private final StoreCategoryService storeCategoryService;
 
-    @GetMapping("")
+    @GetMapping("delivery-history")
+    public ResponseEntity<?> getDeliveryHistory(){
+
+        List<ParticipatedDeliveryRoomDTO> deliveryHistories = deliveryRoomService.getDeliveryHistory(ContextHolder.getAccount().getAccountId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryHistories);
+    }
+
+    @GetMapping("delivery-rooms")
     public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotNull Double latitude, @RequestParam(name = "lng") @NotNull Double longitude, @RequestParam(name = "radius") @NotNull Double radius) {
 
         Location location = Location.builder()
@@ -56,7 +66,7 @@ public class DeliveryRoomController {
     }
 
 
-    @PostMapping("")
+    @PostMapping("delivery-rooms")
     public ResponseEntity<?> enrollDeliveryRoom(@RequestBody DeliveryRoomEnrollRequestDTO dto){
 
         try {
