@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.index.Indexed;
 public class LoggedOnInformation {
 
     @Id  @Indexed
+    private Long accountId;
     private String phoneNumber;
     private String fcmToken;
     private String refreshToken;

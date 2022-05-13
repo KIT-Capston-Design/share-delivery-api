@@ -4,4 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface LoggedOnInformationRedisRepository extends CrudRepository<LoggedOnInformation, String> {
     LoggedOnInformation findLoggedInUserByPhoneNumber(String phoneNumber);
+    LoggedOnInformation findLoggedOnInformationByAccountId(Long accountId);
 }
