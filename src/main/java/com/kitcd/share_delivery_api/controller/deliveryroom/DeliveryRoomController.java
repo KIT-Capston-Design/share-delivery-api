@@ -3,17 +3,16 @@ package com.kitcd.share_delivery_api.controller.deliveryroom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
-import com.kitcd.share_delivery_api.dto.common.LocationDTO;
+import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
-import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomEnrollRequestDTO;
-import com.kitcd.share_delivery_api.security.service.AccountContext;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,15 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -41,8 +38,41 @@ public class DeliveryRoomController {
 
     private final DeliveryRoomService deliveryRoomService;
     private final ReceivingLocationService receivingLocationService;
-
     private final StoreCategoryService storeCategoryService;
+    private final EntryOrderService entryOrderService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final LoggedOnInformationService loggedOnInformationService;
+
+
+    //TODO
+    // 스프링 시큐리티 어노테이션 통해 주도자의 요청인지 확인 필요
+    @GetMapping("delivery-rooms/orders-reject")
+    public ResponseEntity<?> rejectOrder(@RequestParam(name = "userId") @NotNull Long userId, @RequestParam(name = "roomId") @NotNull Long roomId) {
+
+        try{
+            DeliveryRoom deliveryRoom = deliveryRoomService.findByDeliveryRoomId(roomId);
+
+            entryOrderService.rejectEntryOrder(userId, deliveryRoom);
+
+            // 거절된 참여자에게 push 알림 전송
+            firebaseCloudMessageService.sendMessageTo(
+                    loggedOnInformationService.getFcmTokenByAccountId(ContextHolder.getAccountId()),
+                    deliveryRoom.getContent() + " 방 입장이 거절되었습니다.",
+                    "null"
+            );
+
+        }catch (EntityNotFoundException enfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage() + " is not found");
+
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+
+
 
     @GetMapping("delivery-history")
     public ResponseEntity<?> getDeliveryHistory(){

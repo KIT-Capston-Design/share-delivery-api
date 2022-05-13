@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "ENTRY_ORDER_TABLE")
+@Table(name = "ENTRY_ORDER")
 public class EntryOrder extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "ENTRY_ORDER_ID", nullable = false)
@@ -37,10 +37,23 @@ public class EntryOrder extends BaseTimeEntity {
    private EntryOrderType orderType;
 
    @Enumerated(EnumType.STRING)
-   @Column(name = "IS_REJECTED", nullable = false)
-   private State isRejected;
+   @Column(name = "STATUS", nullable = false)
+   private State status;
 
    @OneToMany(mappedBy = "order")
    private List<OrderMenu> orderMenus = new LinkedList<>();
+
+   public void accept() {
+      if(status == State.PENDING)
+         status = State.ACCEPTED;
+   }
+
+   public void reject() throws Exception {
+      if(status == State.PENDING)
+         status = State.REJECTED;
+      else
+         throw new Exception("Order status is not PENDING");
+
+   }
 
 }

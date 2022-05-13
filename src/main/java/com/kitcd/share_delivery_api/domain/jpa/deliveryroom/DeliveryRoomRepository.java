@@ -12,4 +12,8 @@ public interface DeliveryRoomRepository extends JpaRepository<DeliveryRoom, Long
             "(ac.nickname, dr.content, dr.peopleNumber, dr.limitPerson, dr.storeName, dr.linkPlatformType, dr.createdDate, dr.status, rl.description, cat.categoryName) " +
             "from DeliveryRoom dr join dr.receivingLocation rl join dr.leader ac join dr.storeCategory cat where ac.accountId = :accountId")
     List<ParticipatedDeliveryRoomDTO> getDeliveryHistory(Long accountId);
+
+    DeliveryRoom findByLeader_AccountId(Long accountId);
+
+    DeliveryRoom findByDeliveryRoomId(Long roomId);
 }
