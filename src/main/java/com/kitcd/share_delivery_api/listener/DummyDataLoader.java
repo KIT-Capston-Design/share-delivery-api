@@ -100,10 +100,17 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadEntryOrderTableData(){
+
+        //ACCEPTED
         createEntryOrderIfNotFound(1L, 1L, 1L, EntryOrderType.ACCEPTED, State.NORMAL);
         createEntryOrderIfNotFound(2L, 1L, 4L, EntryOrderType.ACCEPTED, State.NORMAL);
         createEntryOrderIfNotFound(3L, 2L, 2L, EntryOrderType.ACCEPTED, State.NORMAL);
         createEntryOrderIfNotFound(4L, 3L, 3L, EntryOrderType.ACCEPTED, State.NORMAL);
+
+        //PENDING
+        createEntryOrderIfNotFound(5L, 2L, 1L, EntryOrderType.PENDING, State.NORMAL);
+        createEntryOrderIfNotFound(6L, 3L, 1L, EntryOrderType.PENDING, State.NORMAL);
+        createEntryOrderIfNotFound(7L, 4L, 1L, EntryOrderType.PENDING, State.NORMAL);
     }
 
 
