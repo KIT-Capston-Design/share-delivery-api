@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
@@ -32,6 +33,11 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
     public List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance){
         return deliveryRoomRepository.findDeliveryRoomDTOWithLocation(location, distance);
+    }
+
+    @Override
+    public List<ParticipatedDeliveryRoomDTO> getDeliveryHistory(Long accountId) {
+        return deliveryRoomRepository.getDeliveryHistory(accountId);
     }
 
 

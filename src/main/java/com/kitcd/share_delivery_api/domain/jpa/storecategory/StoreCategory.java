@@ -22,10 +22,6 @@ public class StoreCategory extends BaseTimeEntity {
    @Column(name = "STORE_CATEGORY_ID", nullable = false)
    private Long storeCategoryId;
 
-   @OneToOne
-   @JoinColumn(name = "IMAGE_FILE_ID")
-   private ImageFile imageFile;
-
    @Column(name = "CATEGORY_NAME", nullable = false)
    private String categoryName;
 
