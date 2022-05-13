@@ -9,7 +9,7 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomReposito
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.PlatformType;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
-import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderTableRepository;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderRepository;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenuRepository;
@@ -42,7 +42,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
     private StoreCategoryRepository storeCategoryRepository;
     private DeliveryRoomRepository deliveryRoomRepository;
-    private EntryOrderTableRepository entryOrderTableRepository;
+    private EntryOrderRepository entryOrderRepository;
     private OrderMenuRepository orderMenuRepository;
     private ReceivingLocationRepository receivingLocationRepository;
     private AccountRepository accountRepository;
@@ -93,17 +93,24 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadDeliveryRoomData(){
-        createDeliveryRoomIfNotFound(1L, "갓튀후 드실분", 1L,4L, 1L, "CHICKEN", 1L, DeliveryRoomState.WAITING, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
-        createDeliveryRoomIfNotFound(2L, "메가커피 드실분", 1L,4L, 2L, "DESERT", 2L, DeliveryRoomState.WAITING, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
-        createDeliveryRoomIfNotFound(3L, "맘스터치 드실분", 1L,4L, 3L, "FASTFOOD", 3L, DeliveryRoomState.WAITING, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
-        createDeliveryRoomIfNotFound(4L, "김밥천국 드실분", 1L,4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.WAITING, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(1L, "갓튀후 드실분", 1L,4L, 1L, "CHICKEN", 1L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
+        createDeliveryRoomIfNotFound(2L, "메가커피 드실분", 1L,4L, 2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
+        createDeliveryRoomIfNotFound(3L, "맘스터치 드실분", 1L,4L, 3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
+        createDeliveryRoomIfNotFound(4L, "김밥천국 드실분", 1L,4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
     }
 
     private void loadEntryOrderTableData(){
-        createEntryOrderIfNotFound(1L, 1L, 1L, EntryOrderType.ACCEPTED, State.NORMAL);
-        createEntryOrderIfNotFound(2L, 1L, 4L, EntryOrderType.ACCEPTED, State.NORMAL);
-        createEntryOrderIfNotFound(3L, 2L, 2L, EntryOrderType.ACCEPTED, State.NORMAL);
-        createEntryOrderIfNotFound(4L, 3L, 3L, EntryOrderType.ACCEPTED, State.NORMAL);
+
+        //LEAD
+        createEntryOrderIfNotFound(1L, 1L, 1L, EntryOrderType.LEAD, State.ACCEPTED);
+        createEntryOrderIfNotFound(2L, 1L, 4L, EntryOrderType.LEAD, State.ACCEPTED);
+        createEntryOrderIfNotFound(3L, 2L, 2L, EntryOrderType.LEAD, State.ACCEPTED);
+        createEntryOrderIfNotFound(4L, 3L, 3L, EntryOrderType.LEAD, State.ACCEPTED);
+
+        //PARTICIPATION
+        createEntryOrderIfNotFound(5L, 2L, 1L, EntryOrderType.PARTICIPATION, State.PENDING);
+        createEntryOrderIfNotFound(6L, 3L, 1L, EntryOrderType.PARTICIPATION, State.PENDING);
+        createEntryOrderIfNotFound(7L, 4L, 1L, EntryOrderType.PARTICIPATION, State.PENDING);
     }
 
 
@@ -127,7 +134,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         }
 
         //연관관계 확인 위한 필요 객체 확인
-        Optional<EntryOrder> entryOrder = entryOrderTableRepository.findById(entryOrderId);
+        Optional<EntryOrder> entryOrder = entryOrderRepository.findById(entryOrderId);
         Optional<OrderMenu> parentOrder = orderMenuRepository.findById(parentId); //널이어도 되고 아니어도 됨.
 
         if(entryOrder.isEmpty()){
@@ -240,8 +247,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private EntryOrder createEntryOrderIfNotFound(Long entryOrderId, Long accountId, Long deliveryRoomId, EntryOrderType entryOrderType, State isRejected){
-        Optional<EntryOrder> entryOrder = entryOrderTableRepository.findById(entryOrderId);
+    private EntryOrder createEntryOrderIfNotFound(Long entryOrderId, Long accountId, Long deliveryRoomId, EntryOrderType entryOrderType, State status){
+        Optional<EntryOrder> entryOrder = entryOrderRepository.findById(entryOrderId);
 
         if(entryOrder.isPresent()){
             return entryOrder.get();
@@ -258,11 +265,12 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
             return null;
         }
 
-        return entryOrderTableRepository.save(EntryOrder.builder()
+        return entryOrderRepository.save(EntryOrder.builder()
                 .orderType(entryOrderType)
                 .account(account.get())
+                .orderType(entryOrderType)
                 .deliveryRoom(deliveryRoom.get())
-                .isRejected(isRejected)
+                .status(status)
                 .build());
     }
 }

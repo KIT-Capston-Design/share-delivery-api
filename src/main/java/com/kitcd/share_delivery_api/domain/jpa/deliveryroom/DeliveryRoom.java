@@ -81,4 +81,13 @@ public class DeliveryRoom extends BaseTimeEntity {
    public void plusOrder(EntryOrder order){
       orders.add(order);
    }
+
+   public void addPerson() throws Exception {
+
+      //방 인원 초과의 경우
+      if(!(peopleNumber < getLimitPerson()))
+         throw new Exception("exceed the number of limit people");
+
+      this.peopleNumber = peopleNumber + 1;
+   }
 }

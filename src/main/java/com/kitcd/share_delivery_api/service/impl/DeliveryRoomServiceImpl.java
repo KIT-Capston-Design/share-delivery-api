@@ -8,15 +8,13 @@ import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
-import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.service.EntryOrderService;
-import com.kitcd.share_delivery_api.service.OrderMenuService;
-import com.kitcd.share_delivery_api.service.ReceivingLocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -26,8 +24,6 @@ import java.util.List;
 public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
     private final DeliveryRoomRepository deliveryRoomRepository;
-    private final OrderMenuService orderMenuService;
-    private final ReceivingLocationService receivingLocationService;
     private final EntryOrderService entryOrderService;
 
 
@@ -40,13 +36,33 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         return deliveryRoomRepository.getDeliveryHistory(accountId);
     }
 
+    @Override
+    public DeliveryRoom findByLeaderId(Long accountId) {
+
+        DeliveryRoom deliveryRoom = deliveryRoomRepository.findByLeader_AccountId(accountId);
+
+        if(deliveryRoom == null) throw new EntityNotFoundException(DeliveryRoom.class.toString());
+
+        return deliveryRoom;
+    }
+
+    @Override
+    public DeliveryRoom findByDeliveryRoomId(Long roomId) {
+        DeliveryRoom deliveryRoom = deliveryRoomRepository.findByDeliveryRoomId(roomId);
+
+        if(deliveryRoom == null) throw new EntityNotFoundException(DeliveryRoom.class.toString());
+
+        return deliveryRoom;
+    }
+
+
 
     @Override
     public DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList) {
 
         DeliveryRoom room = deliveryRoomRepository.save(deliveryRoom);
 
-        entryOrderService.enrollEntryOrder(room, menuList, EntryOrderType.APPLIED);
+        entryOrderService.enrollEntryOrder(room, menuList, EntryOrderType.LEAD);
 
         return room;
     }

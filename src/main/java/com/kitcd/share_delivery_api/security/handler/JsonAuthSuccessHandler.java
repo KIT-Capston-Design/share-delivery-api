@@ -47,6 +47,7 @@ public class JsonAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         // redis에 저장할 logon 정보 작성 후 레디스 저장
         LoggedOnInformation loggedOnInf = LoggedOnInformation.builder()
+                .accountId(account.getAccountId())
                 .phoneNumber(account.getPhoneNumber())
                 .refreshToken(jwtDto.getRefreshToken())
                 .fcmToken(fcmToken)

@@ -8,6 +8,7 @@ import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.Verificati
 import com.kitcd.share_delivery_api.dto.sens.SMSResponseDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
 import com.kitcd.share_delivery_api.service.AuthService;
+import com.kitcd.share_delivery_api.service.LoggedOnInformationService;
 import com.kitcd.share_delivery_api.service.SENSService;
 import lombok.RequiredArgsConstructor;
 
@@ -27,11 +28,11 @@ public class AuthServiceImpl implements AuthService {
     private final AccountService accountService;
     private final SecureRandom secureRandom;
     private final VerificationSMSRedisRepository verificationSMSRedisRepository;
-    private final LoggedOnInformationRedisRepository loggedOnInformationRedisRepository;
+    private final LoggedOnInformationService loggedOnInformationService;
 
 
     public void saveLoggedOnInformation(LoggedOnInformation loggedOnInformation){
-        loggedOnInformationRedisRepository.save(loggedOnInformation);
+        loggedOnInformationService.save(loggedOnInformation);
     }
 
     public SMSResponseDTO sendVerificationSMS(String phoneNumber) {

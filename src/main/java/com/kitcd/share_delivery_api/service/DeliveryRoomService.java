@@ -13,4 +13,8 @@ public interface DeliveryRoomService {
     List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance);
 
     List<ParticipatedDeliveryRoomDTO> getDeliveryHistory(Long accountId);
+
+    DeliveryRoom findByLeaderId(Long accountId);
+
+    DeliveryRoom findByDeliveryRoomId(Long roomId);
 }
