@@ -42,7 +42,7 @@ public class DeliveryRoomEnrollRequestDTO {
                 .leader(leader)
                 .limitPerson(this.getLimitPerson())
                 .linkPlatformType(this.getLinkPlatformType())
-                .status(DeliveryRoomState.WAITING)
+                .status(DeliveryRoomState.OPEN)
                 .storeCategory(storeCategory)
                 .build();
         return room;

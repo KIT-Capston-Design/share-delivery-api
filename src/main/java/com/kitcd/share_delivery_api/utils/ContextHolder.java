@@ -9,4 +9,8 @@ public class ContextHolder {
     public static Account getAccount() {
         return (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+    public static Long getAccountId() {
+        return getAccount().getAccountId();
+    }
 }
