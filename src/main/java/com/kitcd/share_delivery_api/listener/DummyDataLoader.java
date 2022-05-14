@@ -116,17 +116,17 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
 
     private void loadOrderMenuData(){
-        createOrderMenuIfNotFound(1L, 1L, 1L, "후라이드", 0L);
-        createOrderMenuIfNotFound(2L,1L,1L,"소스추가", 1L);
-        createOrderMenuIfNotFound(3L, 1L, 2L, "우동", 0L);
-        createOrderMenuIfNotFound(4L, 1L, 2L, "쫄면", 0L);
-        createOrderMenuIfNotFound(5L, 1L, 3L, "아이스 아메리카노", 0L);
-        createOrderMenuIfNotFound(6L, 1L, 3L, "헤이즐넛 시럽 추가", 5L);
-        createOrderMenuIfNotFound(7L, 1L, 3L, "싸이 버거", 0L);
-        createOrderMenuIfNotFound(8L, 1L, 3L, "치즈 감자로 변경", 7L);
+        createOrderMenuIfNotFound(1L, 1L, 16000L, 1L, "후라이드", 0L);
+        createOrderMenuIfNotFound(2L,1L,500L, 1L,"소스추가", 1L);
+        createOrderMenuIfNotFound(3L, 1L, 4000L, 2L, "우동", 0L);
+        createOrderMenuIfNotFound(4L, 1L, 6000L, 2L, "쫄면", 0L);
+        createOrderMenuIfNotFound(5L, 1L, 1500L, 3L, "아이스 아메리카노", 0L);
+        createOrderMenuIfNotFound(6L, 1L, 300L, 3L, "헤이즐넛 시럽 추가", 5L);
+        createOrderMenuIfNotFound(7L, 1L, 6400L, 3L, "싸이 버거", 0L);
+        createOrderMenuIfNotFound(8L, 1L, 1000L,3L, "치즈 감자로 변경", 7L);
     }
 
-    private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long amount, Long entryOrderId, String menuName, Long parentId){
+    private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long quantity, Long price, Long entryOrderId, String menuName, Long parentId){
         Optional<OrderMenu> orderMenu = orderMenuRepository.findById(orderMenuId);
 
         if(orderMenu.isPresent()){
@@ -146,7 +146,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .menuName(menuName)
                 .parentMenu(parentOrder.orElse(null))
                 .order(entryOrder.get())
-                .amount(amount)
+                .price(price)
+                .quantity(quantity)
                 .build());
     }
 

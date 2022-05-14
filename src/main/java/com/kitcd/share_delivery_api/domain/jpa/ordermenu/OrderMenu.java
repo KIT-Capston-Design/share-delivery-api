@@ -31,8 +31,9 @@ public class OrderMenu extends BaseTimeEntity {
    @Column(name = "MENU_NAME", nullable = false)
    private String menuName;
 
-   @Column(name = "AMOUNT", nullable = false)
-   private Long amount;
+   @Column(name = "QUANTITY", nullable = false)
+   private Long quantity;
 
-
+   @Column(name = "PRICE", nullable = false)
+   private Long price;
 }
