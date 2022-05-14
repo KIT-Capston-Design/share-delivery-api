@@ -1,4 +1,4 @@
-package com.kitcd.share_delivery_api.controller;
+package com.kitcd.share_delivery_api.controller.account;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
