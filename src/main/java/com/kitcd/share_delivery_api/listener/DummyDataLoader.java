@@ -76,10 +76,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadAccountData(){
-        createAccountDataIfNotFound(1L,"01000000001", "김현진", RoleType.ROLE_USER);
-        createAccountDataIfNotFound(2L, "01000000002", "홍길동", RoleType.ROLE_USER);
-        createAccountDataIfNotFound(3L, "01000000003", "김감찬", RoleType.ROLE_USER);
-        createAccountDataIfNotFound(4L,"01000000004", "김알지", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(1L,"01000000001", "DUMMY USER 1", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER);
     }
 
     private void loadReceivingLocationData(){
@@ -93,10 +93,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadDeliveryRoomData(){
-        createDeliveryRoomIfNotFound(1L, "갓튀후 드실분", 1L,4L, 1L, "CHICKEN", 1L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
-        createDeliveryRoomIfNotFound(2L, "메가커피 드실분", 1L,4L, 2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
-        createDeliveryRoomIfNotFound(3L, "맘스터치 드실분", 1L,4L, 3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
-        createDeliveryRoomIfNotFound(4L, "김밥천국 드실분", 1L,4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(1L, "DUMMY CONTENT 1", 1L,4L, 1L, "CHICKEN", 1L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
+        createDeliveryRoomIfNotFound(2L, "DUMMY CONTENT 2", 1L,4L, 2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
+        createDeliveryRoomIfNotFound(3L, "DUMMY CONTENT 3", 1L,4L, 3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
+        createDeliveryRoomIfNotFound(4L, "DUMMY CONTENT 4", 1L,4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
     }
 
     private void loadEntryOrderTableData(){
@@ -116,14 +116,14 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
 
     private void loadOrderMenuData(){
-        createOrderMenuIfNotFound(1L, 1L, 1L, "후라이드", 0L);
-        createOrderMenuIfNotFound(2L,1L,1L,"소스추가", 1L);
-        createOrderMenuIfNotFound(3L, 1L, 2L, "우동", 0L);
-        createOrderMenuIfNotFound(4L, 1L, 2L, "쫄면", 0L);
-        createOrderMenuIfNotFound(5L, 1L, 3L, "아이스 아메리카노", 0L);
-        createOrderMenuIfNotFound(6L, 1L, 3L, "헤이즐넛 시럽 추가", 5L);
-        createOrderMenuIfNotFound(7L, 1L, 3L, "싸이 버거", 0L);
-        createOrderMenuIfNotFound(8L, 1L, 3L, "치즈 감자로 변경", 7L);
+        createOrderMenuIfNotFound(1L, 1L, 1L, "DUMMY MENU 1", null);
+        createOrderMenuIfNotFound(2L,1L,1L,"DUMMY OPTION 1", 1L);
+        createOrderMenuIfNotFound(3L, 1L, 2L, "DUMMY MENU 2", null);
+        createOrderMenuIfNotFound(4L, 1L, 2L, "DUMMY MENU 3", null);
+        createOrderMenuIfNotFound(5L, 1L, 3L, "DUMMY MENU 4", null);
+        createOrderMenuIfNotFound(6L, 1L, 3L, "DUMMY OPTION 2", 5L);
+        createOrderMenuIfNotFound(7L, 1L, 3L, "DUMMY MENU 5", null);
+        createOrderMenuIfNotFound(8L, 1L, 3L, "DUMMY OPTION 3", 7L);
     }
 
     private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long amount, Long entryOrderId, String menuName, Long parentId){
@@ -135,7 +135,9 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         //연관관계 확인 위한 필요 객체 확인
         Optional<EntryOrder> entryOrder = entryOrderRepository.findById(entryOrderId);
-        Optional<OrderMenu> parentOrder = orderMenuRepository.findById(parentId); //널이어도 되고 아니어도 됨.
+
+        Optional<OrderMenu> parentOrder = Optional.empty();
+        if(parentId != null)  parentOrder = orderMenuRepository.findById(parentId);
 
         if(entryOrder.isEmpty()){
             log.warn("DummyDataLoader.createOrderMenuIfNotFound() : entryOder " + entryOrderId + " is null");
