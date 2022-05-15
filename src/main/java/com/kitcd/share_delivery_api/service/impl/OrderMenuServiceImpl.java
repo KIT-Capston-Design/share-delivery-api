@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,16 +21,12 @@ public class OrderMenuServiceImpl implements OrderMenuService {
     private final OrderMenuRepository orderMenuRepository;
 
     @Override
-    public List<OrderMenu> enrollMenu(EntryOrder entryOrder, List<OrderMenuRequestDTO> orderMenus) {
+    public void enrollMenu(EntryOrder entryOrder, List<OrderMenuRequestDTO> orderMenus) {
+        for (OrderMenuRequestDTO orderMenu : orderMenus) {
+            OrderMenu parent = orderMenuRepository.save(orderMenu.mainToEntity(null, entryOrder));
 
-        List<OrderMenu> mainMenus = orderMenus.stream().map(i -> OrderMenu.builder() // orderMenu 부모 먼저 작성
-                .amount(i.getAmount())
-                .menuName(i.getMenuName())
-                .order(entryOrder)
-                .build()).collect(Collectors.toList());
+            orderMenuRepository.saveAll(orderMenu.optionToEntity(entryOrder, parent));
+        } //옵션들 저장.
 
-        orderMenuRepository.saveAll(mainMenus);
-
-        return mainMenus;
     }
 }

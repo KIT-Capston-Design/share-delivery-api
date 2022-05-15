@@ -116,17 +116,17 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
 
     private void loadOrderMenuData(){
-        createOrderMenuIfNotFound(1L, 1L, 1L, "DUMMY MENU 1", null);
-        createOrderMenuIfNotFound(2L,1L,1L,"DUMMY OPTION 1", 1L);
-        createOrderMenuIfNotFound(3L, 1L, 2L, "DUMMY MENU 2", null);
-        createOrderMenuIfNotFound(4L, 1L, 2L, "DUMMY MENU 3", null);
-        createOrderMenuIfNotFound(5L, 1L, 3L, "DUMMY MENU 4", null);
-        createOrderMenuIfNotFound(6L, 1L, 3L, "DUMMY OPTION 2", 5L);
-        createOrderMenuIfNotFound(7L, 1L, 3L, "DUMMY MENU 5", null);
-        createOrderMenuIfNotFound(8L, 1L, 3L, "DUMMY OPTION 3", 7L);
+        createOrderMenuIfNotFound(1L, 1L, 16000L, 1L, "DUMMY MENU 1", null);
+        createOrderMenuIfNotFound(2L,1L,500L, 1L,"DUMMY OPTION 1", 1L);
+        createOrderMenuIfNotFound(3L, 1L, 4000L, 2L, "DUMMY MENU 2", null);
+        createOrderMenuIfNotFound(4L, 1L, 6000L, 2L, "DUMMY MENU 3", null);
+        createOrderMenuIfNotFound(5L, 1L, 1500L, 3L, "DUMMY MENU 4", null);
+        createOrderMenuIfNotFound(6L, 1L, 300L, 3L, "DUMMY OPTION 2", 5L);
+        createOrderMenuIfNotFound(7L, 1L, 6400L, 3L, "DUMMY MENU 5", null);
+        createOrderMenuIfNotFound(8L, 1L, 1000L,3L, "DUMMY OPTION 3", 7L);
     }
 
-    private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long amount, Long entryOrderId, String menuName, Long parentId){
+    private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long quantity, Long price, Long entryOrderId, String menuName, Long parentId){
         Optional<OrderMenu> orderMenu = orderMenuRepository.findById(orderMenuId);
 
         if(orderMenu.isPresent()){
@@ -148,7 +148,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .menuName(menuName)
                 .parentMenu(parentOrder.orElse(null))
                 .order(entryOrder.get())
-                .amount(amount)
+                .price(price)
+                .quantity(quantity)
                 .build());
     }
 
