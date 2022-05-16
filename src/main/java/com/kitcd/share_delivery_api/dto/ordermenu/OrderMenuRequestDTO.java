@@ -15,27 +15,27 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderMenuRequestDTO {
-    private String menuName;
-    private Long menuPrice;
-    private Long amount;
+    private String name;
+    private Long price;
+    private Long quantity;
     private List<OrderMenuRequestDTO> optionList;
 
     public List<OrderMenu> optionToEntity(EntryOrder entryOrder, OrderMenu parent){
         return optionList.stream().map(i ->
                 OrderMenu.builder()
-                        .menuName(i.menuName)
+                        .menuName(i.name)
                         .order(entryOrder)
                         .parentMenu(parent)
-                        .price(i.menuPrice)
-                        .quantity(i.amount)
+                        .price(i.price)
+                        .quantity(i.quantity)
                         .build()).collect(Collectors.toList());
     }
 
     public OrderMenu mainToEntity(OrderMenu parent, EntryOrder entryOrder) {
         return OrderMenu.builder()
-                .price(this.menuPrice)
-                .quantity(this.amount)
-                .menuName(this.menuName)
+                .price(this.price)
+                .quantity(this.quantity)
+                .menuName(this.name)
                 .parentMenu(parent)
                 .order(entryOrder)
                 .build();

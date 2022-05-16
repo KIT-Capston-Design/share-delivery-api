@@ -29,7 +29,7 @@ public class DeliveryRoomEnrollRequestDTO {
     private ShareStoreDTO shareStore;
 
     public DeliveryRoom toEntity(Account leader, ReceivingLocation location, StoreCategory storeCategory){
-        DeliveryRoom room = DeliveryRoom.builder()
+        return DeliveryRoom.builder()
                 .content(this.getContent())
                 .receivingLocation(location)
                 .leader(leader)
@@ -39,10 +39,10 @@ public class DeliveryRoomEnrollRequestDTO {
                 .storeName(shareStore.name)
                 .storeLink(shareStore.link)
                 .status(DeliveryRoomState.OPEN)
+                .estimatedDeliveryTip(deliveryTip)
                 .storeCategory(storeCategory)
                 .peopleNumber(1L)
                 .build();
-        return room;
     }
 
     @AllArgsConstructor

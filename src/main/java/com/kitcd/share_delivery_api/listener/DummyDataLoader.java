@@ -93,10 +93,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadDeliveryRoomData(){
-        createDeliveryRoomIfNotFound(1L, "DUMMY CONTENT 1", 1L,4L, 1L, "CHICKEN", 1L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
-        createDeliveryRoomIfNotFound(2L, "DUMMY CONTENT 2", 1L,4L, 2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
-        createDeliveryRoomIfNotFound(3L, "DUMMY CONTENT 3", 1L,4L, 3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
-        createDeliveryRoomIfNotFound(4L, "DUMMY CONTENT 4", 1L,4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(1L, "DUMMY CONTENT 1", 1L,4L, 123456L,1L, "CHICKEN", 1L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
+        createDeliveryRoomIfNotFound(2L, "DUMMY CONTENT 2", 1L,4L, 123456L,2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
+        createDeliveryRoomIfNotFound(3L, "DUMMY CONTENT 3", 1L,4L, 123456L,3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
+        createDeliveryRoomIfNotFound(4L, "DUMMY CONTENT 4", 1L,4L, 123456L,1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
     }
 
     private void loadEntryOrderData(){
@@ -220,7 +220,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private DeliveryRoom createDeliveryRoomIfNotFound(Long deliveryRoomId, String contents, Long peopleNumber, Long limitPerson, Long receivingLocationId, String storeCategoryName, Long leaderId, DeliveryRoomState state, PlatformType linkPlatformType, String storeName, String url){
+    private DeliveryRoom createDeliveryRoomIfNotFound(Long deliveryRoomId, String contents, Long peopleNumber, Long limitPerson, Long estimatedDeliveryTip, Long receivingLocationId, String storeCategoryName, Long leaderId, DeliveryRoomState state, PlatformType linkPlatformType, String storeName, String url){
 
         Optional<DeliveryRoom> deliveryRoom = deliveryRoomRepository.findById(deliveryRoomId);
         if(deliveryRoom.isPresent()){
@@ -252,7 +252,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .status(state)
                         .storeName(storeName)
                 .storeCategory(storeCategory)
-                .estimatedDeliveryTip(123456L)
+                .estimatedDeliveryTip(estimatedDeliveryTip)
                 .leader(leader.get())
                 .peopleNumber(peopleNumber)
                 .limitPerson(limitPerson)
