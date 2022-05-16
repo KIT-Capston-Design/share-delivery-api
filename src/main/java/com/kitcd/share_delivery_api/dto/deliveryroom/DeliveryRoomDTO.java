@@ -15,7 +15,10 @@ public class DeliveryRoomDTO {
 
     private Leader leader;
 
+    private Long deliveryRoomId;
+
     private String content;
+    private Long deliveryTip;
     private Long person;
     private Long limitPerson;
     private String storeLink;

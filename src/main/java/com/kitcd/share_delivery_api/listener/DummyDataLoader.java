@@ -244,6 +244,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .status(state)
                         .storeName(storeName)
                 .storeCategory(storeCategory)
+                .estimatedDeliveryTip(123456L)
                 .leader(leader.get())
                 .peopleNumber(peopleNumber)
                 .limitPerson(limitPerson)

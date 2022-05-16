@@ -41,7 +41,7 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                 String.format("'LINESTRING(%f %f, %f %f)')",
                         northEast.getLongitude(), northEast.getLatitude(), southWest.getLongitude(), southWest.getLatitude());
 
-        Query query = em.createNativeQuery("SELECT a.nickname, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude"
+        Query query = em.createNativeQuery("SELECT a.nickname, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude, r.delivery_room_id, r.estimated_delivery_tip"
                         + " FROM ACCOUNT a JOIN DELIVERY_ROOM r ON r.LEADER_ID = a.ACCOUNT_ID JOIN receiving_location rl ON r.receiving_location_id = rl.receiving_location_id"
                         + " WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + mbr + ", rl.location)").setMaxResults(10);
 
@@ -69,10 +69,17 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                                         .longitude((Double) room[10])
                                         .latitude((Double) room[9])
                                         .build())
+                                .deliveryRoomId(bigIntegerObjToLong(room[11]))
+                                .deliveryTip(bigIntegerObjToLong(room[12]))
                                 .build()
                 ).collect(Collectors.toList());
 
             return deliveryRooms;
 
     }
+
+    private static Long bigIntegerObjToLong(Object val){
+        return ((BigInteger) val).longValue();
+    }
+
 }

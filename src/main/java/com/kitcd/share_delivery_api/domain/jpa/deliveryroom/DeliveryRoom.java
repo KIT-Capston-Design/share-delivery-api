@@ -49,6 +49,9 @@ public class DeliveryRoom extends BaseTimeEntity {
    @Column(name = "LIMIT_PERSON", nullable = false)
    private Long limitPerson;
 
+   @Column(name = "ESTIMATED_DELIVERY_TIP", nullable = false)
+   private Long estimatedDeliveryTip;
+
    @Column(name = "STORE_NAME", nullable = false)
    private String storeName;
 
