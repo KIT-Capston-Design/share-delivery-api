@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -124,9 +125,20 @@ public class DeliveryRoomController {
 
             entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
 
+            // 방의 주도자에게 참가 신청 알람 전송.
+            firebaseCloudMessageService.sendMessageTo(
+                    loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
+                    room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
+                    "null"
+            );
+
             return ResponseEntity.status(HttpStatus.OK).body(null);
+
         }catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(enfe.getMessage());
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
