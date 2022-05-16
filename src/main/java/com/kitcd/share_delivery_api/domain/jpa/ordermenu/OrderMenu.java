@@ -4,11 +4,18 @@ import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 
+import com.kitcd.share_delivery_api.dto.ordermenu.MenuResDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -24,7 +31,7 @@ public class OrderMenu extends BaseTimeEntity {
    @JoinColumn(name = "ORDER_ID", nullable = false)
    private EntryOrder order;
 
-   @OneToOne
+   @ManyToOne
    @JoinColumn(name = "PARENT_MENU_ID", nullable = true)
    private OrderMenu parentMenu;
 
@@ -36,4 +43,21 @@ public class OrderMenu extends BaseTimeEntity {
 
    @Column(name = "PRICE", nullable = false)
    private Long price;
+
+   @Transient
+   private List<OrderMenu> childMenus = new LinkedList<>();
+
+   public MenuResDTO toResponseDTO(){
+      return MenuResDTO.builder()
+              .orderMenuId(orderMenuId)
+              .menuName(menuName)
+              .quantity(quantity)
+              .price(price)
+              .optionMenus(childMenus != null ? childMenus.stream().map(OrderMenu::toResponseDTO).collect(Collectors.toList()) : null)
+              .build();
+   }
+
+   public void addChild(OrderMenu menu) {
+      childMenus.add(menu);
+   }
 }

@@ -44,7 +44,7 @@ public class Account extends BaseTimeEntity {
    @Column(name = "NICKNAME", nullable = true, unique = true)
    private String nickname;
 
-   @OneToOne
+   @OneToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PROFILE_IMAGE_ID", nullable = true)
    private ImageFile profileImage;
 
@@ -63,75 +63,75 @@ public class Account extends BaseTimeEntity {
    private BankAccount bankAccount;
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<Friend> friends = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<AccountBlock> accountBlocks = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<FastDeliveryParticipation> participations = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<ReceivingLocation> receivingLocations = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "remitter")
+   @OneToMany(mappedBy = "remitter", fetch = FetchType.LAZY)
    private List<Remittance> remittances = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "recipient")
+   @OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY)
    private List<Remittance> collections = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "leader")
+   @OneToMany(mappedBy = "leader", fetch = FetchType.LAZY)
    private List<DeliveryRoom> leadingDeliveryRoom = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<Chat> chats = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<EntryOrder> orders = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "targetAccount")
+   @OneToMany(mappedBy = "targetAccount", fetch = FetchType.LAZY)
    private List<AccountEvaluation> receivedEvaluations = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "evaluator")
+   @OneToMany(mappedBy = "evaluator", fetch = FetchType.LAZY)
    private List<AccountEvaluation> performedEvaluations = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<Post> posts = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<PostLike> postLikes = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<Comment> comments = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<CommentLike> commentLikes = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "account")
+   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<PostAlarm> postAlarms = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "reporter")
+   @OneToMany(mappedBy = "reporter", fetch = FetchType.LAZY)
    private List<Report> receivedReports = new LinkedList<>();
 
    @JsonIgnore
-   @OneToMany(mappedBy = "reportedAccount")
+   @OneToMany(mappedBy = "reportedAccount", fetch = FetchType.LAZY)
    private List<Report> performedReport = new LinkedList<>();
 
 
