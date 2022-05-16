@@ -54,7 +54,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadStoreCategoryData();
         loadReceivingLocationData();
         loadDeliveryRoomData();
-        loadEntryOrderTableData();
+        loadEntryOrderData();
         loadOrderMenuData();
 
     }
@@ -99,7 +99,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createDeliveryRoomIfNotFound(4L, "DUMMY CONTENT 4", 1L,4L, 1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
     }
 
-    private void loadEntryOrderTableData(){
+    private void loadEntryOrderData(){
 
         //LEAD
         createEntryOrderIfNotFound(1L, 1L, 1L, EntryOrderType.LEAD, State.ACCEPTED);
@@ -124,6 +124,14 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createOrderMenuIfNotFound(6L, 1L, 300L, 3L, "DUMMY OPTION 2", 5L);
         createOrderMenuIfNotFound(7L, 1L, 6400L, 3L, "DUMMY MENU 5", null);
         createOrderMenuIfNotFound(8L, 1L, 1000L,3L, "DUMMY OPTION 3", 7L);
+        createOrderMenuIfNotFound(9L, 1L, 16000L, 1L, "DUMMY MENU 6", null);
+
+        createOrderMenuIfNotFound(10L,1L,500L, 5L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(11L,1L,500L, 6L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(12L,1L,500L, 7L,"DUMMY MENU 9", null);
+        createOrderMenuIfNotFound(13L,1L,500L, 5L,"DUMMY MENU 10", null);
+        createOrderMenuIfNotFound(14L,1L,500L, 6L,"DUMMY MENU 11", null);
+        createOrderMenuIfNotFound(15L,1L,500L, 7L,"DUMMY MENU 12", null);
     }
 
     private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long quantity, Long price, Long entryOrderId, String menuName, Long parentId){

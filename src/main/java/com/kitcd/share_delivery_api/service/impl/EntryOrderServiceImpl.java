@@ -6,6 +6,7 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderRepository;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
+import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.EntryOrderService;
 import com.kitcd.share_delivery_api.service.OrderMenuService;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,6 +27,19 @@ public class EntryOrderServiceImpl implements EntryOrderService {
 
     private final EntryOrderRepository entryOrderRepository;
     private final OrderMenuService orderMenuService;
+
+
+    @Override
+    public List<OrderResDTO> getOrderInformation(Long deliveryRoomId) {
+
+        List<EntryOrder> orders = entryOrderRepository.getOrderInformation(deliveryRoomId);
+
+        if(orders == null) throw new EntityNotFoundException(EntryOrder.class.toString());
+
+        return orders.stream().map(EntryOrder::toResponseDTO).collect(Collectors.toList());
+    }
+
+
 
     @Override
     public EntryOrder enrollEntryOrder(DeliveryRoom room, List<OrderMenuRequestDTO> menuList, EntryOrderType entryOrderType) {

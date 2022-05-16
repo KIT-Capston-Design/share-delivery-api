@@ -24,7 +24,7 @@ public class Payment extends BaseTimeEntity {
    @Column(name = "PAYMENT_ID", nullable = false)
    private Long paymentId;
 
-   @OneToOne
+   @OneToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "DELIVERY_ROOM_ID", nullable = false)
    private DeliveryRoom deliveryRoom;
 
@@ -34,12 +34,12 @@ public class Payment extends BaseTimeEntity {
    @Column(name = "DELIVERY_FEE", nullable = false)
    private Long deliveryFee;
 
-   @OneToMany(mappedBy = "payment")
+   @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
    private List<Remittance> remittances = new LinkedList<>();
 
-   @OneToMany(mappedBy = "payment")
+   @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
    private List<PaymentDiscount> paymentDiscounts = new LinkedList<>();
 
-   @OneToMany(mappedBy = "payment")
+   @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
    private List<PaymentOrderForm> paymentOrderForms = new LinkedList<>();
 }

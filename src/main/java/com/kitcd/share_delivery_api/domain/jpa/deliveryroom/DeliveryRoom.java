@@ -28,15 +28,15 @@ public class DeliveryRoom extends BaseTimeEntity {
    @Column(name = "DELIVERY_ROOM_ID", nullable = false)
    private Long deliveryRoomId;
 
-   @ManyToOne
+   @ManyToOne(fetch=FetchType.LAZY)
    @JoinColumn(name = "LEADER_ID", nullable = false)
    private Account leader;
 
-   @ManyToOne
+   @ManyToOne(fetch=FetchType.LAZY)
    @JoinColumn(name = "RECEIVING_LOCATION_ID", nullable = false)
    private ReceivingLocation receivingLocation;
 
-   @ManyToOne
+   @ManyToOne(fetch=FetchType.LAZY)
    @JoinColumn(name = "STORE_CATEGORY_ID", nullable = false)
    private StoreCategory storeCategory;
 
@@ -69,16 +69,16 @@ public class DeliveryRoom extends BaseTimeEntity {
    @Column(name = "STATUS", nullable = false)
    private DeliveryRoomState status;
 
-   @OneToOne(mappedBy = "deliveryRoom")
+   @OneToOne(mappedBy = "deliveryRoom", fetch = FetchType.LAZY)
    private Payment payment;
 
-   @OneToMany(mappedBy = "deliveryRoom")
+   @OneToMany(mappedBy = "deliveryRoom", fetch = FetchType.LAZY)
    private List<Chat> chats = new LinkedList<>();
 
-   @OneToMany(mappedBy = "deliveryRoom")
+   @OneToMany(mappedBy = "deliveryRoom", fetch = FetchType.LAZY)
    private List<EntryOrder> orders = new LinkedList<>();
 
-   @OneToMany(mappedBy = "deliveryRoom")
+   @OneToMany(mappedBy = "deliveryRoom", fetch = FetchType.LAZY)
    private List<Report> reports = new LinkedList<>();
 
    public void plusOrder(EntryOrder order){
