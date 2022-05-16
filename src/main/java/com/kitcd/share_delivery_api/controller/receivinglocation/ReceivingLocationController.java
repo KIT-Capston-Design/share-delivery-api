@@ -22,7 +22,7 @@ public class ReceivingLocationController {
 
     private final ReceivingLocationService receivingLocationService;
 
-    @PostMapping("/api/receiving-location")
+    @PostMapping("/api/receiving-locations")
     public ResponseEntity<?> createReceivingLocation(@RequestBody ReceivingLocationDTO dto){
         ReceivingLocationDTO data = receivingLocationService.enrollReceivingLocation(getAccount(), dto);
 
