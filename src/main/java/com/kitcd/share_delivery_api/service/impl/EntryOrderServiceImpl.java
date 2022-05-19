@@ -39,15 +39,13 @@ public class EntryOrderServiceImpl implements EntryOrderService {
         return orders.stream().map(EntryOrder::toResponseDTO).collect(Collectors.toList());
     }
 
-
-
     @Override
-    public EntryOrder enrollEntryOrder(DeliveryRoom room, List<OrderMenuRequestDTO> menuList, EntryOrderType entryOrderType) {
+    public EntryOrder enrollEntryOrder(DeliveryRoom room, List<OrderMenuRequestDTO> menuList, EntryOrderType entryOrderType, State state) {
 
         EntryOrder entryOrder = entryOrderRepository.save(EntryOrder.builder()
                 .account(ContextHolder.getAccount())
                 .orderType(entryOrderType)
-                .status(State.ACCEPTED)
+                .status(state)
                 .deliveryRoom(room)
                 .orderType(entryOrderType)
                 .build());
@@ -78,7 +76,6 @@ public class EntryOrderServiceImpl implements EntryOrderService {
         //인원 모집 상태가 아닌 경우 (이미 주문 진행 단계로 넘어 간 경우)
         if(!(deliveryRoom.getStatus().equals(DeliveryRoomState.OPEN)))
             throw new Exception("Room status is not OPEN");
-
         entryOrder.reject();
     }
 }

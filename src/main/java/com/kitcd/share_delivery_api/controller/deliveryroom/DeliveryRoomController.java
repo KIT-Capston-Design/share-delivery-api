@@ -1,10 +1,15 @@
 package com.kitcd.share_delivery_api.controller.deliveryroom;
 
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.JoinRequestDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
@@ -16,17 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -113,6 +113,33 @@ public class DeliveryRoomController {
 
         }
 
+    }
+
+    @PostMapping("delivery-rooms/{deliveryRoomId}")
+    public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody JoinRequestDeliveryRoomDTO dto){
+        try{
+            DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
+            if(room.getPeopleNumber().equals(room.getLimitPerson())){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("참가자할 자리가 없습니다.");
+            }
+
+            entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
+
+            // 방의 주도자에게 참가 신청 알람 전송.
+            firebaseCloudMessageService.sendMessageTo(
+                    loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
+                    room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
+                    "null"
+            );
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+
+        }catch (EntityNotFoundException enfe){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(enfe.getMessage());
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 }
