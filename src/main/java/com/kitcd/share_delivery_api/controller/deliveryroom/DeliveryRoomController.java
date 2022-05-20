@@ -104,7 +104,7 @@ public class DeliveryRoomController {
 
             StoreCategory storeCategory = storeCategoryService.findStoreCategoryWithName(dto.getStoreCategory());
 
-            deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation,storeCategory), dto.getMenuList());
+            deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation, storeCategory), dto.getMenuList());
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
 
