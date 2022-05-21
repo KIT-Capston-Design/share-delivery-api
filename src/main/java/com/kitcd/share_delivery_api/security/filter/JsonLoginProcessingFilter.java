@@ -44,6 +44,6 @@ public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingF
     }
 
     private boolean isJson(HttpServletRequest request) {
-        return "application/json".equals(request.getHeader("Content-Type"));
+        return request.getHeader("Content-Type").startsWith("application/json");
     }
 }
