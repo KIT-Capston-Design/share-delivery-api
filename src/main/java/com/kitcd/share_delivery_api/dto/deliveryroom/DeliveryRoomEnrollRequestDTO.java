@@ -38,7 +38,6 @@ public class DeliveryRoomEnrollRequestDTO {
                 .status(DeliveryRoomState.OPEN)
                 .storeName(shareStore.name)
                 .storeLink(shareStore.link)
-                .status(DeliveryRoomState.OPEN)
                 .estimatedDeliveryTip(deliveryTip)
                 .storeCategory(storeCategory)
                 .peopleNumber(1L)

@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.service.impl;
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
@@ -62,7 +63,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         DeliveryRoom room = deliveryRoomRepository.save(deliveryRoom);
 
-        entryOrderService.enrollEntryOrder(room, menuList, EntryOrderType.LEAD);
+        entryOrderService.enrollEntryOrder(room, menuList, EntryOrderType.LEAD, State.ACCEPTED);
 
         return room;
     }
