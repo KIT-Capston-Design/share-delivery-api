@@ -9,7 +9,7 @@ import java.util.List;
 public interface DeliveryRoomRepository extends JpaRepository<DeliveryRoom, Long>, DeliveryRoomRepositoryCustom {
 
     @Query("select new com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO" +
-            "(ac.nickname, dr.content, dr.peopleNumber, dr.limitPerson, dr.storeName, dr.linkPlatformType, dr.createdDate, dr.status, rl.description, cat.categoryName) " +
+            "(dr.deliveryRoomId, ac.nickname, dr.content, dr.peopleNumber, dr.limitPerson, dr.storeName, dr.linkPlatformType, dr.createdDate, dr.status, rl.description, cat.categoryName) " +
             "from DeliveryRoom dr join dr.receivingLocation rl join dr.leader ac join dr.storeCategory cat where ac.accountId = :accountId")
     List<ParticipatedDeliveryRoomDTO> getDeliveryHistory(Long accountId);
 
