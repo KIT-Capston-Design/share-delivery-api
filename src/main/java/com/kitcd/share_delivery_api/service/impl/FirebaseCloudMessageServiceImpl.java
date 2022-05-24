@@ -4,22 +4,29 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
+import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
 import com.kitcd.share_delivery_api.dto.fcm.FCMMessage;
 import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageService {
 
-    private final String apiUrl = "https://fcm.googleapis.com/v1/projects/812458932745/messages:send";
+    @Value("${fcm.v1-url}") private String V1_URL;
+    @Value("${fcm.legacy-url}") private String LEGACY_URL;
+    @Value("${fcm.project-id}") private String PROJECT_ID;
+    @Value("${fcm.legacy-access-key}") private String LEGACY_ACCESS_KEY;
 
     private final GoogleCredentials googleCredentials; //구글 자격증명 클래스.. 이 친구 통해서 fcm access token 얻을 수 있다.
 
@@ -33,32 +40,58 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     }
 
 
+    //그룹 생성
+    //성공 시 notification_key 반환
+    //실패 시 null 반환
+    public String createGroup(String groupKeyName, List<String> userTokens){
+
+        try {
+            //요청 데이터 생성
+            String requestData = makeFCMGroupRequest(FCMGroupRequest.Type.create, groupKeyName, userTokens);
+
+            //전송
+            Response response = legacyForward(requestData);
+
+            //실패시 null 반환
+            if (!response.isSuccessful()) {
+                log.error(response.toString());
+                return null;
+            }
+
+            String body = Objects.requireNonNull(response.body()).toString();
+            JSONObject jsonBody = new JSONObject(body);
+
+            //성공 시 notification_key 반환
+            return jsonBody.getString("notification_key");
+
+        }catch(Exception exception){
+            log.error(exception.getMessage());
+            return null;
+        }
+    }
+
     // 데이터 메시지 생성 & 발송
     public Response sendMessageTo(String targetToken, FCMDataType type) throws IOException {
         String message = makeDataMessage(targetToken, type);
-        return forward(message);
+        return v1Forward(message);
     }
 
     // 알림 메시지 생성 & 발송
     public Response sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeNotificationMessage(targetToken, title, body);
-        return forward(message);
+        return v1Forward(message);
     }
 
-    private Response forward(String message) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
 
-        Request request = new Request.Builder()
-                .url(apiUrl)
-                .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-                .build();
+    private String makeFCMGroupRequest(FCMGroupRequest.Type type, String groupKeyName, List<String> userTokens) throws JsonProcessingException {
 
-        return client.newCall(request).execute();
+        return objectMapper.writeValueAsString(FCMGroupRequest.builder()
+                .operation(type)
+                .notification_key_name(groupKeyName)
+                .registration_ids(userTokens)
+                .build());
+
     }
-
 
     public String makeNotificationMessage(String targetToken, String title, String body) throws JsonProcessingException {
         FCMMessage fcmMessage = FCMMessage.builder()
@@ -98,6 +131,36 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
+
+    private Response legacyForward(String message) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+
+        Request request = new Request.Builder()
+                .url(LEGACY_URL)
+                .post(requestBody)
+                .addHeader(HttpHeaders.AUTHORIZATION, LEGACY_ACCESS_KEY)
+                .addHeader("project_id", PROJECT_ID)
+                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private Response v1Forward(String message) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+
+        System.out.println("url : " + V1_URL);
+        Request request = new Request.Builder()
+                .url(V1_URL)
+                .post(requestBody)
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                .build();
+
+        return client.newCall(request).execute();
+    }
 
     private String getAccessToken() throws IOException {
         // credentials가 만료되었거나 만료임박의 경우 refresh
