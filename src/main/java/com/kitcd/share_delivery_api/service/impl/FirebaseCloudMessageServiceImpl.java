@@ -60,7 +60,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     }
 
 
-    private String makeNotificationMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    public String makeNotificationMessage(String targetToken, String title, String body) throws JsonProcessingException {
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(
                         FCMMessage.Message.builder()
@@ -80,7 +80,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
-    private String makeDataMessage(String targetToken, FCMDataType fcmDataType) throws JsonProcessingException {
+    public String makeDataMessage(String targetToken, FCMDataType fcmDataType) throws JsonProcessingException {
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(
                         FCMMessage.Message.builder()
