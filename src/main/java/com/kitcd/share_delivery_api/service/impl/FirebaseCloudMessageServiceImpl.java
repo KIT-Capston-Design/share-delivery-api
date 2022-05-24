@@ -47,7 +47,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
         try {
             //요청 데이터 생성
-            String requestData = makeFCMGroupRequest(FCMGroupRequest.Type.create, groupKeyName, userTokens);
+            String requestData = makeFCMGroupRequest(groupKeyName, userTokens);
 
             //전송
             Response response = legacyForward(requestData);
@@ -83,10 +83,10 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     }
 
 
-    private String makeFCMGroupRequest(FCMGroupRequest.Type type, String groupKeyName, List<String> userTokens) throws JsonProcessingException {
+    private String makeFCMGroupRequest(String groupKeyName, List<String> userTokens) throws JsonProcessingException {
 
         return objectMapper.writeValueAsString(FCMGroupRequest.builder()
-                .operation(type)
+                .operation(FCMGroupRequest.Type.create)
                 .notification_key_name(groupKeyName)
                 .registration_ids(userTokens)
                 .build());
