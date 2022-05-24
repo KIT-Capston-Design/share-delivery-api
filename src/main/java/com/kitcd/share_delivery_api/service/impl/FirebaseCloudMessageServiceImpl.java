@@ -40,14 +40,14 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     }
 
 
-    //그룹 생성
+    //그룹 생성/입장/퇴장/삭제(모두퇴장)
     //성공 시 notification_key 반환
     //실패 시 null 반환
-    public String createGroup(String groupKeyName, List<String> userTokens){
+    public String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens){
 
         try {
             //요청 데이터 생성
-            String requestData = makeFCMGroupRequest(groupKeyName, userTokens);
+            String requestData = makeFCMGroupRequest(requestType, groupTokenName, groupKey, userTokens);
 
             //전송
             Response response = legacyForward(requestData);
@@ -83,11 +83,12 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     }
 
 
-    private String makeFCMGroupRequest(String groupKeyName, List<String> userTokens) throws JsonProcessingException {
+    private String makeFCMGroupRequest(FCMGroupRequest.Type type, String groupKeyName, String groupKey, List<String> userTokens) throws JsonProcessingException {
 
         return objectMapper.writeValueAsString(FCMGroupRequest.builder()
-                .operation(FCMGroupRequest.Type.create)
+                .operation(type)
                 .notification_key_name(groupKeyName)
+                .notification_key(groupKey)
                 .registration_ids(userTokens)
                 .build());
 

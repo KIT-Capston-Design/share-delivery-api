@@ -13,10 +13,11 @@ import java.util.List;
 public class FCMGroupRequest {
     private Type operation;
     private String notification_key_name;
+    private String notification_key;
     private List<String> registration_ids;
 
     public enum Type {
-        create
+        create, add, remove
     }
 }
 
