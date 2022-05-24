@@ -3,12 +3,11 @@ package com.kitcd.share_delivery_api.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
 import com.kitcd.share_delivery_api.dto.fcm.FCMMessage;
 import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -33,10 +32,20 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                         .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
     }
 
+
+    // 데이터 메시지 생성 & 발송
+    public Response sendMessageTo(String targetToken, FCMDataType type) throws IOException {
+        String message = makeDataMessage(targetToken, type);
+        return forward(message);
+    }
+
+    // 알림 메시지 생성 & 발송
     public Response sendMessageTo(String targetToken, String title, String body) throws IOException {
+        String message = makeNotificationMessage(targetToken, title, body);
+        return forward(message);
+    }
 
-        String message = makeMessage(targetToken, title, body);
-
+    private Response forward(String message) throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
 
@@ -51,7 +60,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     }
 
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    private String makeNotificationMessage(String targetToken, String title, String body) throws JsonProcessingException {
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(
                         FCMMessage.Message.builder()
@@ -61,6 +70,24 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                                                 .title(title)
                                                 .body(body)
                                                 .image(null)
+                                                .build()
+                                )
+                                .build()
+                )
+                .validate_only(false)
+                .build();
+
+        return objectMapper.writeValueAsString(fcmMessage);
+    }
+
+    private String makeDataMessage(String targetToken, FCMDataType fcmDataType) throws JsonProcessingException {
+        FCMMessage fcmMessage = FCMMessage.builder()
+                .message(
+                        FCMMessage.Message.builder()
+                                .token(targetToken)
+                                .data(
+                                        FCMMessage.Data.builder()
+                                                .type(fcmDataType)
                                                 .build()
                                 )
                                 .build()
