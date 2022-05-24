@@ -1,6 +1,8 @@
 package com.kitcd.share_delivery_api.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kitcd.share_delivery_api.security.exception.InsufficientArgumentException;
+import com.kitcd.share_delivery_api.security.exception.NotSupportedAuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,9 +29,13 @@ public class JsonAuthFailureHandler implements AuthenticationFailureHandler {
         String errMsg = "";
 
         if(exception instanceof UsernameNotFoundException){
-            errMsg = "Invalid Phone Number";
+            errMsg = "Unknown Phone Number";
         } else if(exception instanceof BadCredentialsException){
-            errMsg = "Invalid Verification Code";
+            errMsg = "Unknown Verification Code";
+        } else if(exception instanceof NotSupportedAuthException){
+            errMsg = exception.getMessage();
+        } else if(exception instanceof InsufficientArgumentException){
+            errMsg = exception.getMessage();
         } else {
             errMsg = "Unknown Auth Exception";
         }
