@@ -6,6 +6,7 @@ import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
+import com.kitcd.share_delivery_api.service.LoggedOnInformationService;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,6 +28,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final EntryOrderService entryOrderService;
+    private final LoggedOnInformationService loggedOnInformationService;
 
 
     public List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance){
@@ -66,5 +69,25 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         entryOrderService.enrollEntryOrder(room, menuList, EntryOrderType.LEAD, State.ACCEPTED);
 
         return room;
+    }
+
+    @Override
+    public List<String> getParticipantFCMTokens(Long roomId){
+
+        List<Long> participantsIds = getParticipantsIds(roomId);
+
+        return participantsIds.stream()
+                .map(loggedOnInformationService::getFcmTokenByAccountId)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> getParticipantsIds(Long roomId){
+
+        List<Long> participantsIds = deliveryRoomRepository.getParticipantsIds(roomId);
+
+        if(participantsIds == null) throw new IllegalStateException("해당 delivery room id에 대한 참여자 ids 가져오기 실패");
+
+        return participantsIds;
     }
 }

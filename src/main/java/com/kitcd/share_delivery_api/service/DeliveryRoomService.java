@@ -17,4 +17,8 @@ public interface DeliveryRoomService {
     DeliveryRoom findByLeaderId(Long accountId);
 
     DeliveryRoom findByDeliveryRoomId(Long roomId);
+
+    List<String> getParticipantFCMTokens(Long roomId);
+
+    List<Long> getParticipantsIds(Long roomId);
 }
