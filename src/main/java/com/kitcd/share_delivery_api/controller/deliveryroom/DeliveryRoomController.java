@@ -157,10 +157,10 @@ public class DeliveryRoomController {
             DeliveryRoom deliveryRoom = deliveryRoomService.closeRecruit(deliveryRoomId);
 
             //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
-                    String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
-                            FCMGroupRequest.Type.create,
-                            "DeliveryRoom_" + deliveryRoomId.toString(),
-                            null, //생성 시에는 그룹 키 null로 전송
+            String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
+                    FCMGroupRequest.Type.create,
+                    "DeliveryRoom_" + deliveryRoomId.toString(),
+                    null, //생성 시에는 그룹 키 null로 전송
                     deliveryRoomService.getParticipantFCMTokens(deliveryRoomId) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
             );
 
