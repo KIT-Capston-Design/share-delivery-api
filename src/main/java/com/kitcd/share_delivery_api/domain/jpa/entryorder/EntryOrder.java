@@ -51,13 +51,15 @@ public class EntryOrder extends BaseTimeEntity {
    public void accept() {
       if(status == State.PENDING)
          status = State.ACCEPTED;
+      else
+         throw new IllegalStateException("Order status is not PENDING");
    }
 
-   public void reject() throws Exception {
+   public void reject() {
       if(status == State.PENDING)
          status = State.REJECTED;
       else
-         throw new Exception("Order status is not PENDING");
+         throw new IllegalStateException("Order status is not PENDING");
    }
 
 

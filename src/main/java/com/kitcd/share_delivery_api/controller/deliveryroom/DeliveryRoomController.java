@@ -8,9 +8,13 @@ import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
+import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
+import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.JoinRequestDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
+import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
@@ -18,6 +22,7 @@ import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomEnrollRequestDT
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,6 +47,7 @@ public class DeliveryRoomController {
     private final EntryOrderService entryOrderService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final LoggedOnInformationService loggedOnInformationService;
+    private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
 
     //TODO
@@ -61,10 +67,10 @@ public class DeliveryRoomController {
                     "null"
             );
 
-        }catch (EntityNotFoundException enfe){
+        } catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage() + " is not found");
 
-        }catch (Exception ex){
+        } catch (Exception ex){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
 
@@ -141,6 +147,45 @@ public class DeliveryRoomController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+
+    @GetMapping("delivery-rooms/{deliveryRoomId}/close-recruit")
+    public ResponseEntity<?> closeRecruit(@PathVariable Long deliveryRoomId){
+
+        try{
+            DeliveryRoom deliveryRoom = deliveryRoomService.closeRecruit(deliveryRoomId);
+
+            //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
+                    String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
+                            FCMGroupRequest.Type.create,
+                            "DeliveryRoom_" + deliveryRoomId.toString(),
+                            null, //생성 시에는 그룹 키 null로 전송
+                    deliveryRoomService.getParticipantFCMTokens(deliveryRoomId) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
+            );
+
+            //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
+            activatedDeliveryRoomInfoRedisRepository.save(
+                    ActivatedDeliveryRoomInfo.builder()
+                            .deliveryRoomId(deliveryRoomId)
+                            .fcmGroupToken(fcmGroupToken)
+                            .build()
+            );
+
+            //해당 모집글 참여자들에게 메시지 전송
+            firebaseCloudMessageService.sendMessageTo(fcmGroupToken, FCMDataType.CLOSE_RECRUIT);
+
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom);
+
+        } catch (IllegalArgumentException | JSONException | IOException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+        } catch (EntityNotFoundException enfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
+
+        }
+
+
     }
 
 }

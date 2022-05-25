@@ -93,4 +93,10 @@ public class DeliveryRoom extends BaseTimeEntity {
 
       this.peopleNumber = peopleNumber + 1;
    }
+   public void closeRecruit(){
+      if(status.equals(DeliveryRoomState.OPEN))
+         status = DeliveryRoomState.WAITING_PAYMENT;
+      else
+         throw new IllegalStateException("모집글이 Open 상태가 아니기 때문에 요청을 처리할 수 없습니다.");
+   }
 }

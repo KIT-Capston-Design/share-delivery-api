@@ -86,8 +86,22 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         List<Long> participantsIds = deliveryRoomRepository.getParticipantsIds(roomId);
 
-        if(participantsIds == null) throw new IllegalStateException("해당 delivery room id에 대한 참여자 ids 가져오기 실패");
+        if(participantsIds == null) throw new IllegalArgumentException("해당 delivery room id에 대한 참여자 ids 가져오기 실패");
 
         return participantsIds;
+    }
+
+    @Override
+    public DeliveryRoom closeRecruit(Long deliveryRoomId) {
+
+        // 모집글 상태 변경
+        DeliveryRoom deliveryRoom = findByDeliveryRoomId(deliveryRoomId);
+        deliveryRoom.closeRecruit();
+
+
+        // 참여자 상태 변경 Pending -> Accepted
+        entryOrderService.acceptOrders(deliveryRoomId);
+
+        return deliveryRoom;
     }
 }
