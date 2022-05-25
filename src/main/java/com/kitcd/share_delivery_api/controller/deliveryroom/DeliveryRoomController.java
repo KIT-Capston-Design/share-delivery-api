@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -149,12 +151,13 @@ public class DeliveryRoomController {
         }
     }
 
-
     @GetMapping("delivery-rooms/{deliveryRoomId}/close-recruit")
     public ResponseEntity<?> closeRecruit(@PathVariable Long deliveryRoomId){
 
         try{
             DeliveryRoom deliveryRoom = deliveryRoomService.closeRecruit(deliveryRoomId);
+            //클라이언트가 방장인지 체크. 방장이 아닐 경우 AccessDeniedException
+            deliveryRoom.checkLeader(ContextHolder.getAccountId());
 
             //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
             String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
@@ -183,6 +186,8 @@ public class DeliveryRoomController {
         } catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
 
+        } catch (AccessDeniedException ade){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
         }
 
 

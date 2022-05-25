@@ -12,6 +12,7 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -99,4 +100,8 @@ public class DeliveryRoom extends BaseTimeEntity {
       else
          throw new IllegalStateException("모집글이 Open 상태가 아니기 때문에 요청을 처리할 수 없습니다.");
    }
+
+    public void checkLeader(Long accountId) {
+      if(!leader.getAccountId().equals(accountId)) throw new AccessDeniedException("Access is Denied");
+    }
 }
