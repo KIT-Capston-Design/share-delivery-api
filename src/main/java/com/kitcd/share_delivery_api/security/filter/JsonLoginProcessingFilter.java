@@ -1,7 +1,9 @@
 package com.kitcd.share_delivery_api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kitcd.share_delivery_api.dto.account.loginDTO;
+import com.kitcd.share_delivery_api.dto.account.LoginDTO;
+import com.kitcd.share_delivery_api.security.exception.InsufficientArgumentException;
+import com.kitcd.share_delivery_api.security.exception.NotSupportedAuthException;
 import com.kitcd.share_delivery_api.security.token.JsonAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -25,17 +27,15 @@ public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
 
-        if(!isJson(request)){ // 필터 동작 조건 2
-            throw new IllegalStateException("Authentication is not supported");
+        if(!isJson(request.getHeader("Content-Type"))){ // 필터 동작 조건 2
+            throw new NotSupportedAuthException("Authentication is not supported");
         }
 
         // 두 조건 모두 통과 시 id/verificationCode 통해 인증
-        loginDTO loginDTO = objectMapper.readValue(request.getReader(), loginDTO.class);//json 바디 가져와서 dto로 가공
+        LoginDTO loginDTO = objectMapper.readValue(request.getReader(), LoginDTO.class);//json 바디 가져와서 dto로 가공
 
-        //빈 문자열 체크
-        if(ObjectUtils.isEmpty(loginDTO.getPhoneNumber()) || ObjectUtils.isEmpty(loginDTO.getVerificationCode()) || ObjectUtils.isEmpty(loginDTO.getFcmToken())){
-            throw new IllegalArgumentException("phoneNumber or VerificationCode or FcmToken is empty");
-        }
+        //빈 문자열 체크 : 빈 알규먼트 존재 시 throw InsufficientArgumentException
+        checkArgument(loginDTO);
 
         // 토큰 만들고 AuthenticationManager에 위임하여 인증 처리 진행
         JsonAuthenticationToken jsonAuthenticationToken = new JsonAuthenticationToken(loginDTO.getPhoneNumber(), loginDTO.getVerificationCode(), loginDTO.getFcmToken());
@@ -43,7 +43,28 @@ public class JsonLoginProcessingFilter extends AbstractAuthenticationProcessingF
         return getAuthenticationManager().authenticate(jsonAuthenticationToken);
     }
 
-    private boolean isJson(HttpServletRequest request) {
-        return "application/json".equals(request.getHeader("Content-Type"));
+    private boolean isJson(String  contentType) {
+        if(contentType == null)
+            return false;
+
+        return contentType.startsWith("application/json");
+    }
+
+    private void checkArgument(LoginDTO loginDTO){
+
+        StringBuilder sb = new StringBuilder();
+
+        if(ObjectUtils.isEmpty(loginDTO.getPhoneNumber()))
+            sb.append("PhoneNumber is empty  and ");
+        if(ObjectUtils.isEmpty(loginDTO.getVerificationCode()))
+            sb.append("Verification Code is empty and ");
+        if(ObjectUtils.isEmpty(loginDTO.getFcmToken()))
+            sb.append("FCM Token Code is empty and ");
+
+        if(sb.length() != 0) {
+            sb.setLength(sb.length() - 5); //" and "지우기
+            throw new InsufficientArgumentException(sb.toString());
+        }
+
     }
 }

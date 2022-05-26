@@ -73,7 +73,7 @@ public class EntryOrder extends BaseTimeEntity {
       return OrderResDTO.builder()
               .entryOrderId(entryOrderId)
               .accountId(account.getAccountId())
-              .phoneNumber(account.getPhoneNumber())
+              .nickName(account.getNickname())
               .type(orderType)
               .status(status)
               .menus(orderMenus.stream().map(OrderMenu::toResponseDTO).collect(Collectors.toList()))

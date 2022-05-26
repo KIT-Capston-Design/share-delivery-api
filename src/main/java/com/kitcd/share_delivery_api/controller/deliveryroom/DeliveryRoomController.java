@@ -115,12 +115,13 @@ public class DeliveryRoomController {
 
     }
 
-    @PostMapping("delivery-rooms/{deliveryRoomId}")
+    @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
     public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody JoinRequestDeliveryRoomDTO dto){
         try{
             DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
-            if(room.getPeopleNumber().equals(room.getLimitPerson())){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("참가자할 자리가 없습니다.");
+
+            if(!(room.getPeopleNumber() < room.getLimitPerson())){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("인원이 초과되어 참여할 수 없습니다.");
             }
 
             entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);

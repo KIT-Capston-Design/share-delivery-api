@@ -17,8 +17,9 @@ public class FCMMessage {
     @AllArgsConstructor
     @Getter
     public static class Message{
-        private Notification notification;
         private String token; // device의 fcm 토큰
+        private Notification notification;
+        private Data data;
     }
 
     @Builder
@@ -28,5 +29,12 @@ public class FCMMessage {
         private String title;
         private String body;
         private String image;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Data{
+        private FCMDataType type;
     }
 }
