@@ -8,13 +8,10 @@ import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
-import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
-import com.kitcd.share_delivery_api.dto.deliveryroom.JoinRequestDeliveryRoomDTO;
-import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.*;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
-import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomEnrollRequestDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,9 +116,14 @@ public class DeliveryRoomController {
 
             StoreCategory storeCategory = storeCategoryService.findStoreCategoryWithName(dto.getStoreCategory());
 
-            deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation,storeCategory), dto.getMenuList());
+            DeliveryRoom room = deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation, storeCategory), dto.getMenuList());
 
-            return ResponseEntity.status(HttpStatus.OK).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    DeliveryRoomEnrollResponseDTO
+                            .builder()
+                            .roomId(room.getDeliveryRoomId())
+                            .build()
+            );
 
         } catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
