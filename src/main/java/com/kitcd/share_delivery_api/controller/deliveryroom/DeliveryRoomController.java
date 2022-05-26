@@ -79,6 +79,21 @@ public class DeliveryRoomController {
         return ResponseEntity.status(HttpStatus.OK).body(deliveryHistories);
     }
 
+    @GetMapping("delivery-rooms/{deliveryRoomId}")
+    public ResponseEntity<?> getDeliveryRoom(@PathVariable Long deliveryRoomId) {
+
+        try {
+            DeliveryRoomDTO deliveryRoom = deliveryRoomService.getDeliveryRoom(deliveryRoomId);
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom);
+
+        } catch (EntityNotFoundException enfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
+
+        }
+
+    }
+
+
     @GetMapping("delivery-rooms")
     public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotNull Double latitude, @RequestParam(name = "lng") @NotNull Double longitude, @RequestParam(name = "radius") @NotNull Double radius) {
 

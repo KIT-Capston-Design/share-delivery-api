@@ -9,6 +9,8 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.common.LocationDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -92,5 +94,29 @@ public class DeliveryRoom extends BaseTimeEntity {
          throw new Exception("exceed the number of limit people");
 
       this.peopleNumber = peopleNumber + 1;
+   }
+
+   public DeliveryRoomDTO toDTO() {
+      return DeliveryRoomDTO.builder()
+              .leader(DeliveryRoomDTO.Leader.builder()
+                      .nickname(leader.getNickname())
+                      .mannerScore(36.5)
+                      .build())
+              .deliveryRoomId(deliveryRoomId)
+              .content(content)
+              .deliveryTip(estimatedDeliveryTip)
+              .person(peopleNumber)
+              .limitPerson(limitPerson)
+              .storeLink(storeLink)
+              .platformType(linkPlatformType)
+              .status(status)
+              .createdDateTime(getCreatedDate())
+              .receivingLocation(LocationDTO.builder()
+                      .longitude(receivingLocation.getLocationRef().getLongitude())
+                      .latitude(receivingLocation.getLocationRef().getLatitude())
+                      .address(receivingLocation.getAddress())
+                      .description(receivingLocation.getDescription())
+                      .build())
+              .build();
    }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface DeliveryRoomRepositoryCustom {
     List<DeliveryRoomDTO> findDeliveryRoomDTOWithLocation(Location location, Double radius);
+
 }

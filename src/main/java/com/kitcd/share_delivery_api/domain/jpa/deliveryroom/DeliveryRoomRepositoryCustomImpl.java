@@ -60,9 +60,9 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                                 .content((String) room[1])
                                 .limitPerson(((BigInteger)room[2]).longValue())
                                 .storeLink((String)room[3])
-                                .status((String)room[4])
+                                .status((DeliveryRoomState)room[4])
                                 .createdDateTime(((Timestamp) room[5]).toLocalDateTime())
-                                .platformType((String) room[6])
+                                .platformType((PlatformType) room[6])
                                 .receivingLocation(LocationDTO.builder()
                                         .description((String) room[7])
                                         .address((String)room[8])
@@ -77,6 +77,7 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
             return deliveryRooms;
 
     }
+
 
     private static Long bigIntegerObjToLong(Object val){
         return ((BigInteger) val).longValue();
