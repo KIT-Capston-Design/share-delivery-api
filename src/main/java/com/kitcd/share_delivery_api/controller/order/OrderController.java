@@ -28,7 +28,6 @@ public class OrderController {
     private final EntryOrderService entryOrderService;
 
 
-    //TODO : auth : 참여자만 조회 가능하도록 설정 필요해보임
     @GetMapping("orders/{deliveryRoomId}")
     public ResponseEntity<?> getOrders(@PathVariable @NotNull Long deliveryRoomId) {
 

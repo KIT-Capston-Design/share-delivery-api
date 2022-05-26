@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderResDTO {
     private Long entryOrderId;
     private Long accountId;
-    private String phoneNumber;
+    private String nickName;
     private EntryOrderType type;
     private State status;
     private List<MenuResDTO> menus;
