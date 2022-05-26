@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class loginDTO {
+public class LoginDTO {
     private String phoneNumber;
     private String verificationCode;
     private String fcmToken;
