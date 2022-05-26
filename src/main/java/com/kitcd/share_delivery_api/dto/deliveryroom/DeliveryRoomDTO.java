@@ -1,5 +1,8 @@
 package com.kitcd.share_delivery_api.dto.deliveryroom;
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.PlatformType;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import lombok.*;
 
@@ -22,8 +25,8 @@ public class DeliveryRoomDTO {
     private Long person;
     private Long limitPerson;
     private String storeLink;
-    private String platformType;
-    private String status;
+    private PlatformType platformType;
+    private DeliveryRoomState status;
     private LocalDateTime createdDateTime;
 
     private LocationDTO receivingLocation;

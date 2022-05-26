@@ -10,11 +10,16 @@ import java.util.List;
 
 public interface DeliveryRoomService {
     DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList);
+
+    DeliveryRoomDTO getDeliveryRoom(Long deliveryRoomId);
     List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance);
+
 
     List<ParticipatedDeliveryRoomDTO> getDeliveryHistory(Long accountId);
 
     DeliveryRoom findByLeaderId(Long accountId);
 
     DeliveryRoom findByDeliveryRoomId(Long roomId);
+
+
 }

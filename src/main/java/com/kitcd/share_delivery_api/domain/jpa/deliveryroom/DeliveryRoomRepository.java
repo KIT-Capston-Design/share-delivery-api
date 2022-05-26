@@ -16,4 +16,7 @@ public interface DeliveryRoomRepository extends JpaRepository<DeliveryRoom, Long
     DeliveryRoom findByLeader_AccountId(Long accountId);
 
     DeliveryRoom findByDeliveryRoomId(Long roomId);
+
+    @Query("select dr from DeliveryRoom dr join fetch dr.leader join fetch dr.receivingLocation where dr.deliveryRoomId = :deliveryRoomId")
+    DeliveryRoom getDeliveryRoomByDeliveryRoomId(Long deliveryRoomId);
 }

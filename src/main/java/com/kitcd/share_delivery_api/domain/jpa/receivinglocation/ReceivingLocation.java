@@ -25,7 +25,7 @@ public class ReceivingLocation extends BaseTimeEntity {
    @Column(name = "RECEIVING_LOCATION_ID", nullable = false)
    private Long receivingLocationId;
 
-   @ManyToOne
+   @ManyToOne(fetch=FetchType.LAZY)
    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
    private Account account;
 
@@ -44,7 +44,7 @@ public class ReceivingLocation extends BaseTimeEntity {
    @Column(name = "ADDRESS", nullable = false)
    private String address;
 
-   @OneToMany(mappedBy = "receivingLocation")
+   @OneToMany(mappedBy = "receivingLocation", fetch=FetchType.LAZY)
    private List<DeliveryRoom> deliveryRooms = new LinkedList<>();
 
 
