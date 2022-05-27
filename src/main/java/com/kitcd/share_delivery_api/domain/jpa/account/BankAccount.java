@@ -15,6 +15,10 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class BankAccount {
+
+    @Column(name = "ACCOUNT_HOLDER", nullable = true)
+    private String accountHolder;
+
     @Column(name = "BANK", nullable = true)
     private String bank;
 

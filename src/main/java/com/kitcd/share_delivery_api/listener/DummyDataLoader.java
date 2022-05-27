@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.listener;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
+import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.domain.jpa.account.RoleType;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
@@ -170,8 +171,17 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         }
 
         return accountRepository.save(Account.builder()
-                .nickname(nickName)
                 .phoneNumber(phoneNum)
+                .nickname(nickName)
+                .email("DUMMY EMAIL DATA")
+                .status(State.NORMAL)
+                .role(RoleType.ROLE_USER)
+                .bankAccount(BankAccount.builder()
+                        .accountHolder("DUMMY NAME")
+                        .accountNumber("DMMY ACCOUNT NUMBER")
+                        .bank("DUMMY BANK")
+                        .build()
+                )
                 .role(role)
                 .build());
     }

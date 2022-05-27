@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.domain.jpa.imagefile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class ImageFile extends BaseTimeEntity {
    @Column(name = "FILE_PATH", nullable = false)
    private String filePath;
 
+   @JsonIgnore
    @Column(name = "FILE_SIZE", nullable = false)
    private Double fileSize;
 
