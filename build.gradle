@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // for serialize/deserialize java.time.LocalDateTime
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
 
 	implementation 'org.hibernate:hibernate-spatial'

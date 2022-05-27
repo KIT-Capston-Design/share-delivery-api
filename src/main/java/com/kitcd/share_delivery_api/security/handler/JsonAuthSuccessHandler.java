@@ -1,6 +1,9 @@
 package com.kitcd.share_delivery_api.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformation;
@@ -18,6 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class JsonAuthSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -27,7 +32,12 @@ public class JsonAuthSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private AuthService authService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    //LocalDateTime 타입을 ISO_DATE_TIME 포맷으로 반환하기 위한 '.registerModule()' 이하 코드
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(
+            new JavaTimeModule().addDeserializer(
+                    LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME)
+            )
+    ).configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
 
 
@@ -40,7 +50,7 @@ public class JsonAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         //json web token 생성
         JWTDTO jwtDto = JWTDTO.builder()
-                        .accountId(account.getAccountId())
+                        .account(account)
                         .accessToken(jwtFactory.createAccessToken(account))
                         .refreshToken(jwtFactory.createRefreshToken(account))
                 .build();
