@@ -54,7 +54,7 @@ public class AccountController {
         try{
             Account account = accountService.saveMyBankAccount(bankAccountDTO.toEntity());
 
-            return ResponseEntity.status(HttpStatus.OK).body(account);
+            return ResponseEntity.status(HttpStatus.OK).body(account.toDTO());
 
         }catch (IllegalArgumentException iae){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
