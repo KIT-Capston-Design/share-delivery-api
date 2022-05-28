@@ -1,9 +1,12 @@
 package com.kitcd.share_delivery_api.domain.jpa.account;
 
+import com.kitcd.share_delivery_api.dto.account.BankAccountDTO;
 import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Builder
 @Getter
@@ -20,8 +23,17 @@ public class BankAccount {
     private String accountHolder;
 
     @Column(name = "BANK", nullable = true)
-    private String bank;
+    @Enumerated(EnumType.STRING)
+    private BankType bank;
 
     @Column(name = "ACCOUNT_NUMBER", nullable = true)
     private String accountNumber;
+
+    public BankAccountDTO toDTO(){
+        return BankAccountDTO.builder()
+                .accountHolder(accountHolder)
+                .bank(bank.toString())
+                .accountNumber(accountNumber)
+                .build();
+    }
 }
