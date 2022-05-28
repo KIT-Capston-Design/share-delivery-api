@@ -4,6 +4,7 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
+import com.kitcd.share_delivery_api.dto.account.BankAccountDTO;
 import com.kitcd.share_delivery_api.service.AuthService;
 import com.kitcd.share_delivery_api.service.impl.AccountServiceImpl;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 
+
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/accounts")
@@ -42,6 +45,21 @@ public class AccountController {
         }
 
 
+    }
+
+
+    @PostMapping("/bank-account")
+    public ResponseEntity<?> enrollMyBankAccount(BankAccountDTO bankAccountDTO) {
+
+        try{
+            Account account = accountService.saveMyBankAccount(bankAccountDTO.toEntity());
+
+            return ResponseEntity.status(HttpStatus.OK).body(account);
+
+        }catch (IllegalArgumentException iae){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+
+        }
     }
 
     @GetMapping("/bank-account")

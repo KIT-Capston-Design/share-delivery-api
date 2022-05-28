@@ -15,4 +15,15 @@ public enum BankType {
     public String toString() {
         return bankName;
     }
+
+
+    public static BankType valueOfBankName(String bankName) {
+        for (BankType value : values()) {
+            if (value.bankName.equals(bankName)) {
+                return value;
+            }
+        }
+        //일치하는 은행 명이 없을 경우
+        throw new IllegalArgumentException(bankName + " is unknown bank name");
+    }
 }

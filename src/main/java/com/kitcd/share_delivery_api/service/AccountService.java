@@ -9,4 +9,6 @@ public interface AccountService {
     Account findByPhoneNumber(String phoneNumber);
 
     BankAccount getBankAccount(Long accountId);
+
+    Account saveMyBankAccount(BankAccount toEntity);
 }

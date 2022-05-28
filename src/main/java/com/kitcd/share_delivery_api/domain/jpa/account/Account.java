@@ -142,4 +142,9 @@ public class Account extends BaseTimeEntity {
    public void addEmail(String email){
       this.email = email;
    }
+
+   public Account saveBankAccount(BankAccount bankAccount) {
+      this.bankAccount = bankAccount;
+      return this;
+   }
 }
