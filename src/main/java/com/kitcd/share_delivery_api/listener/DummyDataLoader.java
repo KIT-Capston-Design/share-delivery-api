@@ -1,9 +1,6 @@
 package com.kitcd.share_delivery_api.listener;
 
-import com.kitcd.share_delivery_api.domain.jpa.account.Account;
-import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
-import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
-import com.kitcd.share_delivery_api.domain.jpa.account.RoleType;
+import com.kitcd.share_delivery_api.domain.jpa.account.*;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
@@ -178,8 +175,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .role(RoleType.ROLE_USER)
                 .bankAccount(BankAccount.builder()
                         .accountHolder("DUMMY NAME")
-                        .accountNumber("DMMY ACCOUNT NUMBER")
-                        .bank("DUMMY BANK")
+                        .accountNumber("DUMMY ACCOUNT NUMBER")
+                        .bank(BankType.KAKAO)
                         .build()
                 )
                 .role(role)

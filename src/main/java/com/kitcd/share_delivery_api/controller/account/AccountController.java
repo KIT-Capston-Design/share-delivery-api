@@ -1,19 +1,20 @@
 package com.kitcd.share_delivery_api.controller.account;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
 import com.kitcd.share_delivery_api.service.AuthService;
 import com.kitcd.share_delivery_api.service.impl.AccountServiceImpl;
+import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EntityNotFoundException;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,4 +43,20 @@ public class AccountController {
 
 
     }
+
+    @GetMapping("/bank-account")
+    public ResponseEntity<?> getMyBankAccount() {
+
+        try{
+            BankAccount bankAccount = accountService.getBankAccount(ContextHolder.getAccountId());
+
+            return ResponseEntity.status(HttpStatus.OK).body(bankAccount.toDTO());
+
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }
+
+
 }

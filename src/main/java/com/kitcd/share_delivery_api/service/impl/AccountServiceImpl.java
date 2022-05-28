@@ -2,12 +2,15 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
+import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.FetchNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -16,6 +19,21 @@ import javax.transaction.Transactional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+
+
+
+
+
+    @Override
+    public BankAccount getBankAccount(Long accountId) {
+
+        BankAccount bankAccount = accountRepository.getBankAccountById(accountId);
+
+        if(bankAccount == null) throw new FetchNotFoundException(BankAccount.class.toString(), accountId);
+
+        return bankAccount;
+    }
+
 
     @Override
     public Account signUp(AccountRegistrationDTO dto) {
@@ -33,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
     public Account findByPhoneNumber(String phoneNumber) {
         return accountRepository.findByPhoneNumber(phoneNumber);
     }
+
 
 
 }
