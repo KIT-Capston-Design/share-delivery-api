@@ -20,6 +20,7 @@ import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
+import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -141,5 +142,25 @@ public class Account extends BaseTimeEntity {
 
    public void addEmail(String email){
       this.email = email;
+   }
+
+   public Account saveBankAccount(BankAccount bankAccount) {
+      this.bankAccount = bankAccount;
+      return this;
+   }
+
+   public AccountDTO toDTO(){
+      return AccountDTO.builder()
+              .createdDate(getCreatedDate())
+              .modifiedDate(getModifiedDate())
+              .accountId(accountId)
+              .phoneNumber(phoneNumber)
+              .nickname(nickname)
+              .profileImage(profileImage)
+              .email(email)
+              .status(status)
+              .role(role)
+              .bankAccount(bankAccount.toDTO())
+              .build();
    }
 }

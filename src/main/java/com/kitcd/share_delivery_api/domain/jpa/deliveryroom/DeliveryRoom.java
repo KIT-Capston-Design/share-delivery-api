@@ -9,10 +9,11 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.common.LocationDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -94,14 +95,28 @@ public class DeliveryRoom extends BaseTimeEntity {
 
       this.peopleNumber = peopleNumber + 1;
    }
-   public void closeRecruit(){
-      if(status.equals(DeliveryRoomState.OPEN))
-         status = DeliveryRoomState.WAITING_PAYMENT;
-      else
-         throw new IllegalStateException("모집글이 Open 상태가 아니기 때문에 요청을 처리할 수 없습니다.");
-   }
 
-    public void checkLeader(Long accountId) {
-      if(!leader.getAccountId().equals(accountId)) throw new AccessDeniedException("Access is Denied");
-    }
+   public DeliveryRoomDTO toDTO() {
+      return DeliveryRoomDTO.builder()
+              .leader(DeliveryRoomDTO.Leader.builder()
+                      .nickname(leader.getNickname())
+                      .mannerScore(36.5)
+                      .build())
+              .deliveryRoomId(deliveryRoomId)
+              .content(content)
+              .deliveryTip(estimatedDeliveryTip)
+              .person(peopleNumber)
+              .limitPerson(limitPerson)
+              .storeLink(storeLink)
+              .platformType(linkPlatformType)
+              .status(status)
+              .createdDateTime(getCreatedDate())
+              .receivingLocation(LocationDTO.builder()
+                      .longitude(receivingLocation.getLocationRef().getLongitude())
+                      .latitude(receivingLocation.getLocationRef().getLatitude())
+                      .address(receivingLocation.getAddress())
+                      .description(receivingLocation.getDescription())
+                      .build())
+              .build();
+   }
 }

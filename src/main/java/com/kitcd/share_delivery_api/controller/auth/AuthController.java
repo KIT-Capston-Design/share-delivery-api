@@ -25,8 +25,10 @@ public class AuthController {
 
     @GetMapping("/verification-sms")
     public ResponseEntity<?> sendVerificationSMS(@RequestParam @Pattern(regexp = "^010[\\d]{8}") String phoneNumber){
+
+        //SMS 비활성화의 경우 더미 데이터 반환
         if(!smsIsActivated){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This api is deactivated.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(SMSResponseDTO.dummyDTO(phoneNumber));
         }
 
         SMSResponseDTO responseDTO = authService.sendVerificationSMS(phoneNumber);

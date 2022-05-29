@@ -10,15 +10,12 @@ import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
-import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
-import com.kitcd.share_delivery_api.dto.deliveryroom.JoinRequestDeliveryRoomDTO;
-import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.*;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
 import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
-import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomEnrollRequestDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +46,6 @@ public class DeliveryRoomController {
     private final EntryOrderService entryOrderService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final LoggedOnInformationService loggedOnInformationService;
-    private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
 
     //TODO
@@ -90,6 +86,21 @@ public class DeliveryRoomController {
         return ResponseEntity.status(HttpStatus.OK).body(deliveryHistories);
     }
 
+    @GetMapping("delivery-rooms/{deliveryRoomId}")
+    public ResponseEntity<?> getDeliveryRoom(@PathVariable Long deliveryRoomId) {
+
+        try {
+            DeliveryRoomDTO deliveryRoom = deliveryRoomService.getDeliveryRoom(deliveryRoomId);
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom);
+
+        } catch (EntityNotFoundException enfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
+
+        }
+
+    }
+
+
     @GetMapping("delivery-rooms")
     public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotNull Double latitude, @RequestParam(name = "lng") @NotNull Double longitude, @RequestParam(name = "radius") @NotNull Double radius) {
 
@@ -112,9 +123,14 @@ public class DeliveryRoomController {
 
             StoreCategory storeCategory = storeCategoryService.findStoreCategoryWithName(dto.getStoreCategory());
 
-            deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation,storeCategory), dto.getMenuList());
+            DeliveryRoom room = deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation, storeCategory), dto.getMenuList());
 
-            return ResponseEntity.status(HttpStatus.OK).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    DeliveryRoomEnrollResponseDTO
+                            .builder()
+                            .roomId(room.getDeliveryRoomId())
+                            .build()
+            );
 
         } catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());

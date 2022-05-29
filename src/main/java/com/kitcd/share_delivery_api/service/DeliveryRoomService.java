@@ -12,7 +12,10 @@ import java.util.List;
 
 public interface DeliveryRoomService {
     DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList);
+
+    DeliveryRoomDTO getDeliveryRoom(Long deliveryRoomId);
     List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance);
+
 
     List<ParticipatedDeliveryRoomDTO> getDeliveryHistory(Long accountId);
 
@@ -30,4 +33,6 @@ public interface DeliveryRoomService {
      참여자 상태 변경 PENDING -> ACCEPTED
      **/
     DeliveryRoom closeRecruit(Long deliveryRoomId) throws JSONException, IOException;
+
+
 }

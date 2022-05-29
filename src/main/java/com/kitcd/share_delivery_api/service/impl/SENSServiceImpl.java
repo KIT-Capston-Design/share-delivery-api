@@ -77,9 +77,8 @@ public class SENSServiceImpl implements SENSService {
 
         } catch (URISyntaxException | JsonProcessingException | NoSuchAlgorithmException | InvalidKeyException e){
             log.error("SMS 발송 준비 중 예외 발생", e);
+            return null;
         }
-
-        return null;
     }
 
     private String makeSignature(String uri, String timestamp) throws NoSuchAlgorithmException, InvalidKeyException {

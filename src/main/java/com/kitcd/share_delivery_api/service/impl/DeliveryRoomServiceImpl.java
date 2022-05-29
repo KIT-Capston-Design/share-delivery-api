@@ -30,6 +30,15 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
     private final EntryOrderService entryOrderService;
     private final LoggedOnInformationService loggedOnInformationService;
 
+    @Override
+    public DeliveryRoomDTO getDeliveryRoom(Long deliveryRoomId) {
+
+        DeliveryRoom deliveryRoom = deliveryRoomRepository.getDeliveryRoomByDeliveryRoomId(deliveryRoomId);
+
+        if(deliveryRoom == null) throw new EntityNotFoundException(DeliveryRoom.class.toString());
+
+        return deliveryRoom.toDTO();
+    }
 
     public List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance){
         return deliveryRoomRepository.findDeliveryRoomDTOWithLocation(location, distance);
@@ -104,4 +113,5 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         return deliveryRoom;
     }
+
 }
