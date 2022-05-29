@@ -24,6 +24,7 @@ public class FindAddressWithLocation {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    //"경상북도 구미시 대학로 60" 형태로 반환.
     public String coordToAddr(Location location) {
         String lon = Double.toString(location.getLongitude());
         String lat = Double.toString(location.getLatitude());
