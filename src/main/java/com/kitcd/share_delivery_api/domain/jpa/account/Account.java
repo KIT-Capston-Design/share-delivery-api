@@ -24,6 +24,7 @@ import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -60,6 +61,9 @@ public class Account extends BaseTimeEntity {
    @Column(name = "ROLE", nullable = true)
    private RoleType role;
 
+   @Column(name = "manner_score", nullable = false)// 자동 계산 되도록.
+   @ColumnDefault("36.5") // default값 설정.
+   private Double mannerScore;
    @Embedded
    private BankAccount bankAccount;
 

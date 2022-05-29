@@ -1,0 +1,47 @@
+package com.kitcd.share_delivery_api.controller.post;
+
+import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
+import com.kitcd.share_delivery_api.dto.post.WritePostResponseDTO;
+import com.kitcd.share_delivery_api.service.ImageFileService;
+import com.kitcd.share_delivery_api.service.PostImageService;
+import com.kitcd.share_delivery_api.service.PostService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequiredArgsConstructor
+@Validated
+@Slf4j
+@RequestMapping("/api/posts")
+
+@Transactional  //파일이 저장 및 수정 안되면 다 롤백하도록..
+public class PostController {
+
+    private PostService postService;
+    private PostImageService postImageService;
+
+
+    @PostMapping("")                //multipart로 데이터를 받아옴.                  //null 일 수 있음.
+    public ResponseEntity<?> writePost(@RequestPart WritePostRequestDTO dto, @RequestPart(required = false) List<MultipartFile> images){
+
+        WritePostResponseDTO post = postService.writePost(dto);
+
+        try {
+            postImageService.saveAll(images, post.getPostId());
+        } catch (FileUploadException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getClass()+":"+e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+}
