@@ -46,7 +46,7 @@ public class DeliveryRoomController {
     private final EntryOrderService entryOrderService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final LoggedOnInformationService loggedOnInformationService;
-
+    private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
     //TODO
     // 스프링 시큐리티 어노테이션 통해 주도자의 요청인지 확인 필요

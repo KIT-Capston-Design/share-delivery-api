@@ -14,6 +14,7 @@ import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -118,5 +119,15 @@ public class DeliveryRoom extends BaseTimeEntity {
                       .description(receivingLocation.getDescription())
                       .build())
               .build();
+   }
+   public void closeRecruit(){
+      if(status.equals(DeliveryRoomState.OPEN))
+         status = DeliveryRoomState.WAITING_PAYMENT;
+      else
+         throw new IllegalStateException("모집글이 Open 상태가 아니기 때문에 요청을 처리할 수 없습니다.");
+   }
+
+   public void checkLeader(Long accountId) {
+      if(!leader.getAccountId().equals(accountId)) throw new AccessDeniedException("Access is Denied");
    }
 }
