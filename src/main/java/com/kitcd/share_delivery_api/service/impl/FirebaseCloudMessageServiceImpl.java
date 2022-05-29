@@ -10,6 +10,7 @@ import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
@@ -43,40 +44,38 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     //그룹 생성/입장/퇴장/삭제(모두퇴장)
     //성공 시 notification_key 반환
     //실패 시 null 반환
-    public String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens){
+    @Override
+    public String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens) throws IOException, JSONException {
 
-        try {
-            //요청 데이터 생성
-            String requestData = makeFCMGroupRequest(requestType, groupTokenName, groupKey, userTokens);
+        //요청 데이터 생성
+        String requestData = makeFCMGroupRequest(requestType, groupTokenName, groupKey, userTokens);
 
-            //전송
-            Response response = legacyForward(requestData);
+        //전송
+        Response response = legacyForward(requestData);
 
-            //실패시 null 반환
-            if (!response.isSuccessful()) {
-                log.error(response.toString());
-                return null;
-            }
-
-            String body = Objects.requireNonNull(response.body()).toString();
-            JSONObject jsonBody = new JSONObject(body);
-
-            //성공 시 notification_key 반환
-            return jsonBody.getString("notification_key");
-
-        }catch(Exception exception){
-            log.error(exception.getMessage());
+        //실패시 null 반환
+        if (!response.isSuccessful()) {
+            log.error(response.toString());
             return null;
         }
+
+        String body = Objects.requireNonNull(response.body()).toString();
+        JSONObject jsonBody = new JSONObject(body);
+
+        //성공 시 notification_key 반환
+        return jsonBody.getString("notification_key");
+
     }
 
     // 데이터 메시지 생성 & 발송
+    @Override
     public Response sendMessageTo(String targetToken, FCMDataType type) throws IOException {
         String message = makeDataMessage(targetToken, type);
         return v1Forward(message);
     }
 
     // 알림 메시지 생성 & 발송
+    @Override
     public Response sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeNotificationMessage(targetToken, title, body);
         return v1Forward(message);

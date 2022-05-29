@@ -40,6 +40,26 @@ public class EntryOrderServiceImpl implements EntryOrderService {
     }
 
     @Override
+    public Long acceptOrders(Long deliveryRoomId) {
+
+        List<EntryOrder> eos = getPendingEntryOrderByDeliveryRoomId(deliveryRoomId);
+
+        eos.forEach(EntryOrder::accept);
+
+        return (long) eos.size();
+    }
+
+    @Override
+    public List<EntryOrder> getPendingEntryOrderByDeliveryRoomId(Long deliveryRoomId) {
+
+        List<EntryOrder> orders = entryOrderRepository.getPendingEntryOrderByDeliveryRoomId(deliveryRoomId);
+
+        if(orders == null) throw new EntityNotFoundException(EntryOrder.class.toString());
+
+        return orders;
+    }
+
+    @Override
     public EntryOrder enrollEntryOrder(DeliveryRoom room, List<OrderMenuRequestDTO> menuList, EntryOrderType entryOrderType, State state) {
 
         EntryOrder entryOrder = entryOrderRepository.save(EntryOrder.builder()

@@ -10,6 +10,8 @@ import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import java.util.List;
 
 public interface EntryOrderService {
+    List<EntryOrder> getPendingEntryOrderByDeliveryRoomId(Long deliveryRoomId);
+
     EntryOrder enrollEntryOrder(DeliveryRoom room, List<OrderMenuRequestDTO> menus, EntryOrderType entryOrderType, State state);
 
     EntryOrder findByAccountIdAndDeliveryRoomId(Long accountId, Long deliveryRoomId);
@@ -18,4 +20,5 @@ public interface EntryOrderService {
 
     List<OrderResDTO> getOrderInformation(Long deliveryRoomId);
 
+    Long acceptOrders(Long deliveryRoomId);
 }

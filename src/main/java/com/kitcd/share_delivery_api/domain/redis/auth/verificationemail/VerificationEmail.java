@@ -11,7 +11,7 @@ import org.springframework.data.annotation.Id;
 
 @NoArgsConstructor
 @Getter
-@RedisHash(value = "auth:verification-sms", timeToLive = 60*3) //ttl : 초 단위
+@RedisHash(value = "auth:verification-email", timeToLive = 60*3) //ttl : 초 단위
 public class VerificationEmail {
     @Id @Indexed
     private String email;
