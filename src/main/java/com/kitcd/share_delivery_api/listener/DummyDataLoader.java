@@ -17,6 +17,8 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategoryRepository;
+import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformation;
+import com.kitcd.share_delivery_api.service.AuthService;
 import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
@@ -46,6 +48,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private OrderMenuRepository orderMenuRepository;
     private ReceivingLocationRepository receivingLocationRepository;
     private AccountRepository accountRepository;
+    private AuthService authService;
+
     private PostCategoryRepository postCategoryRepository;
     @Override
     @Transactional
@@ -176,10 +180,12 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         Account account = accountRepository.findByPhoneNumber(phoneNum);
 
         if(account != null){
+            saveDummyLoginInformationToRedis(account);
             return account;
         }
 
-        return accountRepository.save(Account.builder()
+        //DB 저장
+        Account savedAccount = accountRepository.save(Account.builder()
                 .phoneNumber(phoneNum)
                 .nickname(nickName)
                 .email("DUMMY EMAIL DATA")
@@ -193,6 +199,22 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 )
                 .role(role)
                 .build());
+
+        saveDummyLoginInformationToRedis(savedAccount);
+
+        return savedAccount;
+    }
+
+    private void saveDummyLoginInformationToRedis(Account account){
+        //redis에 임시로 로그인 정보 저장
+        LoggedOnInformation loggedOnInf = LoggedOnInformation.builder()
+                .accountId(account.getAccountId())
+                .phoneNumber(account.getPhoneNumber())
+                .refreshToken("Dummy Refresh Token")
+                .fcmToken("Dummy FCM Token")
+                .build();
+
+        authService.saveLoggedOnInformation(loggedOnInf);
     }
 
     private StoreCategory createStoreCategoryIfNotFound(String categoryName){

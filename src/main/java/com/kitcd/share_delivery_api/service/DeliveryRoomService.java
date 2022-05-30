@@ -32,7 +32,7 @@ public interface DeliveryRoomService {
      모집글 상태 OPEN -> WAITING_PAYMENT <br/>
      참여자 상태 변경 PENDING -> ACCEPTED
      **/
-    DeliveryRoom closeRecruit(Long deliveryRoomId) throws JSONException, IOException;
+    DeliveryRoom closeRecruit(Long deliveryRoomId);
 
 
 }

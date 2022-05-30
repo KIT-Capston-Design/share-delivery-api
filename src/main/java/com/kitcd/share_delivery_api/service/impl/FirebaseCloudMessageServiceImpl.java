@@ -45,25 +45,31 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     //성공 시 notification_key 반환
     //실패 시 null 반환
     @Override
-    public String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens) throws IOException, JSONException {
+    public String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens) {
 
-        //요청 데이터 생성
-        String requestData = makeFCMGroupRequest(requestType, groupTokenName, groupKey, userTokens);
+        try {
+            //요청 데이터 생성
+            String requestData = makeFCMGroupRequest(requestType, groupTokenName, groupKey, userTokens);
 
-        //전송
-        Response response = legacyForward(requestData);
+            //전송
+            Response response = legacyForward(requestData);
 
-        //실패시 null 반환
-        if (!response.isSuccessful()) {
-            log.error(response.toString());
+            //실패시 null 반환
+            if (!response.isSuccessful()) {
+                log.error(response.toString());
+                return null;
+            }
+
+            String body = Objects.requireNonNull(response.body()).toString();
+            JSONObject jsonBody = new JSONObject(body);
+
+            //성공 시 notification_key 반환
+            return jsonBody.getString("notification_key");
+
+        }catch(IOException | JSONException e){
+            log.error(e.getMessage());
             return null;
         }
-
-        String body = Objects.requireNonNull(response.body()).toString();
-        JSONObject jsonBody = new JSONObject(body);
-
-        //성공 시 notification_key 반환
-        return jsonBody.getString("notification_key");
 
     }
 
