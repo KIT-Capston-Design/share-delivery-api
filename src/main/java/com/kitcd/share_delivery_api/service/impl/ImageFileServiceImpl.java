@@ -27,7 +27,7 @@ public class ImageFileServiceImpl implements ImageFileService {
     @Value("${file.dir}")
     private String fileDir;
 
-    private ImageFileRepository imageFileRepository;
+    private final ImageFileRepository imageFileRepository;
 
     @Override
     public ImageFile save(MultipartFile multipartFile) throws FileUploadException {
@@ -46,6 +46,7 @@ public class ImageFileServiceImpl implements ImageFileService {
                 .fileExtension(multipartFile
                         .getOriginalFilename()
                         .substring(multipartFile.getOriginalFilename().lastIndexOf(".")+1))
+                .fileName(multipartFile.getName())
                 .fileSize(multipartFile.getSize()/(double)1000) //kb로 치환
                 .build();
 

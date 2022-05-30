@@ -16,12 +16,13 @@ public class PlaceShareRequestDTO {
     private Double longitude;
     private String description;
 
-    public PlaceShare toEntity(Post post){
+    public PlaceShare toEntity(Post post, FindAddressWithLocation findAddressWithLocation){
         Location location = new Location(latitude, longitude);
         return PlaceShare.builder()
                 .content(description)
-                .address(new FindAddressWithLocation().coordToAddr(location))
+                .address(findAddressWithLocation.coordToAddr(location))
                 .coordinate(location)
+                .post(post)
                 .build();
     }
 }

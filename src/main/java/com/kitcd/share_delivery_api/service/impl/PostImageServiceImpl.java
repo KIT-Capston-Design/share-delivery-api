@@ -25,7 +25,7 @@ public class PostImageServiceImpl implements PostImageService {
     private final PostImageRepository postImageRepository;
     private final ImageFileService imageFileService;
 
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
     @Override
     public List<PostImage> saveAll(List<MultipartFile> imageFiles, Long postId) throws FileUploadException {

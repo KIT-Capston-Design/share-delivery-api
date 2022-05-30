@@ -7,12 +7,14 @@ import com.google.gson.JsonParser;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
 
+@Component
 public class FindAddressWithLocation {
 
     //Value 어노테이션으로 application.yml에 참조 식으로 설정하려 했으나 ${open-api.kakao.rest-api-key}가 반환. 도움 부탁드립니다.
@@ -31,8 +33,6 @@ public class FindAddressWithLocation {
 
         String url = kakaoUrl + "x=" + lon + "&y=" + lat;
         HttpEntity<?> entity = kakaoHeader();
-
-        System.out.println(url);
 
         ResponseEntity<?> result =
                 restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);

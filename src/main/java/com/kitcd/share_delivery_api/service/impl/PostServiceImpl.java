@@ -12,6 +12,7 @@ import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.WritePostResponseDTO;
 import com.kitcd.share_delivery_api.service.PostService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
+import com.kitcd.share_delivery_api.utils.address.FindAddressWithLocation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,16 +26,16 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final PostCategoryRepository postCategoryRepository;
-
     private final PlaceShareRepository placeShareRepository;
+    private final FindAddressWithLocation findAddressWithLocation;
 
     @Override
     public WritePostResponseDTO writePost(WritePostRequestDTO dto) {
         PostCategory category = postCategoryRepository.findByCategoryName(dto.getCategory());
 
-        Post post = postRepository.save(dto.toEntity(category));
+        Post post = postRepository.save(dto.toEntity(category, findAddressWithLocation));
 
-        PlaceShare placeShare = placeShareRepository.save(dto.getSharePlace().toEntity(post));
+        PlaceShare placeShare = placeShareRepository.save(dto.getSharePlace().toEntity(post, findAddressWithLocation));
 
 
         Account account = ContextHolder.getAccount();
