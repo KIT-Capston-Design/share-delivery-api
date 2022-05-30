@@ -34,9 +34,10 @@ public class PostServiceImpl implements PostService {
         PostCategory category = postCategoryRepository.findByCategoryName(dto.getCategory());
 
         Post post = postRepository.save(dto.toEntity(category, findAddressWithLocation));
-
-        PlaceShare placeShare = placeShareRepository.save(dto.getSharePlace().toEntity(post, findAddressWithLocation));
-
+        PlaceShare placeShare = null;
+        if(null != dto.getSharePlace()) {
+            placeShare = placeShareRepository.save(dto.getSharePlace().toEntity(post, findAddressWithLocation));
+        }
 
         Account account = ContextHolder.getAccount();
 
