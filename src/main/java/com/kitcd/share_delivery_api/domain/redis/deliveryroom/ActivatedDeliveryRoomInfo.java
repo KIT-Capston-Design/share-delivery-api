@@ -17,13 +17,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@RedisHash(value = "auth:activated-delivery-room", timeToLive = 60*60*24*14) //ttl : 초 단위
+@RedisHash(value = "activated-delivery-room", timeToLive = 60*60*24*14) //ttl : 초 단위
 public class ActivatedDeliveryRoomInfo {
     @Id
     @Indexed
     Long deliveryRoomId;
     String fcmGroupToken;
-    List<Long> participatedUsers;
+
+    List<Long> users;
 
     @TimeToLive
     private Long ttl;
