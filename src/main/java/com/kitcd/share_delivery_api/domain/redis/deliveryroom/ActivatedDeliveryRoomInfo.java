@@ -11,6 +11,8 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 
+import java.util.List;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +23,7 @@ public class ActivatedDeliveryRoomInfo {
     @Indexed
     Long deliveryRoomId;
     String fcmGroupToken;
+    List<Long> participatedUsers;
 
     @TimeToLive
     private Long ttl;
