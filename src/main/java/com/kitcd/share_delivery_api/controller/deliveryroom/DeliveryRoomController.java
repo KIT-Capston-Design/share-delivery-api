@@ -188,6 +188,7 @@ public class DeliveryRoomController {
                     ActivatedDeliveryRoomInfo.builder()
                             .deliveryRoomId(deliveryRoomId)
                             .fcmGroupToken(fcmGroupToken)
+                            .participatedUsers(deliveryRoomService.getParticipantsIds(deliveryRoomId))
                             .build()
             );
 
