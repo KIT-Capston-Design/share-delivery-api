@@ -44,6 +44,7 @@ public class JWTFactory {
             Algorithm algorithm = Algorithm.HMAC256(key);
             token = JWT.create() // Token Builder
                     .withIssuer(issuer)
+                    .withClaim("accountId", account.getAccountId())
                     .withClaim("phoneNumber", account.getPhoneNumber())
                     .withClaim("role", account.getRole().toString())
                     .withExpiresAt(createExpirationDate(period))
