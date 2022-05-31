@@ -35,7 +35,7 @@ public class PostController {
 
 
     @PostMapping("")                //multipart로 데이터를 받아옴.                  //null 일 수 있음.
-    public ResponseEntity<?> writePost(@RequestPart(value = "dto") WritePostRequestDTO dto, @RequestParam(value = "images",required = false) List<MultipartFile> images){
+    public ResponseEntity<?> writePost(@RequestPart(value = "post") WritePostRequestDTO dto, @RequestParam(value = "postImages",required = false) List<MultipartFile> images){
         WritePostResponseDTO post = postService.writePost(dto);
 
         if(images != null) {

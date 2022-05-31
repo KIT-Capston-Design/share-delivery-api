@@ -1,13 +1,10 @@
 package com.kitcd.share_delivery_api.controller.deliveryroom;
 
-import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
-import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
-import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.*;
@@ -19,11 +16,9 @@ import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +42,7 @@ public class DeliveryRoomController {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final LoggedOnInformationService loggedOnInformationService;
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
+
 
     //TODO
     // 스프링 시큐리티 어노테이션 통해 주도자의 요청인지 확인 필요
@@ -125,12 +121,7 @@ public class DeliveryRoomController {
 
             DeliveryRoom room = deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation, storeCategory), dto.getMenuList());
 
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    DeliveryRoomEnrollResponseDTO
-                            .builder()
-                            .roomId(room.getDeliveryRoomId())
-                            .build()
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(room.toDTO());
 
         } catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
@@ -138,7 +129,7 @@ public class DeliveryRoomController {
         }
 
     }
-
+    //방 멤버가 계속 바뀌는 형태기 때문에, FCM-GROUP TOKEN은 계속 수정될 수 있음. 매번 재생성 하는걸로 함.
     @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
     public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody JoinRequestDeliveryRoomDTO dto){
         try{
@@ -150,12 +141,15 @@ public class DeliveryRoomController {
 
             entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
 
-            // 방의 주도자에게 참가 신청 알람 전송.
-            firebaseCloudMessageService.sendMessageTo(
-                    loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
-                    room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
-                    "null"
+            //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다.
+            String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
+                    FCMGroupRequest.Type.create,
+                    "DeliveryRoom_" + deliveryRoomId.toString(),
+                    null, //생성 시에는 그룹 키 null로 전송
+                    deliveryRoomService.getParticipantFCMTokens(deliveryRoomId) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
             );
+            //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
+            firebaseCloudMessageService.sendMessageTo(fcmGroupToken, FCMDataType.OPEN_RECRUIT);
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
 

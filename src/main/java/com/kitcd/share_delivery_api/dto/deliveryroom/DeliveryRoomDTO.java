@@ -36,6 +36,7 @@ public class DeliveryRoomDTO {
     @NoArgsConstructor
     @Getter
     public static class Leader{
+        private Long accountId;
         private String nickname;
         private Double mannerScore;
 
