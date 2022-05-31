@@ -11,6 +11,8 @@ import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderRepository;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenuRepository;
+import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
+import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
@@ -22,7 +24,6 @@ import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -49,6 +50,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private AccountRepository accountRepository;
     private AuthService authService;
 
+    private PostCategoryRepository postCategoryRepository;
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -58,7 +60,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadDeliveryRoomData();
         loadEntryOrderData();
         loadOrderMenuData();
-
+        loadPostCategory();
     }
 
     private void loadStoreCategoryData(){
@@ -134,6 +136,16 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createOrderMenuIfNotFound(13L,1L,500L, 5L,"DUMMY MENU 10", null);
         createOrderMenuIfNotFound(14L,1L,500L, 6L,"DUMMY MENU 11", null);
         createOrderMenuIfNotFound(15L,1L,500L, 7L,"DUMMY MENU 12", null);
+    }
+
+    private void loadPostCategory(){
+        createPostCategoryIfNotFound(1L, "동네질문");
+        createPostCategoryIfNotFound(2L, "동네맛집");
+        createPostCategoryIfNotFound(3L, "동네소식");
+        createPostCategoryIfNotFound(4L, "취미생활");
+        createPostCategoryIfNotFound(5L, "분실/실종");
+        createPostCategoryIfNotFound(6L, "품앗이");
+
     }
 
     private OrderMenu createOrderMenuIfNotFound(Long orderMenuId, Long quantity, Long price, Long entryOrderId, String menuName, Long parentId){
@@ -312,6 +324,19 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .orderType(entryOrderType)
                 .deliveryRoom(deliveryRoom.get())
                 .status(status)
+                .build());
+    }
+
+    private PostCategory createPostCategoryIfNotFound(Long postCategoryId, String categoryName){
+        Optional<PostCategory> findStoreCategory = postCategoryRepository.findById(postCategoryId);
+
+        if(findStoreCategory.isPresent()){
+            return findStoreCategory.get();
+        }
+
+        return postCategoryRepository.save(PostCategory.builder()
+                .postCategoryId(postCategoryId)
+                .categoryName(categoryName)
                 .build());
     }
 }

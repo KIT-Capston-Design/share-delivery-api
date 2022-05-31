@@ -50,7 +50,7 @@ public class Post extends BaseTimeEntity {
    private Long likeCount;
 
    @Column(name = "VIEW_COUNT", nullable = false)
-   private Long view_count;
+   private Long viewCount;
 
    @Embedded
    private Location coordinate;
