@@ -127,10 +127,8 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         deliveryRoom.delete();
 
-        DeliveryRoomState deliveryRoomStatus = deliveryRoom.getStatus();
-
         //fcm 메시지 발송
-        State participantsOrderStatus = (deliveryRoomStatus == DeliveryRoomState.OPEN) ? State.PENDING : State.ACCEPTED;
+        State participantsOrderStatus = (deliveryRoom.getStatus() == DeliveryRoomState.OPEN) ? State.PENDING : State.ACCEPTED;
         List<String> participantFCMTokens = getParticipantFCMTokens(deliveryRoomId, participantsOrderStatus);
 
         //TODO: FCM 레거시 API 활용하여 여러 사용자에 한 번에 전송하도록 추후 개선 필요.
