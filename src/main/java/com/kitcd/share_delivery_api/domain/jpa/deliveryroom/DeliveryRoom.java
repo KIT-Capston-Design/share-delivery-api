@@ -100,8 +100,9 @@ public class DeliveryRoom extends BaseTimeEntity {
    public DeliveryRoomDTO toDTO() {
       return DeliveryRoomDTO.builder()
               .leader(DeliveryRoomDTO.Leader.builder()
+                      .accountId(leader.getAccountId())
                       .nickname(leader.getNickname())
-                      .mannerScore(36.5)
+                      .mannerScore(leader.getMannerScore())
                       .build())
               .deliveryRoomId(deliveryRoomId)
               .content(content)

@@ -61,7 +61,7 @@ public class Account extends BaseTimeEntity {
    @Column(name = "ROLE", nullable = true)
    private RoleType role;
 
-   @Column(name = "manner_score", nullable = false)// 자동 계산 되도록.
+   @Column(name = "MANNER_SCORE", nullable = false)// 자동 계산 되도록.
    @ColumnDefault("36.5") // default값 설정.
    private Double mannerScore;
    @Embedded

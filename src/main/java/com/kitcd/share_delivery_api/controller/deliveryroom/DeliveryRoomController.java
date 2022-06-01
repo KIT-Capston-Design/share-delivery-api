@@ -125,12 +125,7 @@ public class DeliveryRoomController {
 
             DeliveryRoom room = deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation, storeCategory), dto.getMenuList());
 
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    DeliveryRoomEnrollResponseDTO
-                            .builder()
-                            .roomId(room.getDeliveryRoomId())
-                            .build()
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(room.toDTO());
 
         } catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());

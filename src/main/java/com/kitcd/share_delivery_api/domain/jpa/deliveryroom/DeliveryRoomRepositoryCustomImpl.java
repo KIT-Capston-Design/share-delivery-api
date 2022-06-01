@@ -41,7 +41,7 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                 String.format("'LINESTRING(%f %f, %f %f)')",
                         northEast.getLongitude(), northEast.getLatitude(), southWest.getLongitude(), southWest.getLatitude());
 
-        Query query = em.createNativeQuery("SELECT a.nickname, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude, r.delivery_room_id, r.estimated_delivery_tip"
+        Query query = em.createNativeQuery("SELECT a.account_id, a.nickname, a.manner_score, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude, r.delivery_room_id, r.estimated_delivery_tip"
                         + " FROM ACCOUNT a JOIN DELIVERY_ROOM r ON r.LEADER_ID = a.ACCOUNT_ID JOIN RECEIVING_LOCATION rl ON r.receiving_location_id = rl.receiving_location_id"
                         + " WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + mbr + ", rl.location)").setMaxResults(10);
 
@@ -54,23 +54,24 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                 resultList.stream().map(
                         room -> DeliveryRoomDTO.builder()
                                 .leader(DeliveryRoomDTO.Leader.builder()
-                                        .nickname((String) room[0])
-                                        .mannerScore(36.5)
+                                        .accountId((Long) room[0])
+                                        .nickname((String) room[1])
+                                        .mannerScore((Double) room[2])
                                         .build())
-                                .content((String) room[1])
-                                .limitPerson(((BigInteger)room[2]).longValue())
-                                .storeLink((String)room[3])
-                                .status((DeliveryRoomState)room[4])
-                                .createdDateTime(((Timestamp) room[5]).toLocalDateTime())
-                                .platformType((PlatformType) room[6])
+                                .content((String) room[3])
+                                .limitPerson(((BigInteger)room[4]).longValue())
+                                .storeLink((String)room[5])
+                                .status((DeliveryRoomState)room[6])
+                                .createdDateTime(((Timestamp) room[7]).toLocalDateTime())
+                                .platformType((PlatformType) room[8])
                                 .receivingLocation(LocationDTO.builder()
-                                        .description((String) room[7])
-                                        .address((String)room[8])
-                                        .longitude((Double) room[10])
-                                        .latitude((Double) room[9])
+                                        .description((String) room[9])
+                                        .address((String)room[10])
+                                        .longitude((Double) room[12])
+                                        .latitude((Double) room[11])
                                         .build())
-                                .deliveryRoomId(bigIntegerObjToLong(room[11]))
-                                .deliveryTip(bigIntegerObjToLong(room[12]))
+                                .deliveryRoomId(bigIntegerObjToLong(room[13]))
+                                .deliveryTip(bigIntegerObjToLong(room[14]))
                                 .build()
                 ).collect(Collectors.toList());
 
