@@ -2,11 +2,14 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
+import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
 import com.kitcd.share_delivery_api.service.LoggedOnInformationService;
+import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
@@ -29,9 +32,10 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final EntryOrderService entryOrderService;
     private final LoggedOnInformationService loggedOnInformationService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Override
-    public DeliveryRoomDTO getDeliveryRoom(Long deliveryRoomId) {
+    public DeliveryRoomDTO getDeliveryRoomDTO(Long deliveryRoomId) {
 
         DeliveryRoom deliveryRoom = deliveryRoomRepository.getDeliveryRoomByDeliveryRoomId(deliveryRoomId);
 
@@ -81,19 +85,19 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
     }
 
     @Override
-    public List<String> getParticipantFCMTokens(Long roomId){
+    public List<String> getParticipantFCMTokens(Long roomId, State state){
 
-        List<Long> participantsIds = getParticipantsIds(roomId);
+        List<Long> participantsIds = getParticipantsIds(roomId, state);
 
         return participantsIds.stream()
                 .map(loggedOnInformationService::getFcmTokenByAccountId)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<Long> getParticipantsIds(Long roomId){
+    @Override // state : 참여자의 주문 처리 상태에 따라 조회 ex) ACCEPTED, PENDING
+    public List<Long> getParticipantsIds(Long roomId, State state){
 
-        List<Long> participantsIds = deliveryRoomRepository.getParticipantsIds(roomId);
+        List<Long> participantsIds = deliveryRoomRepository.getParticipantsIds(roomId, state);
 
         if(participantsIds == null) throw new IllegalArgumentException("해당 delivery room id에 대한 참여자 ids 가져오기 실패");
 
@@ -112,6 +116,29 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         entryOrderService.acceptOrders(deliveryRoomId);
 
         return deliveryRoom;
+    }
+
+    @Override
+    public Long deleteDeliveryRoom(Long deliveryRoomId) {
+
+        DeliveryRoom deliveryRoom = findByDeliveryRoomId(deliveryRoomId);
+
+        deliveryRoom.checkLeader(ContextHolder.getAccountId());
+
+        deliveryRoom.delete();
+
+        DeliveryRoomState deliveryRoomStatus = deliveryRoom.getStatus();
+
+        //fcm 메시지 발송
+        State participantsOrderStatus = (deliveryRoomStatus == DeliveryRoomState.OPEN) ? State.PENDING : State.ACCEPTED;
+        List<String> participantFCMTokens = getParticipantFCMTokens(deliveryRoomId, participantsOrderStatus);
+
+        //TODO: FCM 레거시 API 활용하여 여러 사용자에 한 번에 전송하도록 추후 개선 필요.
+        participantFCMTokens.forEach(
+                token -> firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent())
+        );
+
+        return deliveryRoomId;
     }
 
 }
