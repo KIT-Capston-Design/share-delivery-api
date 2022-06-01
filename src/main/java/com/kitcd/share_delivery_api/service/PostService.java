@@ -1,10 +1,12 @@
 package com.kitcd.share_delivery_api.service;
 
-import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
-import com.kitcd.share_delivery_api.dto.post.WritePostResponseDTO;
+import com.kitcd.share_delivery_api.dto.post.PostDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface PostService {
 
-    WritePostResponseDTO writePost(WritePostRequestDTO dto);
+    PostDTO writePost(WritePostRequestDTO dto, List<MultipartFile> images);
 }

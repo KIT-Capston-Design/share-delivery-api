@@ -9,19 +9,26 @@ import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
-import com.kitcd.share_delivery_api.dto.post.WritePostResponseDTO;
+import com.kitcd.share_delivery_api.dto.post.PostDTO;
+import com.kitcd.share_delivery_api.service.PostImageService;
 import com.kitcd.share_delivery_api.service.PostService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.address.FindAddressWithLocation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -29,31 +36,30 @@ public class PostServiceImpl implements PostService {
     private final PlaceShareRepository placeShareRepository;
     private final FindAddressWithLocation findAddressWithLocation;
 
+    private final PostImageService postImageService;
+
     @Override
-    public WritePostResponseDTO writePost(WritePostRequestDTO dto) {
+    public PostDTO writePost(WritePostRequestDTO dto, List<MultipartFile> images) {
+
+
         PostCategory category = postCategoryRepository.findByCategoryName(dto.getCategory());
 
-        Post post = postRepository.save(dto.toEntity(category, findAddressWithLocation));
-        PlaceShare placeShare = null;
-        if(null != dto.getSharePlace()) {
-            placeShare = placeShareRepository.save(dto.getSharePlace().toEntity(post, findAddressWithLocation));
+        String address = findAddressWithLocation.getCity(dto.getCoordinate());
+        Post post = postRepository.save(dto.toEntity(category, address));
+
+        if(images != null) {
+            try {
+                postImageService.saveAll(images, post.getPostId());
+            } catch (FileUploadException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
 
-        Account account = ContextHolder.getAccount();
+        if(null != dto.getSharePlace()) {
+            PlaceShare placeShare = placeShareRepository.save(dto.getSharePlace().toEntity(post, findAddressWithLocation));
+            post = postRepository.save(dto.toEntity(placeShare, category, address));
+        }
 
-        return WritePostResponseDTO.builder()
-                .postId(post.getPostId())
-                .content(post.getContent())
-                .createdDateTime(post.getCreatedDate())
-                .writer(WritePostResponseDTO.Writer.builder()
-                        .accountId(account.getAccountId())
-                        .mannerScore(account.getMannerScore())
-                        .nickName(account.getNickname())
-                        .build())
-                .category(category.getCategoryName())
-                .postDetail(WritePostResponseDTO.PostDetail.builder()
-                        .coordinate(placeShare.getCoordinate()).
-                        build())
-                .build();
+        return post.toDTO();
     }
 }

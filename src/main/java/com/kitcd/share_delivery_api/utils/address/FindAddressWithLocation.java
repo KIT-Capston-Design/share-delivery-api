@@ -18,9 +18,9 @@ import java.util.Map;
 public class FindAddressWithLocation {
 
     //Value 어노테이션으로 application.yml에 참조 식으로 설정하려 했으나 ${open-api.kakao.rest-api-key}가 반환. 도움 부탁드립니다.
-    @Value("033d34b2975f1102cc144098338a95ce") private String restApiKey;
+    @Value("${open-api.kakao-map.rest-api-key}") private String restApiKey;
 
-    @Value("https://dapi.kakao.com/v2/local/geo/coord2address.json?input_coord=WGS84&") private String kakaoUrl;
+    @Value("${open-api.kakao-map.url}") private String kakaoUrl;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -47,9 +47,19 @@ public class FindAddressWithLocation {
                 e.printStackTrace();
             }
         }
-
-        return address;
+        return address.strip();
     }
+    public String getCity(Location location){
+        String address = coordToAddr(location);
+        String[] addressSplit = address.split(" ");
+
+        if(address.contains("광역시") || address.contains("특별시")){
+            return addressSplit[0];
+        }
+
+        return addressSplit[1];
+    }
+
     // header 설정
     private HttpEntity<?> kakaoHeader() {
         HttpHeaders header = new HttpHeaders();

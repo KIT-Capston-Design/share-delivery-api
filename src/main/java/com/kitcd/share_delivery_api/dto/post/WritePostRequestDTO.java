@@ -27,15 +27,28 @@ public class WritePostRequestDTO {
 
 
 
-    public Post toEntity(PostCategory postCategory, FindAddressWithLocation findAddressWithLocation){
+    public Post toEntity(PostCategory postCategory, String address){
         return Post.builder()
                 .content(content)
                 .account(ContextHolder.getAccount())
-                .Address(findAddressWithLocation.coordToAddr(coordinate))
+                .Address(address)
                 .coordinate(coordinate)
                 .likeCount(0L)
                 .viewCount(0L)
                 .postCategory(postCategory)
+                .status(State.NORMAL)
+                .build();
+    }
+    public Post toEntity(PlaceShare placeShare, PostCategory postCategory, String address){
+        return Post.builder()
+                .content(content)
+                .account(ContextHolder.getAccount())
+                .Address(address)
+                .coordinate(coordinate)
+                .likeCount(0L)
+                .viewCount(0L)
+                .postCategory(postCategory)
+                .sharedPlace(placeShare)
                 .status(State.NORMAL)
                 .build();
     }
