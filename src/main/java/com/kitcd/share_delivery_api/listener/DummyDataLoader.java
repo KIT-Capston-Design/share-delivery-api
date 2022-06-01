@@ -191,6 +191,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .email("DUMMY EMAIL DATA")
                 .status(State.NORMAL)
                 .role(RoleType.ROLE_USER)
+                        .mannerScore(36.5)
                 .bankAccount(BankAccount.builder()
                         .accountHolder("DUMMY NAME")
                         .accountNumber("DUMMY ACCOUNT NUMBER")
