@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -61,9 +62,9 @@ public class Account extends BaseTimeEntity {
    @Column(name = "ROLE", nullable = true)
    private RoleType role;
 
+
    @Column(name = "MANNER_SCORE", nullable = false)// 자동 계산 되도록.
-   @ColumnDefault("36.5") // default값 설정.
-   private Double mannerScore;
+   private Double mannerScore = 36.5; //default값 설정
    @Embedded
    private BankAccount bankAccount;
 
