@@ -133,7 +133,7 @@ public class DeliveryRoom extends BaseTimeEntity {
    }
 
    public void delete() {
-      if(!(status.equals(DeliveryRoomState.OPEN) || status.equals(DeliveryRoomState.WAITING_DELIVERY))){
+      if(!(status.equals(DeliveryRoomState.OPEN) || status.equals(DeliveryRoomState.WAITING_PAYMENT))){
          throw new IllegalStateException("모집글을 삭제할 수 있는 상태가 아닙니다.");
       }
       status = DeliveryRoomState.DELETED;
