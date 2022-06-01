@@ -1,13 +1,10 @@
 package com.kitcd.share_delivery_api.controller.deliveryroom;
 
-import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
-import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
-import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformationRedisRepository;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.*;
@@ -19,11 +16,9 @@ import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,14 +43,12 @@ public class DeliveryRoomController {
     private final LoggedOnInformationService loggedOnInformationService;
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
-    //TODO
-    // 스프링 시큐리티 어노테이션 통해 주도자의 요청인지 확인 필요
     @GetMapping("delivery-rooms/orders-reject")
     public ResponseEntity<?> rejectOrder(@RequestParam(name = "userId") @NotNull Long userId, @RequestParam(name = "roomId") @NotNull Long roomId) {
 
         try{
             DeliveryRoom deliveryRoom = deliveryRoomService.findByDeliveryRoomId(roomId);
-
+            deliveryRoom.checkLeader(ContextHolder.getAccountId());
             entryOrderService.rejectEntryOrder(userId, deliveryRoom);
 
             // 거절된 참여자에게 push 알림 전송
@@ -68,9 +61,13 @@ public class DeliveryRoomController {
         } catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage() + " is not found");
 
+        } catch (AccessDeniedException ade){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
+
         } catch (Exception ex){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
+
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
@@ -199,7 +196,6 @@ public class DeliveryRoomController {
         } catch (AccessDeniedException ade){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
         }
-
 
     }
 
