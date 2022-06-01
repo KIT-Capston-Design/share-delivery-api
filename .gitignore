@@ -39,3 +39,5 @@ out/
 /src/main/resources/firebase/fcm-private-key.json
 .DS_Store
 /src/main/resources/application.yml
+
+uploaded_images/

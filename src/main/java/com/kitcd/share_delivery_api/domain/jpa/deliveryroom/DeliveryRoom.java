@@ -131,4 +131,11 @@ public class DeliveryRoom extends BaseTimeEntity {
    public void checkLeader(Long accountId) {
       if(!leader.getAccountId().equals(accountId)) throw new AccessDeniedException("Access is Denied");
    }
+
+   public void delete() {
+      if(!(status.equals(DeliveryRoomState.OPEN) || status.equals(DeliveryRoomState.WAITING_PAYMENT))){
+         throw new IllegalStateException("모집글을 삭제할 수 있는 상태가 아닙니다.");
+      }
+      status = DeliveryRoomState.DELETED;
+   }
 }

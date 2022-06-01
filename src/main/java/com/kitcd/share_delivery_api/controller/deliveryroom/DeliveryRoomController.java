@@ -43,6 +43,26 @@ public class DeliveryRoomController {
     private final LoggedOnInformationService loggedOnInformationService;
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
+    @DeleteMapping("delivery-rooms/{deliveryRoomId}")
+    public ResponseEntity<?> deleteDeliveryRoom(@PathVariable Long deliveryRoomId) {
+
+        try {
+            deliveryRoomService.deleteDeliveryRoom(deliveryRoomId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
+
+        } catch (EntityNotFoundException enfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
+
+        } catch (AccessDeniedException | IllegalStateException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+
+        }
+
+    }
+
+
+
     @GetMapping("delivery-rooms/orders-reject")
     public ResponseEntity<?> rejectOrder(@RequestParam(name = "userId") @NotNull Long userId, @RequestParam(name = "roomId") @NotNull Long roomId) {
 
@@ -87,7 +107,7 @@ public class DeliveryRoomController {
     public ResponseEntity<?> getDeliveryRoom(@PathVariable Long deliveryRoomId) {
 
         try {
-            DeliveryRoomDTO deliveryRoom = deliveryRoomService.getDeliveryRoom(deliveryRoomId);
+            DeliveryRoomDTO deliveryRoom = deliveryRoomService.getDeliveryRoomDTO(deliveryRoomId);
             return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom);
 
         } catch (EntityNotFoundException enfe){
@@ -154,8 +174,6 @@ public class DeliveryRoomController {
         }catch (EntityNotFoundException enfe){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(enfe.getMessage());
 
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -171,7 +189,7 @@ public class DeliveryRoomController {
                     FCMGroupRequest.Type.create,
                     "DeliveryRoom_" + deliveryRoomId.toString(),
                     null, //생성 시에는 그룹 키 null로 전송
-                    deliveryRoomService.getParticipantFCMTokens(deliveryRoomId) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
+                    deliveryRoomService.getParticipantFCMTokens(deliveryRoomId, State.ACCEPTED) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
             );
             //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
             firebaseCloudMessageService.sendMessageTo(fcmGroupToken, FCMDataType.CLOSE_RECRUIT);
@@ -181,13 +199,13 @@ public class DeliveryRoomController {
                     ActivatedDeliveryRoomInfo.builder()
                             .deliveryRoomId(deliveryRoomId)
                             .fcmGroupToken(fcmGroupToken)
-                            .users(deliveryRoomService.getParticipantsIds(deliveryRoomId))
+                            .users(deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED))
                             .build()
             );
 
             return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom.getDeliveryRoomId());
 
-        } catch (IllegalArgumentException | IOException e){
+        } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 
         } catch (EntityNotFoundException enfe){

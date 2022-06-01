@@ -75,16 +75,30 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     // 데이터 메시지 생성 & 발송
     @Override
-    public Response sendMessageTo(String targetToken, FCMDataType type) throws IOException {
-        String message = makeDataMessage(targetToken, type);
-        return v1Forward(message);
+    public Response sendMessageTo(String targetToken, FCMDataType type){
+
+        try {
+            String message = makeDataMessage(targetToken, type);
+            return v1Forward(message);
+
+        } catch(IOException ioe){
+            log.error(ioe.getMessage());
+            return null;
+        }
     }
 
     // 알림 메시지 생성 & 발송
     @Override
-    public Response sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeNotificationMessage(targetToken, title, body);
-        return v1Forward(message);
+    public Response sendMessageTo(String targetToken, String title, String body) {
+
+        try {
+            String message = makeNotificationMessage(targetToken, title, body);
+            return v1Forward(message);
+
+        } catch(IOException ioe){
+            log.error(ioe.getMessage());
+            return null;
+        }
     }
 
 
@@ -153,11 +167,11 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
         return client.newCall(request).execute();
     }
 
-    private Response v1Forward(String message) throws IOException {
+    private Response v1Forward(String message) throws IOException{
+
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
 
-        System.out.println("url : " + V1_URL);
         Request request = new Request.Builder()
                 .url(V1_URL)
                 .post(requestBody)
@@ -166,6 +180,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                 .build();
 
         return client.newCall(request).execute();
+
     }
 
     private String getAccessToken() throws IOException {
