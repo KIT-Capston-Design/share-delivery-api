@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Validated
@@ -148,8 +150,10 @@ public class DeliveryRoomController {
     public ResponseEntity<?> closeRecruit(@PathVariable Long deliveryRoomId){
 
         DeliveryRoom deliveryRoom = deliveryRoomService.closeRecruit(deliveryRoomId);
+
         //클라이언트가 방장인지 체크. 방장이 아닐 경우 AccessDeniedException
         deliveryRoom.checkLeader(ContextHolder.getAccountId());
+
         //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
         String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
                 FCMGroupRequest.Type.create,
@@ -157,8 +161,11 @@ public class DeliveryRoomController {
                 null, //생성 시에는 그룹 키 null로 전송
                 deliveryRoomService.getParticipantFCMTokens(deliveryRoomId, State.ACCEPTED) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
         );
+
         //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
-        firebaseCloudMessageService.sendMessageTo(fcmGroupToken, null, null, FCMDataType.CLOSE_RECRUIT);
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", FCMDataType.CLOSE_RECRUIT);
+        firebaseCloudMessageService.sendMessageTo(fcmGroupToken, null, null, data);
 
         //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
         activatedDeliveryRoomInfoRedisRepository.save(
