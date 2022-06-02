@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
@@ -31,6 +29,9 @@ public class ImageFileServiceImpl implements ImageFileService {
 
     @Override
     public ImageFile save(MultipartFile multipartFile) throws FileUploadException {
+
+        if(multipartFile == null || multipartFile.isEmpty()) return null;
+
         StringBuilder filePath = new StringBuilder();
         filePath.append(fileDir);
         filePath.append(UUID.randomUUID());

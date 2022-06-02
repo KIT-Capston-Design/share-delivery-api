@@ -22,7 +22,7 @@ public class AccountDTO {
     private Long accountId ;
     private String phoneNumber ;
     private String nickname ;
-    private ImageFile profileImage ;
+    private String profileImageUrl ;
     private String email ;
     private State status ;
     private RoleType role ;

@@ -21,6 +21,7 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
+import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -160,7 +161,7 @@ public class Account extends BaseTimeEntity {
               .accountId(accountId)
               .phoneNumber(phoneNumber)
               .nickname(nickname)
-              .profileImage(profileImage)
+              .profileImageUrl((profileImage != null) ? profileImage.extractUrl() : null)
               .email(email)
               .status(status)
               .role(role)
@@ -177,5 +178,20 @@ public class Account extends BaseTimeEntity {
               .modifiedDate(getModifiedDate())
               .mannerScore(mannerScore)
               .build();
+   }
+
+   public void updateAccountInformation(AccountModificationDTO dto, ImageFile imageFile){
+
+      String newEmail = dto.getEmail();
+      String newNickName = dto.getNickName();
+
+      if(newEmail == null && newNickName == null && imageFile != null ){
+         throw new IllegalArgumentException("적어도 하나 이상의 수정사항이 있어야 합니다.");
+      }
+
+      if(newEmail != null) email = newEmail;
+      if(newNickName != null) nickname = newNickName;
+      if(imageFile != null) profileImage = imageFile;
+
    }
 }
