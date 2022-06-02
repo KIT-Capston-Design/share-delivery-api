@@ -50,7 +50,7 @@ public class JsonAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         //json web token 생성
         JWTDTO jwtDto = JWTDTO.builder()
-                        .account(account)
+                        .account(account.toDTO())
                         .accessToken(jwtFactory.createAccessToken(account))
                         .refreshToken(jwtFactory.createRefreshToken(account))
                 .build();
