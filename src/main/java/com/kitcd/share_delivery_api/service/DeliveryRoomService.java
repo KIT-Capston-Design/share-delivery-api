@@ -35,4 +35,6 @@ public interface DeliveryRoomService {
 
 
      Long deleteDeliveryRoom(Long deliveryRoom);
+
+    Long exitDeliveryRoom(Long deliveryRoomId);
 }

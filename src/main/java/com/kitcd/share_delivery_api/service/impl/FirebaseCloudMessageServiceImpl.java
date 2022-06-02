@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -75,9 +76,9 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     // 알림 메시지 생성 & 발송
     @Override
-    public Response sendMessageTo(String targetToken, String title, String body, FCMDataType type) {
+    public Response sendMessageTo(String targetToken, String title, String body, Map<String, Object> data) {
         try {
-            String message = makeMessage(targetToken, title, body, type);
+            String message = makeMessage(targetToken, title, body, data);
             return v1Forward(message);
 
         } catch(IOException ioe){
@@ -98,7 +99,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     }
 
-    public String makeMessage(String targetToken, String title, String body, FCMDataType fcmDataType) throws JsonProcessingException {
+    public String makeMessage(String targetToken, String title, String body, Map<String, Object> data) throws JsonProcessingException {
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(
                         FCMMessage.Message.builder()
@@ -110,11 +111,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                                                 .image(null)
                                                 .build()
                                 )
-                                .data(
-                                        FCMMessage.Data.builder()
-                                                .type(fcmDataType)
-                                                .build()
-                                )
+                                .data(data)
                                 .build()
                 )
                 .validate_only(false)
