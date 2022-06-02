@@ -11,6 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,13 +32,17 @@ public class FirebaseCloudMessageServiceTest {
         String testMsgTitle = "test title";
         String testMsgBody = "test body";
 
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", FCMDataType.CLOSE_RECRUIT);
+
         //when
         Response notificationMsgRes = firebaseCloudMessageService.sendMessageTo(targetToken, testMsgTitle, testMsgBody, null);
-        Response dataMsgRes = firebaseCloudMessageService.sendMessageTo(targetToken, null, null, FCMDataType.CLOSE_RECRUIT);
+        Response dataMsgRes = firebaseCloudMessageService.sendMessageTo(targetToken, null, null, data);
         System.out.println("notificationMsgRes : " + notificationMsgRes);
         System.out.println("dataMsgRes : " + dataMsgRes);
         System.out.println("notification message :"+ firebaseCloudMessageService.makeMessage(targetToken, testMsgTitle, testMsgBody, null));
-        System.out.println("Data message :"+ firebaseCloudMessageService.makeMessage(targetToken, null, null, FCMDataType.CLOSE_RECRUIT));
+        System.out.println("Data message :"+ firebaseCloudMessageService.makeMessage(targetToken, null, null, data));
 
         //then
         assertTrue(notificationMsgRes.isSuccessful());

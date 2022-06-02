@@ -62,6 +62,12 @@ public class EntryOrder extends BaseTimeEntity {
          throw new IllegalStateException("Order status is not PENDING");
    }
 
+   public void exitDeliveryRoom(){
+      if(status == State.PENDING || status == State.ACCEPTED)
+         status = State.CANCELLED;
+      else
+         throw new IllegalStateException("모집글을 퇴장할 수 있는 주문 상태가 아닙니다.");
+   }
 
    public OrderResDTO toResponseDTO(){
 

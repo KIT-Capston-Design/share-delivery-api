@@ -8,6 +8,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface FirebaseCloudMessageService {
     //그룹 생성/입장/퇴장/삭제(모두퇴장)
@@ -16,5 +17,5 @@ public interface FirebaseCloudMessageService {
     String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens);
 
     // 메시지 생성 & 발송
-    Response sendMessageTo(String targetToken, String title, String body, FCMDataType type);
+    Response sendMessageTo(String targetToken, String title, String body, Map<String, Object> data);
 }
