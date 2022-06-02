@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface ImageFileService {
 
-    ImageFile save(MultipartFile multipartFile) throws FileUploadException;
+    ImageFile save(MultipartFile multipartFile);
 
     void delete(String filePath) throws FileSystemException;
 
-    List<ImageFile> saveAll(List<MultipartFile> multipartFiles) throws FileUploadException;
+    List<ImageFile> saveAll(List<MultipartFile> multipartFiles);
 }

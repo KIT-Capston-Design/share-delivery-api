@@ -161,7 +161,7 @@ public class Account extends BaseTimeEntity {
               .accountId(accountId)
               .phoneNumber(phoneNumber)
               .nickname(nickname)
-              .profileImage(profileImage)
+              .profileImageUrl((profileImage != null) ? profileImage.extractUrl() : null)
               .email(email)
               .status(status)
               .role(role)

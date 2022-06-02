@@ -85,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = findByAccountId(ContextHolder.getAccountId());
 
-        account.updateAccountInformation(dto, imageFileService.save(profileImage);
+        account.updateAccountInformation(dto, imageFileService.save(profileImage));
 
         return account.toDTO();
     }
