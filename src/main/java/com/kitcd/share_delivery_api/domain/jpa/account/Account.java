@@ -63,8 +63,8 @@ public class Account extends BaseTimeEntity {
    private RoleType role;
 
 
-   @Column(name = "MANNER_SCORE", nullable = false)// 자동 계산 되도록.
-   private Double mannerScore = 36.5; //default값 설정
+   @Column(name = "MANNER_SCORE", nullable = false)// 회원가입 될 때 추가되도록 수정
+   private Double mannerScore;
    @Embedded
    private BankAccount bankAccount;
 
@@ -165,7 +165,7 @@ public class Account extends BaseTimeEntity {
               .email(email)
               .status(status)
               .role(role)
-              .bankAccount(bankAccount.toDTO())
+              .bankAccount((bankAccount != null) ? bankAccount.toDTO() : null)
               .build();
    }
 
