@@ -13,4 +13,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     BankAccount getBankAccountById(Long accountId);
 
     Account findByAccountId(Long accountId);
+
+    @Query("select 1 from Account a where a.nickname = :nickName")
+    Integer nickNameDuplicateCheck(String nickName);
 }
