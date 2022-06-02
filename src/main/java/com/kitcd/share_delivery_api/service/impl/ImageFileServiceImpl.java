@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
+@Transactional
 public class ImageFileServiceImpl implements ImageFileService {
 
     @Value("${file.dir}")
@@ -32,16 +32,27 @@ public class ImageFileServiceImpl implements ImageFileService {
     private final ImageFileRepository imageFileRepository;
 
     @Override
-    public ImageFile save(MultipartFile file) throws FileUploadException {
-
+    public ImageFile save(MultipartFile file) {
         String newFileName = UUID.randomUUID().toString();
         String originalFileName = file.getOriginalFilename();
         String fileExtension = Objects.requireNonNull(originalFileName).substring(file.getOriginalFilename().lastIndexOf(".")+1);
+        String fileFullPath = imageFileSaveDir + newFileName + "." + fileExtension;
+
+        //새로 저장될 경로의 파일 객체
+        File newFile = new File(fileFullPath);
+
+        //극악의 중복 발생 시 파일 이름에 숫자 추가
+        for(int i = 0; newFile.exists(); i++){
+            newFileName += Integer.toString(i);
+            fileFullPath = imageFileSaveDir + newFileName + "." + fileExtension;
+            newFile = new File(fileFullPath);
+        }
 
         try{
-            file.transferTo(new File(imageFileSaveDir + newFileName));
+            file.transferTo(newFile);
         }catch (IOException e){
-            throw new FileUploadException("File can not save");
+            //unchecked exception 발생시킬 필요 있기에.
+            throw new IllegalStateException("Failed to save imagefile");
         }
 
         ImageFile imageFile = ImageFile.builder()
@@ -57,25 +68,15 @@ public class ImageFileServiceImpl implements ImageFileService {
 
     @Override
     public List<ImageFile> saveAll(List<MultipartFile> multipartFiles) {
-        List<ImageFile> imageFiles = multipartFiles.stream().map(i -> {
-                    try {
-                        return save(i);
-                    } catch (FileUploadException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        ).collect(Collectors.toList());
-        return imageFiles;
+        return multipartFiles.stream().map(this::save).collect(Collectors.toList());
     }
-
 
     @Override
     public void delete(String filePath) throws FileSystemException {
         File file = new File(filePath);
-        if(!file.exists()) return;
 
-        if(!file.delete()) throw new FileSystemException("파일에 오류가 있습니다.");
+        if(!file.exists()) throw new IllegalStateException("해당 파일이 존재하지 않습니다.");
+
+        if(!file.delete()) throw new FileSystemException("파일을 삭제할 수 없습니다.");
     }
-
-
 }
