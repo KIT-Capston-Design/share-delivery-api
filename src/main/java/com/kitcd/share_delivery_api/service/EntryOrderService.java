@@ -16,7 +16,7 @@ public interface EntryOrderService {
 
     EntryOrder findByAccountIdAndDeliveryRoomId(Long accountId, Long deliveryRoomId);
 
-    void rejectEntryOrder(Long userId, DeliveryRoom deliveryRoom) throws Exception;
+    void rejectEntryOrder(Long userId, DeliveryRoom deliveryRoom);
 
     List<OrderResDTO> getOrderInformation(Long deliveryRoomId);
 

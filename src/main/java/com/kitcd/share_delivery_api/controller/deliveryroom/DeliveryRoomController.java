@@ -46,18 +46,10 @@ public class DeliveryRoomController {
     @DeleteMapping("delivery-rooms/{deliveryRoomId}")
     public ResponseEntity<?> deleteDeliveryRoom(@PathVariable Long deliveryRoomId) {
 
-        try {
-            deliveryRoomService.deleteDeliveryRoom(deliveryRoomId);
+        deliveryRoomService.deleteDeliveryRoom(deliveryRoomId);
 
-            return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
 
-        } catch (EntityNotFoundException enfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
-
-        } catch (AccessDeniedException | IllegalStateException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-
-        }
 
     }
 
@@ -66,28 +58,16 @@ public class DeliveryRoomController {
     @GetMapping("delivery-rooms/orders-reject")
     public ResponseEntity<?> rejectOrder(@RequestParam(name = "userId") @NotNull Long userId, @RequestParam(name = "roomId") @NotNull Long roomId) {
 
-        try{
-            DeliveryRoom deliveryRoom = deliveryRoomService.findByDeliveryRoomId(roomId);
-            deliveryRoom.checkLeader(ContextHolder.getAccountId());
-            entryOrderService.rejectEntryOrder(userId, deliveryRoom);
+        DeliveryRoom deliveryRoom = deliveryRoomService.findByDeliveryRoomId(roomId);
+        deliveryRoom.checkLeader(ContextHolder.getAccountId());
+        entryOrderService.rejectEntryOrder(userId, deliveryRoom);
 
-            // 거절된 참여자에게 push 알림 전송
-            firebaseCloudMessageService.sendMessageTo(
-                    loggedOnInformationService.getFcmTokenByAccountId(ContextHolder.getAccountId()),
-                    deliveryRoom.getContent() + " 방 입장이 거절되었습니다.",
-                    "null"
-            );
-
-        } catch (EntityNotFoundException enfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage() + " is not found");
-
-        } catch (AccessDeniedException ade){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
-
-        } catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
-
+        // 거절된 참여자에게 push 알림 전송
+        firebaseCloudMessageService.sendMessageTo(
+                loggedOnInformationService.getFcmTokenByAccountId(ContextHolder.getAccountId()),
+                deliveryRoom.getContent() + " 방 입장이 거절되었습니다.",
+                "null"
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
@@ -106,14 +86,8 @@ public class DeliveryRoomController {
     @GetMapping("delivery-rooms/{deliveryRoomId}")
     public ResponseEntity<?> getDeliveryRoom(@PathVariable Long deliveryRoomId) {
 
-        try {
-            DeliveryRoomDTO deliveryRoom = deliveryRoomService.getDeliveryRoomDTO(deliveryRoomId);
-            return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom);
-
-        } catch (EntityNotFoundException enfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
-
-        }
+        DeliveryRoomDTO deliveryRoom = deliveryRoomService.getDeliveryRoomDTO(deliveryRoomId);
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom);
 
     }
 
@@ -135,85 +109,65 @@ public class DeliveryRoomController {
     @PostMapping("delivery-rooms")
     public ResponseEntity<?> enrollDeliveryRoom(@RequestBody DeliveryRoomEnrollRequestDTO dto){
 
-        try {
-            ReceivingLocation receivingLocation = receivingLocationService.findByReceivingLocationId(dto.getReceivingLocationId());
+        ReceivingLocation receivingLocation = receivingLocationService.findByReceivingLocationId(dto.getReceivingLocationId());
 
-            StoreCategory storeCategory = storeCategoryService.findStoreCategoryWithName(dto.getStoreCategory());
+        StoreCategory storeCategory = storeCategoryService.findStoreCategoryWithName(dto.getStoreCategory());
 
-            DeliveryRoom room = deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation, storeCategory), dto.getMenuList());
+        DeliveryRoom room = deliveryRoomService.deliveryRoomCreate(dto.toEntity(ContextHolder.getAccount(), receivingLocation, storeCategory), dto.getMenuList());
 
-            return ResponseEntity.status(HttpStatus.OK).body(room.toDTO());
-
-        } catch (EntityNotFoundException enfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
-
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(room.toDTO());
 
     }
 
     @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
     public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody JoinRequestDeliveryRoomDTO dto){
-        try{
-            DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
-            if(!(room.getPeopleNumber() < room.getLimitPerson())){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("인원이 초과되어 참여할 수 없습니다.");
-            }
+        DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
-            entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
-
-            // 방의 주도자에게 참가 신청 알람 전송.
-            firebaseCloudMessageService.sendMessageTo(
-                    loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
-                    room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
-                    "null"
-            );
-
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-
-        }catch (EntityNotFoundException enfe){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(enfe.getMessage());
-
+        if(!(room.getPeopleNumber() < room.getLimitPerson())){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("인원이 초과되어 참여할 수 없습니다.");
         }
+
+        entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
+
+        // 방의 주도자에게 참가 신청 알람 전송.
+        firebaseCloudMessageService.sendMessageTo(
+                loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
+                room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
+                "null"
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+
+
     }
 
     @GetMapping("delivery-rooms/{deliveryRoomId}/close-recruit")
     public ResponseEntity<?> closeRecruit(@PathVariable Long deliveryRoomId){
 
-        try{
-            DeliveryRoom deliveryRoom = deliveryRoomService.closeRecruit(deliveryRoomId);
-            //클라이언트가 방장인지 체크. 방장이 아닐 경우 AccessDeniedException
-            deliveryRoom.checkLeader(ContextHolder.getAccountId());
-            //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
-            String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
-                    FCMGroupRequest.Type.create,
-                    "DeliveryRoom_" + deliveryRoomId.toString(),
-                    null, //생성 시에는 그룹 키 null로 전송
-                    deliveryRoomService.getParticipantFCMTokens(deliveryRoomId, State.ACCEPTED) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
-            );
-            //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
-            firebaseCloudMessageService.sendMessageTo(fcmGroupToken, FCMDataType.CLOSE_RECRUIT);
+        DeliveryRoom deliveryRoom = deliveryRoomService.closeRecruit(deliveryRoomId);
+        //클라이언트가 방장인지 체크. 방장이 아닐 경우 AccessDeniedException
+        deliveryRoom.checkLeader(ContextHolder.getAccountId());
+        //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
+        String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
+                FCMGroupRequest.Type.create,
+                "DeliveryRoom_" + deliveryRoomId.toString(),
+                null, //생성 시에는 그룹 키 null로 전송
+                deliveryRoomService.getParticipantFCMTokens(deliveryRoomId, State.ACCEPTED) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
+        );
+        //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
+        firebaseCloudMessageService.sendMessageTo(fcmGroupToken, FCMDataType.CLOSE_RECRUIT);
 
-            //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
-            activatedDeliveryRoomInfoRedisRepository.save(
-                    ActivatedDeliveryRoomInfo.builder()
-                            .deliveryRoomId(deliveryRoomId)
-                            .fcmGroupToken(fcmGroupToken)
-                            .users(deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED))
-                            .build()
-            );
+        //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
+        activatedDeliveryRoomInfoRedisRepository.save(
+                ActivatedDeliveryRoomInfo.builder()
+                        .deliveryRoomId(deliveryRoomId)
+                        .fcmGroupToken(fcmGroupToken)
+                        .users(deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED))
+                        .build()
+        );
 
-            return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom.getDeliveryRoomId());
-
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-
-        } catch (EntityNotFoundException enfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
-
-        } catch (AccessDeniedException ade){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom.getDeliveryRoomId());
 
     }
 
