@@ -28,9 +28,11 @@ public class ImageFile extends BaseTimeEntity {
    @Column(name = "FILE_PATH", nullable = false)
    private String filePath;
 
-   @JsonIgnore
    @Column(name = "FILE_SIZE", nullable = false)
    private Double fileSize;
 
+   public String extractUrl(){
+      return String.format("/%s/%s.%s", filePath, fileName, fileExtension);
+   }
 
 }

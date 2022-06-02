@@ -3,6 +3,7 @@ package com.kitcd.share_delivery_api.controller.account;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
+import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
 import com.kitcd.share_delivery_api.dto.account.BankAccountDTO;
 import com.kitcd.share_delivery_api.service.AuthService;
@@ -27,6 +28,16 @@ public class AccountController {
     @Value("${open-api.naver-sms.activate}") private Boolean smsIsActivated;
     private final AccountServiceImpl accountService;
     private final AuthService authService;
+
+
+
+    @GetMapping("/{accountId}")
+    public ResponseEntity<?> getAccountProfile(@PathVariable Long accountId) {
+
+        AccountProfileDTO accountProfile = accountService.getAccountProfile(accountId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(accountProfile);
+    }
 
     @PostMapping("")
     public ResponseEntity<?> signUp(@Validated @RequestBody AccountRegistrationDTO dto) {
