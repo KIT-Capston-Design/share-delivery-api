@@ -31,12 +31,9 @@ public class PostController {
 
     @PostMapping("")                //multipart로 데이터를 받아옴.                  //null 일 수 있음.
     public ResponseEntity<?> writePost(@RequestPart(value = "post") WritePostRequestDTO dto, @RequestParam(value = "postImages",required = false) List<MultipartFile> images){
-        PostDTO post = null;
-        try{
-            post = postService.writePost(dto, images);
-        }catch (RuntimeException re){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(re.getMessage());
-        }
+
+        PostDTO post = postService.writePost(dto, images);
+
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 }

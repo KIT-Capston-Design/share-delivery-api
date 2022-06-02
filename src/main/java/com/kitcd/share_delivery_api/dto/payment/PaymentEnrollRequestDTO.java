@@ -13,10 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PaymentEnrollRequestDTO {
-    private Long totalOrderPrice;
     private Long deliveryTip;
     private List<PaymentDiscountEnrollRequestDTO> discounts;
-    private Long totalPaymentPrice;
 
     public Payment toEntity(DeliveryRoom deliveryRoom){
         return Payment.builder().deliveryRoom(deliveryRoom)

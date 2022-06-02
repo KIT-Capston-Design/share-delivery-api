@@ -5,9 +5,11 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomReposito
 import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
 import com.kitcd.share_delivery_api.domain.jpa.payment.PaymentRepository;
 import com.kitcd.share_delivery_api.domain.jpa.paymentdiscount.PaymentDiscount;
+import com.kitcd.share_delivery_api.domain.jpa.paymentorderform.PaymentOrderForm;
 import com.kitcd.share_delivery_api.dto.payment.PaymentEnrollRequestDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.service.PaymentDiscountService;
+import com.kitcd.share_delivery_api.service.PaymentOrderFormService;
 import com.kitcd.share_delivery_api.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,23 +28,20 @@ import java.util.Optional;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final DeliveryRoomRepository deliveryRoomRepository;
+
 
     private final PaymentDiscountService paymentDiscountService;
 
+    private final PaymentOrderFormService paymentOrderFormService;
 
     @Override
-    public void enrollPayment(PaymentEnrollRequestDTO dto, List<MultipartFile> images, Long deliveryRoomId) {
-        Optional<DeliveryRoom> room = deliveryRoomRepository.findById(deliveryRoomId);
-
-        if(room.isEmpty()){
-            throw new EntityNotFoundException("방이 존재하지 않습니다.");
-        }
-
-        Payment payment = paymentRepository.save(dto.toEntity(room.get()));
-
-        List<PaymentDiscount> paymentDiscounts = paymentDiscountService.enrollPaymentDiscount(dto.getDiscounts(), payment);
+    public void enrollPayment(PaymentEnrollRequestDTO dto, List<MultipartFile> images, DeliveryRoom room) {
 
 
+        Payment payment = paymentRepository.save(dto.toEntity(room));
+
+        paymentDiscountService.enrollPaymentDiscount(dto.getDiscounts(), payment);
+
+        paymentOrderFormService.enrollPaymentOrderForm(images,payment);
     }
 }
