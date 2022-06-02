@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,42 +25,34 @@ import java.util.stream.Collectors;
 @Slf4j
 
 public class ImageFileServiceImpl implements ImageFileService {
+
     @Value("${file.dir}")
-    private String fileDir;
+    private String imageFileSaveDir;
 
     private final ImageFileRepository imageFileRepository;
 
     @Override
-    public ImageFile save(MultipartFile multipartFile) throws FileUploadException {
-        StringBuilder filePath = new StringBuilder();
-        filePath.append(fileDir);
-        filePath.append(UUID.randomUUID());
+    public ImageFile save(MultipartFile file) throws FileUploadException {
+
+        String newFileName = UUID.randomUUID().toString();
+        String originalFileName = file.getOriginalFilename();
+        String fileExtension = Objects.requireNonNull(originalFileName).substring(file.getOriginalFilename().lastIndexOf(".")+1);
 
         try{
-            multipartFile.transferTo(new File(filePath.toString()));
+            file.transferTo(new File(imageFileSaveDir + newFileName));
         }catch (IOException e){
             throw new FileUploadException("File can not save");
         }
 
         ImageFile imageFile = ImageFile.builder()
-                .filePath(filePath.toString())
-                .fileExtension(multipartFile
-                        .getOriginalFilename()
-                        .substring(multipartFile.getOriginalFilename().lastIndexOf(".")+1))
-                .fileName(multipartFile.getName())
-                .fileSize(multipartFile.getSize()/(double)1000) //kb로 치환
+                .dirPath(imageFileSaveDir)
+                .fileName(newFileName)
+                .originalFileName(originalFileName)
+                .fileExtension(fileExtension)
+                .fileSize(file.getSize()/(double)1000) //kb로 치환
                 .build();
 
-
         return imageFileRepository.save(imageFile);
-    }
-
-    @Override
-    public void delete(String filePath) throws FileSystemException {
-        File file = new File(filePath);
-        if(!file.exists()) return;
-
-        if(!file.delete()) throw new FileSystemException("파일에 오류가 있습니다.");
     }
 
     @Override
@@ -74,4 +67,15 @@ public class ImageFileServiceImpl implements ImageFileService {
         ).collect(Collectors.toList());
         return imageFiles;
     }
+
+
+    @Override
+    public void delete(String filePath) throws FileSystemException {
+        File file = new File(filePath);
+        if(!file.exists()) return;
+
+        if(!file.delete()) throw new FileSystemException("파일에 오류가 있습니다.");
+    }
+
+
 }
