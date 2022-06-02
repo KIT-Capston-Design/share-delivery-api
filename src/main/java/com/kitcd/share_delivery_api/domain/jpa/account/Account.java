@@ -21,11 +21,10 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
+import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -166,6 +165,17 @@ public class Account extends BaseTimeEntity {
               .status(status)
               .role(role)
               .bankAccount(bankAccount.toDTO())
+              .build();
+   }
+
+   public AccountProfileDTO toAccountProfileDTO() {
+      return AccountProfileDTO.builder()
+              .accountId(accountId)
+              .nickname(nickname)
+              .profileImageUrl((profileImage != null) ? profileImage.extractUrl() : null)
+              .createdDate(getCreatedDate())
+              .modifiedDate(getModifiedDate())
+              .mannerScore(mannerScore)
               .build();
    }
 }
