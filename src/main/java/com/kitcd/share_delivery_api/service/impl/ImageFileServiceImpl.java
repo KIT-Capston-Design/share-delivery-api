@@ -5,13 +5,11 @@ import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFileRepository;
 import com.kitcd.share_delivery_api.service.ImageFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
@@ -26,8 +24,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class ImageFileServiceImpl implements ImageFileService {
 
-    @Value("${file.dir}")
-    private String imageFileSaveDir;
+    @Value("${web.static.base-dir}")
+    private String BASE_DIR;
+    private static final String IMAGE_DIR = "images/";
 
     private final ImageFileRepository imageFileRepository;
 
@@ -36,7 +35,7 @@ public class ImageFileServiceImpl implements ImageFileService {
         String newFileName = UUID.randomUUID().toString();
         String originalFileName = file.getOriginalFilename();
         String fileExtension = Objects.requireNonNull(originalFileName).substring(file.getOriginalFilename().lastIndexOf(".")+1);
-        String fileFullPath = imageFileSaveDir + newFileName + "." + fileExtension;
+        String fileFullPath = BASE_DIR + IMAGE_DIR + newFileName + "." + fileExtension;
 
         //새로 저장될 경로의 파일 객체
         File newFile = new File(fileFullPath);
@@ -44,7 +43,7 @@ public class ImageFileServiceImpl implements ImageFileService {
         //극악의 중복 발생 시 파일 이름에 숫자 추가
         for(int i = 0; newFile.exists(); i++){
             newFileName += Integer.toString(i);
-            fileFullPath = imageFileSaveDir + newFileName + "." + fileExtension;
+            fileFullPath = BASE_DIR + IMAGE_DIR + newFileName + "." + fileExtension;
             newFile = new File(fileFullPath);
         }
 
@@ -56,7 +55,7 @@ public class ImageFileServiceImpl implements ImageFileService {
         }
 
         ImageFile imageFile = ImageFile.builder()
-                .dirPath(imageFileSaveDir)
+                .dirPath(IMAGE_DIR)
                 .fileName(newFileName)
                 .originalFileName(originalFileName)
                 .fileExtension(fileExtension)
