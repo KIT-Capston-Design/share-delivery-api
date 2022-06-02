@@ -60,9 +60,7 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Verification Failed");
         }
 
-
     }
-
 
     @PostMapping("/bank-account")
     public ResponseEntity<?> enrollMyBankAccount(BankAccountDTO bankAccountDTO) {
@@ -90,6 +88,12 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    @GetMapping("/nick-name-dp-check/{nickName}")
+    public ResponseEntity<?> nickNameDuplicateCheck(@PathVariable String nickName) {
 
+        boolean result = accountService.nickNameDuplicateCheck(nickName);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 
 }

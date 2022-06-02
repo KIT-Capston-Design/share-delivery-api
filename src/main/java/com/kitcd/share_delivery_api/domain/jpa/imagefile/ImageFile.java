@@ -35,7 +35,7 @@ public class ImageFile extends BaseTimeEntity {
    private Double fileSize;
 
    public String extractUrl(){
-      return String.format("/%s/%s.%s", dirPath, fileName, fileExtension);
+      return String.format("/%s%s.%s", dirPath, fileName, fileExtension);
    }
 
 }

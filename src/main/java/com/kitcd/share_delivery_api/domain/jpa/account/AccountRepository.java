@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
+
+    @Query("select a from Account a left join fetch a.profileImage where a.phoneNumber = :phoneNumber")
     Account findByPhoneNumber(String phoneNumber);
     Account findByEmail(String email);
 
@@ -11,4 +13,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     BankAccount getBankAccountById(Long accountId);
 
     Account findByAccountId(Long accountId);
+
+    @Query("select 1 from Account a where a.nickname = :nickName")
+    Integer nickNameDuplicateCheck(String nickName);
 }

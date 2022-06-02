@@ -80,6 +80,7 @@ public class AccountServiceImpl implements AccountService {
         return accountId;
     }
 
+
     @Override
     public AccountDTO modifyMyAccountInformation(AccountModificationDTO dto, MultipartFile profileImage) {
 
@@ -89,4 +90,14 @@ public class AccountServiceImpl implements AccountService {
 
         return account.toDTO();
     }
+
+    @Override
+    public boolean nickNameDuplicateCheck(String nickName) {
+
+        //있으면 1, 없으면 null
+        Integer result = accountRepository.nickNameDuplicateCheck(nickName);
+
+        return !(result == null);
+    }
+
 }

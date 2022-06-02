@@ -171,7 +171,10 @@ public class DeliveryRoomController {
         //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
         Map<String, Object> data = new HashMap<>();
         data.put("type", FCMDataType.CLOSE_RECRUIT);
-        firebaseCloudMessageService.sendMessageTo(fcmGroupToken, null, null, data);
+        data.put("roomId", deliveryRoomId);
+        firebaseCloudMessageService.sendMessageTo(
+                fcmGroupToken, "해당 모집글의 인원 모집이 종료되었습니다. 이제 주문이 시작됩니다.", deliveryRoom.getContent(), data
+        );
 
         //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
         activatedDeliveryRoomInfoRedisRepository.save(

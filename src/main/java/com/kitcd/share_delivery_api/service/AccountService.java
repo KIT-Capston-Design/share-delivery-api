@@ -21,4 +21,6 @@ public interface AccountService {
     AccountDTO modifyMyAccountInformation(AccountModificationDTO dto, MultipartFile profileImage);
 
     Long deleteBankAccount(Long accountId);
+
+    boolean nickNameDuplicateCheck(String nickName);
 }
