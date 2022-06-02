@@ -19,4 +19,6 @@ public interface AccountService {
     AccountProfileDTO getAccountProfile(Long accountId);
 
     AccountDTO modifyMyAccountInformation(AccountModificationDTO dto, MultipartFile profileImage);
+
+    Long deleteBankAccount(Long accountId);
 }

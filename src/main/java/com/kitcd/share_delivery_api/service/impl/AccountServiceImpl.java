@@ -72,6 +72,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Long deleteBankAccount(Long accountId) {
+        Account account = findByAccountId(accountId);
+
+        account.deleteBankAccount();
+
+        return accountId;
+    }
+
+    @Override
     public AccountDTO modifyMyAccountInformation(AccountModificationDTO dto, MultipartFile profileImage) {
 
         Account account = findByAccountId(ContextHolder.getAccountId());

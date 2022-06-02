@@ -161,7 +161,7 @@ public class Account extends BaseTimeEntity {
               .accountId(accountId)
               .phoneNumber(phoneNumber)
               .nickname(nickname)
-              .profileImageUrl((profileImage != null) ? profileImage.extractUrl() : null)
+              .profileImage(profileImage)
               .email(email)
               .status(status)
               .role(role)
@@ -192,6 +192,13 @@ public class Account extends BaseTimeEntity {
       if(newEmail != null) email = newEmail;
       if(newNickName != null) nickname = newNickName;
       if(imageFile != null) profileImage = imageFile;
+
+   }
+
+   public void deleteBankAccount() {
+
+      if(bankAccount == null) throw new IllegalStateException("은행계좌가 이미 존재하지 않아 삭제할 수 없습니다.");
+      bankAccount = null;
 
    }
 }
