@@ -66,7 +66,8 @@ public class DeliveryRoomController {
         firebaseCloudMessageService.sendMessageTo(
                 loggedOnInformationService.getFcmTokenByAccountId(ContextHolder.getAccountId()),
                 deliveryRoom.getContent() + " 방 입장이 거절되었습니다.",
-                "null"
+                "null",
+                null
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -135,6 +136,7 @@ public class DeliveryRoomController {
                 loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
                 room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
                 "null"
+                ,null
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -156,7 +158,7 @@ public class DeliveryRoomController {
                 deliveryRoomService.getParticipantFCMTokens(deliveryRoomId, State.ACCEPTED) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
         );
         //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
-        firebaseCloudMessageService.sendMessageTo(fcmGroupToken, FCMDataType.CLOSE_RECRUIT);
+        firebaseCloudMessageService.sendMessageTo(fcmGroupToken, null, null, FCMDataType.CLOSE_RECRUIT);
 
         //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
         activatedDeliveryRoomInfoRedisRepository.save(

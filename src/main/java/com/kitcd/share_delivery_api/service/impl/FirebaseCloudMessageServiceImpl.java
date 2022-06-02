@@ -73,26 +73,11 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     }
 
-    // 데이터 메시지 생성 & 발송
-    @Override
-    public Response sendMessageTo(String targetToken, FCMDataType type){
-
-        try {
-            String message = makeDataMessage(targetToken, type);
-            return v1Forward(message);
-
-        } catch(IOException ioe){
-            log.error(ioe.getMessage());
-            return null;
-        }
-    }
-
     // 알림 메시지 생성 & 발송
     @Override
-    public Response sendMessageTo(String targetToken, String title, String body) {
-
+    public Response sendMessageTo(String targetToken, String title, String body, FCMDataType type) {
         try {
-            String message = makeNotificationMessage(targetToken, title, body);
+            String message = makeMessage(targetToken, title, body, type);
             return v1Forward(message);
 
         } catch(IOException ioe){
@@ -113,7 +98,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     }
 
-    public String makeNotificationMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    public String makeMessage(String targetToken, String title, String body, FCMDataType fcmDataType) throws JsonProcessingException {
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(
                         FCMMessage.Message.builder()
@@ -125,19 +110,6 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                                                 .image(null)
                                                 .build()
                                 )
-                                .build()
-                )
-                .validate_only(false)
-                .build();
-
-        return objectMapper.writeValueAsString(fcmMessage);
-    }
-
-    public String makeDataMessage(String targetToken, FCMDataType fcmDataType) throws JsonProcessingException {
-        FCMMessage fcmMessage = FCMMessage.builder()
-                .message(
-                        FCMMessage.Message.builder()
-                                .token(targetToken)
                                 .data(
                                         FCMMessage.Data.builder()
                                                 .type(fcmDataType)
@@ -150,7 +122,6 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
-
 
     private Response legacyForward(String message) throws IOException {
         OkHttpClient client = new OkHttpClient();
