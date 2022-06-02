@@ -7,8 +7,6 @@ import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -33,12 +31,12 @@ public class FirebaseCloudMessageServiceTest {
         String testMsgBody = "test body";
 
         //when
-        Response notificationMsgRes = firebaseCloudMessageService.sendMessageTo(targetToken, testMsgTitle, testMsgBody);
-        Response dataMsgRes = firebaseCloudMessageService.sendMessageTo(targetToken, FCMDataType.CLOSE_RECRUIT);
+        Response notificationMsgRes = firebaseCloudMessageService.sendMessageTo(targetToken, testMsgTitle, testMsgBody, null);
+        Response dataMsgRes = firebaseCloudMessageService.sendMessageTo(targetToken, null, null, FCMDataType.CLOSE_RECRUIT);
         System.out.println("notificationMsgRes : " + notificationMsgRes);
         System.out.println("dataMsgRes : " + dataMsgRes);
-        System.out.println("notification message :"+ firebaseCloudMessageService.makeNotificationMessage(targetToken, testMsgTitle, testMsgBody));
-        System.out.println("Data message :"+ firebaseCloudMessageService.makeDataMessage(targetToken, FCMDataType.CLOSE_RECRUIT));
+        System.out.println("notification message :"+ firebaseCloudMessageService.makeMessage(targetToken, testMsgTitle, testMsgBody, null));
+        System.out.println("Data message :"+ firebaseCloudMessageService.makeMessage(targetToken, null, null, FCMDataType.CLOSE_RECRUIT));
 
         //then
         assertTrue(notificationMsgRes.isSuccessful());

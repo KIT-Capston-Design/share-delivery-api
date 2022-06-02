@@ -15,8 +15,6 @@ public interface FirebaseCloudMessageService {
     //실패 시 null 반환
     String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens);
 
-    // 데이터 메시지 생성 & 발송
-    Response sendMessageTo(String targetToken, FCMDataType type);
-
-    Response sendMessageTo(String targetToken, String title, String body);
+    // 메시지 생성 & 발송
+    Response sendMessageTo(String targetToken, String title, String body, FCMDataType type);
 }

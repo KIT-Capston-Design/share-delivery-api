@@ -133,7 +133,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         //TODO: FCM 레거시 API 활용하여 여러 사용자에 한 번에 전송하도록 추후 개선 필요.
         participantFCMTokens.forEach(
-                token -> firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent())
+                token -> firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent(), null)
         );
 
         return deliveryRoomId;
