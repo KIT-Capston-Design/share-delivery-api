@@ -32,6 +32,9 @@ public class ImageFileServiceImpl implements ImageFileService {
 
     @Override
     public ImageFile save(MultipartFile file) {
+
+        if(file == null || file.isEmpty()) return null;
+
         String newFileName = UUID.randomUUID().toString();
         String originalFileName = file.getOriginalFilename();
         String fileExtension = Objects.requireNonNull(originalFileName).substring(file.getOriginalFilename().lastIndexOf(".")+1);

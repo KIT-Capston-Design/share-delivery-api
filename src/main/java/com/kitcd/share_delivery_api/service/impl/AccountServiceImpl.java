@@ -3,13 +3,18 @@ package com.kitcd.share_delivery_api.service.impl;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
+import com.kitcd.share_delivery_api.dto.account.AccountDTO;
+import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
+import com.kitcd.share_delivery_api.service.ImageFileService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.FetchNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
@@ -19,6 +24,7 @@ import javax.transaction.Transactional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final ImageFileService imageFileService;
 
     @Override
     public BankAccount getBankAccount(Long accountId) {
@@ -72,5 +78,15 @@ public class AccountServiceImpl implements AccountService {
         account.deleteBankAccount();
 
         return accountId;
+    }
+
+    @Override
+    public AccountDTO modifyMyAccountInformation(AccountModificationDTO dto, MultipartFile profileImage) {
+
+        Account account = findByAccountId(ContextHolder.getAccountId());
+
+        account.updateAccountInformation(dto, imageFileService.save(profileImage));
+
+        return account.toDTO();
     }
 }
