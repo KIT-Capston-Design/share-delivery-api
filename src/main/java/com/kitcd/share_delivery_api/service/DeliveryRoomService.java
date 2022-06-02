@@ -1,19 +1,18 @@
 package com.kitcd.share_delivery_api.service;
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface DeliveryRoomService {
     DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList);
 
-    DeliveryRoomDTO getDeliveryRoom(Long deliveryRoomId);
+    DeliveryRoomDTO getDeliveryRoomDTO(Long deliveryRoomId);
     List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance);
 
 
@@ -23,10 +22,10 @@ public interface DeliveryRoomService {
 
     DeliveryRoom findByDeliveryRoomId(Long roomId);
 
-    List<String> getParticipantFCMTokens(Long roomId);
+    List<String> getParticipantFCMTokens(Long roomId, State state);
 
-    List<Long> getParticipantsIds(Long roomId);
-
+    // state : 참여자의 주문 처리 상태에 따라 조회 ex) ACCEPTED, PENDING
+    List<Long> getParticipantsIds(Long roomId, State state);
 
     /**
      모집글 상태 OPEN -> WAITING_PAYMENT <br/>
@@ -35,4 +34,7 @@ public interface DeliveryRoomService {
     DeliveryRoom closeRecruit(Long deliveryRoomId);
 
 
+     Long deleteDeliveryRoom(Long deliveryRoom);
+
+    Long exitDeliveryRoom(Long deliveryRoomId);
 }

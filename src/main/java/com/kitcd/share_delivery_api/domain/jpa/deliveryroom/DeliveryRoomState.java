@@ -5,5 +5,6 @@ public enum DeliveryRoomState {
     WAITING_PAYMENT,
     WAITING_DELIVERY,
     WAITING_REMITTANCE,
-    COMPLETED
+    COMPLETED,
+    DELETED
 }

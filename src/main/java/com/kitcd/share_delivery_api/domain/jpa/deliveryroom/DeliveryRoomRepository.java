@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.domain.jpa.deliveryroom;
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +22,6 @@ public interface DeliveryRoomRepository extends JpaRepository<DeliveryRoom, Long
     DeliveryRoom getDeliveryRoomByDeliveryRoomId(Long deliveryRoomId);
 
 //    @Query("select eo.account.accountId from DeliveryRoom dr join EntryOrder eo where dr.deliveryRoomId = :roomId and eo.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED")
-    @Query("select eo.account.accountId from EntryOrder eo join eo.deliveryRoom dr where dr.deliveryRoomId = :roomId and eo.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED")
-    List<Long> getParticipantsIds(Long roomId);
+    @Query("select eo.account.accountId from EntryOrder eo join eo.deliveryRoom dr where dr.deliveryRoomId = :roomId and eo.status = :state")
+    List<Long> getParticipantsIds(Long roomId, State state);
 }

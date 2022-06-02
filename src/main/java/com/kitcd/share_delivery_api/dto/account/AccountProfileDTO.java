@@ -15,17 +15,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDTO {
-
+public class AccountProfileDTO {
+    private Long accountId ;
+    private String nickname ;
     private LocalDateTime createdDate ;
     private LocalDateTime modifiedDate ;
-    private Long accountId ;
-    private String phoneNumber ;
-    private String nickname ;
     private String profileImageUrl ;
-    private String email ;
-    private State status ;
-    private RoleType role ;
-    private BankAccountDTO bankAccount ;
+    private Double mannerScore;
 
 }

@@ -21,10 +21,11 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
+import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
+import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -61,9 +62,9 @@ public class Account extends BaseTimeEntity {
    @Column(name = "ROLE", nullable = true)
    private RoleType role;
 
+
    @Column(name = "MANNER_SCORE", nullable = false)// 자동 계산 되도록.
-   @ColumnDefault("36.5") // default값 설정.
-   private Double mannerScore;
+   private Double mannerScore = 36.5; //default값 설정
    @Embedded
    private BankAccount bankAccount;
 
@@ -160,11 +161,44 @@ public class Account extends BaseTimeEntity {
               .accountId(accountId)
               .phoneNumber(phoneNumber)
               .nickname(nickname)
-              .profileImage(profileImage)
+              .profileImageUrl((profileImage != null) ? profileImage.extractUrl() : null)
               .email(email)
               .status(status)
               .role(role)
               .bankAccount(bankAccount.toDTO())
               .build();
+   }
+
+   public AccountProfileDTO toAccountProfileDTO() {
+      return AccountProfileDTO.builder()
+              .accountId(accountId)
+              .nickname(nickname)
+              .profileImageUrl((profileImage != null) ? profileImage.extractUrl() : null)
+              .createdDate(getCreatedDate())
+              .modifiedDate(getModifiedDate())
+              .mannerScore(mannerScore)
+              .build();
+   }
+
+   public void updateAccountInformation(AccountModificationDTO dto, ImageFile imageFile){
+
+      String newEmail = dto.getEmail();
+      String newNickName = dto.getNickName();
+
+      if(newEmail == null && newNickName == null && imageFile != null ){
+         throw new IllegalArgumentException("적어도 하나 이상의 수정사항이 있어야 합니다.");
+      }
+
+      if(newEmail != null) email = newEmail;
+      if(newNickName != null) nickname = newNickName;
+      if(imageFile != null) profileImage = imageFile;
+
+   }
+
+   public void deleteBankAccount() {
+
+      if(bankAccount == null) throw new IllegalStateException("은행계좌가 이미 존재하지 않아 삭제할 수 없습니다.");
+      bankAccount = null;
+
    }
 }

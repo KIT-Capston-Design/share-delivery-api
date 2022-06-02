@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Map;
+
 
 @Builder
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class FCMMessage {
     public static class Message{
         private String token; // device의 fcm 토큰
         private Notification notification;
-        private Data data;
+        private Map<String, Object> data;
     }
 
     @Builder
@@ -29,12 +31,5 @@ public class FCMMessage {
         private String title;
         private String body;
         private String image;
-    }
-
-    @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class Data{
-        private FCMDataType type;
     }
 }

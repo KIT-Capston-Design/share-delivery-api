@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.controller;
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,8 +14,8 @@ public class TestController {
 
     private final DeliveryRoomService deliveryRoomService;
 
-    @GetMapping("")
-    public ResponseEntity<?> test() {
-        return new ResponseEntity<>(deliveryRoomService.getParticipantFCMTokens(1L), HttpStatus.OK);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<?> test() {
+//        return new ResponseEntity<>(deliveryRoomService.getParticipantFCMTokens(1L, State.ACCEPTED), HttpStatus.OK);
+//    }
 }

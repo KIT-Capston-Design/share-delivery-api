@@ -3,8 +3,7 @@ package com.kitcd.share_delivery_api.controller.account;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
-import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
-import com.kitcd.share_delivery_api.dto.account.BankAccountDTO;
+import com.kitcd.share_delivery_api.dto.account.*;
 import com.kitcd.share_delivery_api.service.AuthService;
 import com.kitcd.share_delivery_api.service.impl.AccountServiceImpl;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
@@ -14,8 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.EntityNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Validated
@@ -27,6 +25,24 @@ public class AccountController {
     @Value("${open-api.naver-sms.activate}") private Boolean smsIsActivated;
     private final AccountServiceImpl accountService;
     private final AuthService authService;
+
+    @PatchMapping("")
+    public ResponseEntity<?> modifyMyAccountInformation(
+            @RequestPart(value = "accountDetail") AccountModificationDTO dto,
+            @RequestParam(required = false) MultipartFile profileImage){
+
+        AccountDTO accountDTO = accountService.modifyMyAccountInformation(dto, profileImage);
+
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
+    }
+
+    @GetMapping("/{accountId}")
+    public ResponseEntity<?> getAccountProfile(@PathVariable Long accountId) {
+
+        AccountProfileDTO accountProfile = accountService.getAccountProfile(accountId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(accountProfile);
+    }
 
     @PostMapping("")
     public ResponseEntity<?> signUp(@Validated @RequestBody AccountRegistrationDTO dto) {
@@ -51,30 +67,29 @@ public class AccountController {
     @PostMapping("/bank-account")
     public ResponseEntity<?> enrollMyBankAccount(BankAccountDTO bankAccountDTO) {
 
-        try{
-            Account account = accountService.saveMyBankAccount(bankAccountDTO.toEntity());
+        Account account = accountService.saveMyBankAccount(bankAccountDTO.toEntity());
 
-            return ResponseEntity.status(HttpStatus.OK).body(account.toDTO());
+        return ResponseEntity.status(HttpStatus.OK).body(account.toDTO());
 
-        }catch (IllegalArgumentException iae){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
-
-        }
     }
 
     @GetMapping("/bank-account")
     public ResponseEntity<?> getMyBankAccount() {
 
-        try{
-            BankAccount bankAccount = accountService.getBankAccount(ContextHolder.getAccountId());
+        BankAccount bankAccount = accountService.getBankAccount(ContextHolder.getAccountId());
 
-            return ResponseEntity.status(HttpStatus.OK).body(bankAccount.toDTO());
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccount.toDTO());
 
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-        }
     }
+
+    @DeleteMapping("/bank-account")
+    public ResponseEntity<?> deleteMyBankAccount() {
+
+        accountService.deleteBankAccount(ContextHolder.getAccountId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
 
 
 }

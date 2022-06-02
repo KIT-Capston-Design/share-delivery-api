@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -73,18 +74,17 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     }
 
-    // 데이터 메시지 생성 & 발송
-    @Override
-    public Response sendMessageTo(String targetToken, FCMDataType type) throws IOException {
-        String message = makeDataMessage(targetToken, type);
-        return v1Forward(message);
-    }
-
     // 알림 메시지 생성 & 발송
     @Override
-    public Response sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeNotificationMessage(targetToken, title, body);
-        return v1Forward(message);
+    public Response sendMessageTo(String targetToken, String title, String body, Map<String, Object> data) {
+        try {
+            String message = makeMessage(targetToken, title, body, data);
+            return v1Forward(message);
+
+        } catch(IOException ioe){
+            log.error(ioe.getMessage());
+            return null;
+        }
     }
 
 
@@ -99,7 +99,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     }
 
-    public String makeNotificationMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    public String makeMessage(String targetToken, String title, String body, Map<String, Object> data) throws JsonProcessingException {
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(
                         FCMMessage.Message.builder()
@@ -111,6 +111,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                                                 .image(null)
                                                 .build()
                                 )
+                                .data(data)
                                 .build()
                 )
                 .validate_only(false)
@@ -118,25 +119,6 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
-
-    public String makeDataMessage(String targetToken, FCMDataType fcmDataType) throws JsonProcessingException {
-        FCMMessage fcmMessage = FCMMessage.builder()
-                .message(
-                        FCMMessage.Message.builder()
-                                .token(targetToken)
-                                .data(
-                                        FCMMessage.Data.builder()
-                                                .type(fcmDataType)
-                                                .build()
-                                )
-                                .build()
-                )
-                .validate_only(false)
-                .build();
-
-        return objectMapper.writeValueAsString(fcmMessage);
-    }
-
 
     private Response legacyForward(String message) throws IOException {
         OkHttpClient client = new OkHttpClient();
@@ -153,11 +135,11 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
         return client.newCall(request).execute();
     }
 
-    private Response v1Forward(String message) throws IOException {
+    private Response v1Forward(String message) throws IOException{
+
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
 
-        System.out.println("url : " + V1_URL);
         Request request = new Request.Builder()
                 .url(V1_URL)
                 .post(requestBody)
@@ -166,6 +148,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
                 .build();
 
         return client.newCall(request).execute();
+
     }
 
     private String getAccessToken() throws IOException {
