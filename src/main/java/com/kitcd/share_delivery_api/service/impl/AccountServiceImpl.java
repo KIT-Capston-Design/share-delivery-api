@@ -64,4 +64,13 @@ public class AccountServiceImpl implements AccountService {
     public AccountProfileDTO getAccountProfile(Long accountId) {
         return findByAccountId(accountId).toAccountProfileDTO();
     }
+
+    @Override
+    public Long deleteBankAccount(Long accountId) {
+        Account account = findByAccountId(accountId);
+
+        account.deleteBankAccount();
+
+        return accountId;
+    }
 }

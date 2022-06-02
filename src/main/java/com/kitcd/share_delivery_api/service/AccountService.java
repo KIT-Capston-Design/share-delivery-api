@@ -14,4 +14,6 @@ public interface AccountService {
     Account saveMyBankAccount(BankAccount toEntity);
 
     AccountProfileDTO getAccountProfile(Long accountId);
+
+    Long deleteBankAccount(Long accountId);
 }

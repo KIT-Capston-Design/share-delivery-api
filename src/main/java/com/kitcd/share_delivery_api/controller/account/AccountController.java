@@ -77,5 +77,14 @@ public class AccountController {
 
     }
 
+    @DeleteMapping("/bank-account")
+    public ResponseEntity<?> deleteMyBankAccount() {
+
+        accountService.deleteBankAccount(ContextHolder.getAccountId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+
 
 }
