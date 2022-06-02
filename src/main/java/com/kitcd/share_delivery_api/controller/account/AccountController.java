@@ -51,29 +51,19 @@ public class AccountController {
     @PostMapping("/bank-account")
     public ResponseEntity<?> enrollMyBankAccount(BankAccountDTO bankAccountDTO) {
 
-        try{
-            Account account = accountService.saveMyBankAccount(bankAccountDTO.toEntity());
+        Account account = accountService.saveMyBankAccount(bankAccountDTO.toEntity());
 
-            return ResponseEntity.status(HttpStatus.OK).body(account.toDTO());
+        return ResponseEntity.status(HttpStatus.OK).body(account.toDTO());
 
-        }catch (IllegalArgumentException iae){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
-
-        }
     }
 
     @GetMapping("/bank-account")
     public ResponseEntity<?> getMyBankAccount() {
 
-        try{
-            BankAccount bankAccount = accountService.getBankAccount(ContextHolder.getAccountId());
+        BankAccount bankAccount = accountService.getBankAccount(ContextHolder.getAccountId());
 
-            return ResponseEntity.status(HttpStatus.OK).body(bankAccount.toDTO());
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccount.toDTO());
 
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-        }
     }
 
 

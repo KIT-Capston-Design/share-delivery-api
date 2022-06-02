@@ -86,7 +86,7 @@ public class EntryOrderServiceImpl implements EntryOrderService {
     }
 
     @Override
-    public void rejectEntryOrder(Long userId, DeliveryRoom deliveryRoom) throws Exception {
+    public void rejectEntryOrder(Long userId, DeliveryRoom deliveryRoom) {
 
         //request에 해당하는 EntryOrder entity 조회
         EntryOrder entryOrder = findByAccountIdAndDeliveryRoomId(userId, deliveryRoom.getDeliveryRoomId());
@@ -95,7 +95,7 @@ public class EntryOrderServiceImpl implements EntryOrderService {
 
         //인원 모집 상태가 아닌 경우 (이미 주문 진행 단계로 넘어 간 경우)
         if(!(deliveryRoom.getStatus().equals(DeliveryRoomState.OPEN)))
-            throw new Exception("Room status is not OPEN");
+            throw new IllegalStateException("Room status is not OPEN");
         entryOrder.reject();
     }
 }

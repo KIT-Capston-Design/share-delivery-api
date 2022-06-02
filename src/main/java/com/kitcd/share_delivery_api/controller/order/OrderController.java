@@ -31,15 +31,8 @@ public class OrderController {
     @GetMapping("orders/{deliveryRoomId}")
     public ResponseEntity<?> getOrders(@PathVariable @NotNull Long deliveryRoomId) {
 
-        try{
-            List<OrderResDTO> orders = entryOrderService.getOrderInformation(deliveryRoomId);
-            return ResponseEntity.status(HttpStatus.OK).body(orders);
-
-
-        }catch (EntityNotFoundException enfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage() + " is not found");
-
-        }
+        List<OrderResDTO> orders = entryOrderService.getOrderInformation(deliveryRoomId);
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
 
     }
 

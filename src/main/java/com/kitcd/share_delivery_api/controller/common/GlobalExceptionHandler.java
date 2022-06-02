@@ -1,7 +1,9 @@
 package com.kitcd.share_delivery_api.controller.common;
 
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Iterator;
@@ -18,6 +22,24 @@ import java.util.ListIterator;
 // @ControllerAdvice : 전역의 컨트롤러에서 동일하게 발생할 수 있는 익셉션 처리 //패키지 경로 입력하여 범위제한 가능
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    //BAD_REQUEST
+    @ExceptionHandler(value = {IllegalArgumentException.class, EntityExistsException.class})
+    protected ResponseEntity<?> handleBadRequestException(Exception exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    //FORBIDDEN
+    @ExceptionHandler(value = {AccessDeniedException.class, IllegalStateException.class, FileUploadException.class})
+    protected ResponseEntity<?> handleForbiddenException(Exception exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
+
+    //NOT_FOUND
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    protected ResponseEntity<?> handleNotFoundException(EntityNotFoundException enfe) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
+    }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     protected ResponseEntity<?> handleException(ConstraintViolationException exception) {

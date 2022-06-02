@@ -25,12 +25,9 @@ public class EmailController {
 
     @GetMapping("/verification-email")
     public ResponseEntity<?> sendVerificationEmail(@RequestParam @Email String email) {
-        try {
-            emailService.sendEmail(email);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("성공적으로 인증메일이 전송되었습니다.");
-        }catch (EntityExistsException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일이 존재합니다.");
-        }
+        emailService.sendEmail(email);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("성공적으로 인증메일이 전송되었습니다.");
+
     }
 
     @PostMapping("/verification-email")
