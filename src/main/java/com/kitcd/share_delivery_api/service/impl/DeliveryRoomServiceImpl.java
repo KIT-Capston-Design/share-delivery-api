@@ -3,8 +3,10 @@ package com.kitcd.share_delivery_api.service.impl;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
+import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
@@ -20,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -134,6 +138,35 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         //TODO: FCM 레거시 API 활용하여 여러 사용자에 한 번에 전송하도록 추후 개선 필요.
         participantFCMTokens.forEach(
                 token -> firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent(), null)
+        );
+
+        return deliveryRoomId;
+    }
+
+    @Override
+    public Long exitDeliveryRoom(Long deliveryRoomId) {
+
+        DeliveryRoom deliveryRoom = findByDeliveryRoomId(deliveryRoomId);
+        EntryOrder entryOrder = entryOrderService.findByAccountIdAndDeliveryRoomId(ContextHolder.getAccountId(), deliveryRoomId);
+
+        if(deliveryRoom.getStatus() != DeliveryRoomState.OPEN){
+            throw new IllegalStateException("인원 모집이 마감된 이후에는 퇴장할 수 없습니다.");
+        }
+
+        entryOrder.exitDeliveryRoom();
+
+        //리더에게 fcm 푸시메시지 발송
+        String leaderFcmToken = loggedOnInformationService.getFcmTokenByAccountId(deliveryRoom.getLeader().getAccountId());
+
+        Map<String, Object> fcmData = new HashMap<>();
+        fcmData.put("type", FCMDataType.EXIT_ROOM);
+        fcmData.put("roomId", deliveryRoomId);
+
+        firebaseCloudMessageService.sendMessageTo(
+                leaderFcmToken,
+                ContextHolder.getAccount().getNickname()+ " 유저가 방을 나갔습니다",
+                null,
+                fcmData
         );
 
         return deliveryRoomId;

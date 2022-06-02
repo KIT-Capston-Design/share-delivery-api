@@ -45,14 +45,20 @@ public class DeliveryRoomController {
     private final LoggedOnInformationService loggedOnInformationService;
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
+    @GetMapping("delivery-rooms/{deliveryRoomId}/exit-room")
+    public ResponseEntity<?> exitDeliveryRoom(@PathVariable Long deliveryRoomId) {
+
+        Long result = deliveryRoomService.exitDeliveryRoom(deliveryRoomId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     @DeleteMapping("delivery-rooms/{deliveryRoomId}")
     public ResponseEntity<?> deleteDeliveryRoom(@PathVariable Long deliveryRoomId) {
 
         deliveryRoomService.deleteDeliveryRoom(deliveryRoomId);
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
-
-
     }
 
 
