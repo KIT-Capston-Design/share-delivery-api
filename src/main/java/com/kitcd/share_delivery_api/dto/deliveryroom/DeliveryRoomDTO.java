@@ -29,6 +29,5 @@ public class DeliveryRoomDTO {
     private PlatformType platformType;
     private DeliveryRoomState status;
     private LocalDateTime createdDateTime;
-
     private LocationDTO receivingLocation;
 }
