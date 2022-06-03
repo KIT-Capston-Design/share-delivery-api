@@ -9,10 +9,22 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.PlatformType;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderRepository;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFileRepository;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenuRepository;
+import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
+import com.kitcd.share_delivery_api.domain.jpa.payment.PaymentRepository;
+import com.kitcd.share_delivery_api.domain.jpa.paymentdiscount.PaymentDiscount;
+import com.kitcd.share_delivery_api.domain.jpa.paymentdiscount.PaymentDiscountRepository;
+import com.kitcd.share_delivery_api.domain.jpa.paymentorderform.PaymentOrderForm;
+import com.kitcd.share_delivery_api.domain.jpa.paymentorderform.PaymentOrderFormRepository;
+import com.kitcd.share_delivery_api.domain.jpa.post.Post;
+import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
+import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
+import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImageRepository;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
@@ -30,6 +42,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +66,19 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private AuthService authService;
 
     private PostCategoryRepository postCategoryRepository;
+
+    private PaymentRepository paymentRepository;
+
+    private PaymentOrderFormRepository paymentOrderFormRepository;
+
+    private PaymentDiscountRepository paymentDiscountRepository;
+
+    private PostRepository postRepository;
+
+    private ImageFileRepository imageFileRepository;
+
+    private PostImageRepository postImageRepository;
+
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -345,4 +372,97 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .categoryName(categoryName)
                 .build());
     }
+
+    private Payment createPaymentIfNotFound(Long paymentId, Long deliveryRoomId, Long deliveryFee){
+        Optional<Payment> findPayment = paymentRepository.findById(paymentId);
+
+        if(findPayment.isPresent()){
+            return findPayment.get();
+        }
+
+        //연관
+        Optional<DeliveryRoom> room = deliveryRoomRepository.findById(deliveryRoomId);
+
+        if(room.isEmpty()){
+            log.warn("DummyDataLoader.createPaymentIfNotFound() : 필요 객체 null");
+            log.warn(" deliveryRoom = " + room);
+            return null;
+        }
+
+
+
+        return paymentRepository.save(Payment.builder()
+                .deliveryFee(deliveryFee)
+                .deliveryRoom(room.get())
+                .paymentId(paymentId)
+                .build());
+    }
+
+    private PaymentDiscount createPaymentDiscountIfNotFound(Long paymentDiscountId, Long paymentId, String paymentDiscountName, Long amount){
+        Optional<PaymentDiscount> findPaymentDiscount = paymentDiscountRepository.findById(paymentDiscountId);
+
+        if(findPaymentDiscount.isPresent()){
+            return findPaymentDiscount.get();
+        }
+
+        //연관관계 확인
+        Optional<Payment> findPayment = paymentRepository.findById(paymentId);
+
+        if(findPayment.isEmpty()){
+            log.warn("DummyDataLoader.createPaymentIfNotFound() : 필요 객체 null");
+            log.warn(" Payment = " + findPayment);
+            return null;
+        }
+
+        return paymentDiscountRepository.save(PaymentDiscount.builder()
+                .paymentDiscountId(paymentDiscountId)
+                .payment(findPayment.get())
+                .amount(amount)
+                .paymentDiscountName(paymentDiscountName)
+                .build());
+    }
+
+    private PaymentOrderForm createPaymentOrderFormIfNotFound(Long paymentOrderFormId, Long paymentId, Long imageFileId){
+        Optional<PaymentOrderForm> findPaymentOrderForm = paymentOrderFormRepository.findById(paymentOrderFormId);
+
+        if(findPaymentOrderForm.isPresent()){
+            return findPaymentOrderForm.get();
+        }
+
+        //연관관계 확인
+        Optional<Payment> findPayment = paymentRepository.findById(paymentId);
+        Optional<ImageFile> findImageFile = imageFileRepository.findById(imageFileId);
+
+        if(findPayment.isEmpty() || findImageFile.isEmpty()){
+            log.warn("DummyDataLoader.createPaymentOrderFormIfNotFound() : 필요 객체 null");
+            log.warn("Payment = " + findPayment);
+            log.warn("imageFile = " + findImageFile);
+            return null;
+        }
+
+        return paymentOrderFormRepository.save(PaymentOrderForm.toEntity(findPayment.get(), findImageFile.get()));
+    }
+
+    private ImageFile createImageFileIfNotFound(Long imageFileId, String originalFileName, String fileName, String fileExtension, String dirPath, Double fileSize){
+        Optional<ImageFile> findImageFiles = imageFileRepository.findById(imageFileId);
+
+        if(findImageFiles.isPresent()){
+            return findImageFiles.get();
+        }
+
+        return imageFileRepository.save(ImageFile.builder()
+                .imageFileId(imageFileId)
+                .dirPath(dirPath)
+                .fileExtension(fileExtension)
+                .fileName(fileName)
+                .fileSize(fileSize)
+                .originalFileName(originalFileName)
+                .build());
+    }
+//
+//    private PostImage createPostImageFileIfNotFound(Long postImageFileId, Long imageFileId, Long postId){
+//
+//    }
+//
+//    private Post createPost
 }
