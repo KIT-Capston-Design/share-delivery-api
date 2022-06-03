@@ -19,6 +19,8 @@ import com.kitcd.share_delivery_api.domain.jpa.paymentdiscount.PaymentDiscount;
 import com.kitcd.share_delivery_api.domain.jpa.paymentdiscount.PaymentDiscountRepository;
 import com.kitcd.share_delivery_api.domain.jpa.paymentorderform.PaymentOrderForm;
 import com.kitcd.share_delivery_api.domain.jpa.paymentorderform.PaymentOrderFormRepository;
+import com.kitcd.share_delivery_api.domain.jpa.placeshare.PlaceShare;
+import com.kitcd.share_delivery_api.domain.jpa.placeshare.PlaceShareRepository;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
@@ -35,6 +37,7 @@ import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
@@ -78,6 +81,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private ImageFileRepository imageFileRepository;
 
     private PostImageRepository postImageRepository;
+
+    private PlaceShareRepository placeShareRepository;
 
     @Override
     @Transactional
@@ -459,10 +464,61 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .originalFileName(originalFileName)
                 .build());
     }
-//
-//    private PostImage createPostImageFileIfNotFound(Long postImageFileId, Long imageFileId, Long postId){
-//
-//    }
-//
-//    private Post createPost
+
+    private PostImage createPostImageFileIfNotFound(Long postImageId, Long imageFileId, Long postId){
+        Optional<PostImage> findPostImages = postImageRepository.findById(postId);
+
+        if(findPostImages.isPresent()){
+            return findPostImages.get();
+        }
+
+        //연관관계 확인
+        Optional<Post> findPost = postRepository.findById(postId);
+        Optional<ImageFile> findImageFile = imageFileRepository.findById(imageFileId);
+
+        if(findPost.isEmpty() || findImageFile.isEmpty()){
+            log.warn("DummyDataLoader.createPostImageFileIfNotFound() : 필요 객체 null");
+            log.warn("post = " + findPost);
+            log.warn("imageFile = " + findImageFile);
+            return null;
+        }
+
+        return postImageRepository.save(PostImage.builder()
+                .post(findPost.get())
+                .imageFile(findImageFile.get())
+                .postImageId(postImageId)
+                .build());
+    }
+
+    private PlaceShare createPlaceShareIfNotFound()
+
+    private Post createPostIfNotFound(Long postId, Long accountId, Long postCategoryId, Long placeShareId, String content, State state, Location accurateLocation, String address){
+        Optional<Post> findPost = postRepository.findById(postId);
+        if(findPost.isPresent()){
+            return findPost.get();
+        }
+
+        //연관관계 확인
+        Optional<PostCategory> findPostCategory = postCategoryRepository.findById(postCategoryId);
+        Optional<Account> findAccount = accountRepository.findById(accountId);
+        Optional<PlaceShare> findPlaceShare = placeShareRepository.findById(placeShareId);
+
+        if(findPost.isEmpty() || findAccount.isEmpty()){
+            log.warn("DummyDataLoader.createPostIfNotFound() : 필요 객체 null");
+            log.warn("PostCategory = " + findPostCategory);
+            log.warn("Account = " + findAccount);
+            return null;
+        }
+
+        return postRepository.save(Post.builder()
+                .sharedPlace(findPlaceShare.orElse(null))
+                .status(State.NORMAL)
+                .likeCount(0L)
+                .coordinate(accurateLocation)
+                .Address(address)
+                .postCategory(findPostCategory.get())
+                .account(findAccount.get())
+                .content(content)
+                ..build())
+    }
 }
