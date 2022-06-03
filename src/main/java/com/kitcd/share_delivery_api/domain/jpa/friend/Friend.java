@@ -22,11 +22,11 @@ public class Friend extends BaseTimeEntity {
    @Column(name = "FRIEND_ID", nullable = false)
    private Long friendId;
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
    private Account account;
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "FRIEND_ACCOUNT_ID", nullable = false)
    private Account friendAccount;
 

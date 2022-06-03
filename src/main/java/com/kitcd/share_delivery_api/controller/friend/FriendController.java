@@ -22,9 +22,9 @@ public class FriendController {
     @PostMapping("")
     public ResponseEntity<?> friendRequest(@RequestBody Long accountId) {
 
-        Friend friend = friendService.friendRequest(accountId);
+        friendService.friendRequest(accountId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(friend);
+        return ResponseEntity.status(HttpStatus.OK).body(accountId);
     }
 
 }
