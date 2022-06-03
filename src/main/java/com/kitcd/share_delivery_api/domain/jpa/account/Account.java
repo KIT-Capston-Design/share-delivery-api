@@ -70,10 +70,6 @@ public class Account extends BaseTimeEntity {
 
    @JsonIgnore
    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-   private List<Friend> friends = new LinkedList<>();
-
-   @JsonIgnore
-   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
    private List<AccountBlock> accountBlocks = new LinkedList<>();
 
    @JsonIgnore
