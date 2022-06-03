@@ -31,6 +31,7 @@ public class Friend extends BaseTimeEntity {
    @JoinColumn(name = "SECOND_ACCOUNT_ID", nullable = false)
    private Account secondAccount;
 
+   @Enumerated(EnumType.STRING)
    @Column(name = "STATUS", nullable = false)
    private State status;
 
