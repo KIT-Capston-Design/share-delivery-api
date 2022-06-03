@@ -39,16 +39,14 @@ import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +59,8 @@ import java.util.Optional;
 @Transactional
 public class DummyDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
-
+    @Value("${web.static.base-dir}")
+    private String fileBaseDir;
     private final StoreCategoryRepository storeCategoryRepository;
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final EntryOrderRepository entryOrderRepository;
@@ -71,20 +70,13 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private final AuthService authService;
     private final PostCategoryRepository postCategoryRepository;
     private final FriendRepository friendRepository;
-
-    private PaymentRepository paymentRepository;
-
-    private PaymentOrderFormRepository paymentOrderFormRepository;
-
-    private PaymentDiscountRepository paymentDiscountRepository;
-
-    private PostRepository postRepository;
-
-    private ImageFileRepository imageFileRepository;
-
-    private PostImageRepository postImageRepository;
-
-    private PlaceShareRepository placeShareRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentOrderFormRepository paymentOrderFormRepository;
+    private final PaymentDiscountRepository paymentDiscountRepository;
+    private final PostRepository postRepository;
+    private final ImageFileRepository imageFileRepository;
+    private final PostImageRepository postImageRepository;
+    private final PlaceShareRepository placeShareRepository;
 
     @Override
     @Transactional
@@ -97,6 +89,48 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadOrderMenuData();
         loadPostCategory();
         loadFriendData();
+        loadPaymentData();
+        loadPaymentDiscountData();
+        loadImageFileData();
+        loadPaymentOrderFormData();
+        loadPostData();
+        loadPlaceShareData();
+    }
+    private void loadPaymentData(){
+        createPaymentIfNotFound(1L, 3L, 1L); //3번방만 풀방..
+    }
+
+    private void loadPaymentDiscountData(){
+        createPaymentDiscountIfNotFound(1L, 1L, "DUMMY_DISCOUNT_NAME1", 123456L);
+        createPaymentDiscountIfNotFound(2L, 1L, "DUMMY_DISCOUNT_NAME2", 123456L);
+        createPaymentDiscountIfNotFound(3L, 1L, "DUMMY_DISCOUNT_NAME3", 123456L);
+    }
+
+    private void loadImageFileData(){
+        createImageFileIfNotFound(1L, "dummyfile", "dummyfile","", fileBaseDir, 0d);
+    }
+    private void loadPaymentOrderFormData(){
+        createPaymentOrderFormIfNotFound(1L,1L, 1L);
+    }
+
+    private void loadPostData(){
+        Location location = new Location(36.14153983156746,128.396133049821);
+        String address = "경북 구미시 대학로 60";
+        createPostIfNotFound(1L, 1L, 1L, "DUMMY_CONTENT1", State.NORMAL, location, address);
+        createPostIfNotFound(2L, 2L, 2L, "DUMMY_CONTENT2", State.NORMAL, location, address);
+        createPostIfNotFound(3L, 3L, 3L, "DUMMY_CONTENT3", State.NORMAL, location, address);
+    }
+
+    private void loadPostImageData(){
+        createPostImageFileIfNotFound(1L, 1L, 2L);
+        createPostImageFileIfNotFound(2L, 1L, 2L);
+        createPostImageFileIfNotFound(3L, 1L, 2L);
+    }
+
+    private void loadPlaceShareData(){
+        Location location = new Location(36.137733124211955,128.39724317877784);
+        createPlaceShareIfNotFound(1L, 1L, "DUMMY_CONTENT1", location, "DUMMY_ADDRESS_1");
+        createPlaceShareIfNotFound(1L, 2L, "DUMMY_CONTENT1", location, "DUMMY_ADDRESS_2");
     }
 
     private void loadFriendData(){
@@ -105,8 +139,6 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createFriendIfNotFound(3L, 1L, 4L, State.REJECTED);
         createFriendIfNotFound(4L, 2L, 3L, State.PENDING);
     }
-
-
 
     private void loadStoreCategoryData(){
         List<String> categoryNames = new ArrayList<>();
@@ -146,6 +178,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createDeliveryRoomIfNotFound(2L, "DUMMY CONTENT 2", 1L,4L, 123456L,2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
         createDeliveryRoomIfNotFound(3L, "DUMMY CONTENT 3", 1L,4L, 123456L,3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
         createDeliveryRoomIfNotFound(4L, "DUMMY CONTENT 4", 1L,4L, 123456L,1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(5L, "DUMMY CONTENT 5", 1L,4L, 123456L,2L, "LUNCHBOX", 4L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 4", "https://yogiyo.onelink.me/BlI7/im8nou2o");
     }
 
     private void loadEntryOrderData(){
@@ -402,10 +435,9 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         if(room.isEmpty()){
             log.warn("DummyDataLoader.createPaymentIfNotFound() : 필요 객체 null");
-            log.warn(" deliveryRoom = " + room);
+            log.warn("  deliveryRoom = " + room);
             return null;
         }
-
 
 
         return paymentRepository.save(Payment.builder()
@@ -427,7 +459,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         if(findPayment.isEmpty()){
             log.warn("DummyDataLoader.createPaymentIfNotFound() : 필요 객체 null");
-            log.warn(" Payment = " + findPayment);
+            log.warn("  Payment = " + findPayment);
             return null;
         }
 
@@ -452,8 +484,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         if(findPayment.isEmpty() || findImageFile.isEmpty()){
             log.warn("DummyDataLoader.createPaymentOrderFormIfNotFound() : 필요 객체 null");
-            log.warn("Payment = " + findPayment);
-            log.warn("imageFile = " + findImageFile);
+            log.warn("  Payment = " + findPayment);
+            log.warn("  imageFile = " + findImageFile);
             return null;
         }
 
@@ -490,8 +522,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         if(findPost.isEmpty() || findImageFile.isEmpty()){
             log.warn("DummyDataLoader.createPostImageFileIfNotFound() : 필요 객체 null");
-            log.warn("post = " + findPost);
-            log.warn("imageFile = " + findImageFile);
+            log.warn("  post = " + findPost);
+            log.warn("  imageFile = " + findImageFile);
             return null;
         }
 
@@ -502,9 +534,31 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private PlaceShare createPlaceShareIfNotFound()
+    private PlaceShare createPlaceShareIfNotFound(Long placeShareId, Long postId, String content, Location coordinate, String address){
+        Optional<PlaceShare> findPlaceShare = placeShareRepository.findById(placeShareId);
 
-    private Post createPostIfNotFound(Long postId, Long accountId, Long postCategoryId, Long placeShareId, String content, State state, Location accurateLocation, String address){
+        if(findPlaceShare.isPresent()){
+            return findPlaceShare.get();
+        }
+
+        Optional<Post> findPost = postRepository.findById(postId);
+
+        if(findPost.isEmpty()){
+            log.warn("DummyDataLoader.createPlaceShareIfNotFound() : 필요 객체 null");
+            log.warn("  post = " + findPost);
+            return null;
+        }
+
+        return placeShareRepository.save(PlaceShare.builder()
+                .coordinate(coordinate)
+                .post(findPost.get())
+                .address(address)
+                .content(content)
+                .placeShareId(placeShareId)
+                .build());
+    }
+
+    private Post createPostIfNotFound(Long postId, Long accountId, Long postCategoryId, String content, State state, Location accurateLocation, String address){
         Optional<Post> findPost = postRepository.findById(postId);
         if(findPost.isPresent()){
             return findPost.get();
@@ -513,17 +567,15 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         //연관관계 확인
         Optional<PostCategory> findPostCategory = postCategoryRepository.findById(postCategoryId);
         Optional<Account> findAccount = accountRepository.findById(accountId);
-        Optional<PlaceShare> findPlaceShare = placeShareRepository.findById(placeShareId);
 
-        if(findPost.isEmpty() || findAccount.isEmpty()){
+        if(findPostCategory.isEmpty() || findAccount.isEmpty()){
             log.warn("DummyDataLoader.createPostIfNotFound() : 필요 객체 null");
-            log.warn("PostCategory = " + findPostCategory);
-            log.warn("Account = " + findAccount);
+            log.warn("  PostCategory = " + findPostCategory);
+            log.warn("  Account = " + findAccount);
             return null;
         }
 
         return postRepository.save(Post.builder()
-                .sharedPlace(findPlaceShare.orElse(null))
                 .status(State.NORMAL)
                 .likeCount(0L)
                 .coordinate(accurateLocation)
@@ -531,13 +583,14 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .postCategory(findPostCategory.get())
                 .account(findAccount.get())
                 .content(content)
-                ..build())
+                .postId(postId)
+                .viewCount(0L)
+                .build());
     }
 
     private Friend createFriendIfNotFound(Long friendId, Long accountId, Long account2, State status) {
         Friend friend = friendRepository.findByFriendId(friendId);
         if(friend != null) return friend;
-
 
         Account acc1 = accountRepository.findByAccountId(accountId);
         Account acc2 = accountRepository.findByAccountId(account2);
