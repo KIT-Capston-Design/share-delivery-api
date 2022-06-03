@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParticipatedDeliveryRoomDTO {
-    private Long deliveryRoomId;
+    private Long roomId;
     private String leaderName;
 
     private String content;

@@ -83,23 +83,7 @@ public class Post extends BaseTimeEntity {
    private List<Report> reports = new LinkedList<>();
 
    public PostDTO toDTO(){
-      if(null == sharedPlace){
-         return PostDTO.builder()
-                 .postId(postId)
-                 .content(content)
-                 .createdDateTime(getCreatedDate())
-                 .writer(SimpleAccountDTO.builder()
-                         .accountId(account.getAccountId())
-                         .mannerScore(account.getMannerScore())
-                         .nickname(account.getNickname())
-                         .build())
-                 .category(postCategory.getCategoryName())
-                 .placeShare(null)
-                 .coordinate(coordinate)
-                 .likes(commentLikes == null ? 0 : (long)commentLikes.size() )
-                 .viewCount(viewCount)
-                 .build();
-      }
+
       return PostDTO.builder()
               .postId(postId)
               .content(content)
@@ -110,7 +94,7 @@ public class Post extends BaseTimeEntity {
                       .nickname(account.getNickname())
                       .build())
               .category(postCategory.getCategoryName())
-              .placeShare(PlaceShareDTO.parseDTO(sharedPlace))
+              .placeShare(null == sharedPlace ? null : PlaceShareDTO.parseDTO(sharedPlace))
               .coordinate(coordinate)
               .likes(commentLikes == null ? 0 : (long)commentLikes.size())
               .viewCount(viewCount)

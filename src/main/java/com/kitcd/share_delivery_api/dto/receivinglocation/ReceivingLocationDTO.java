@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.dto.receivinglocation;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
@@ -11,38 +12,34 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReceivingLocationDTO {
     private Long id;
     private String description;
-    private Double lat;
-    private Double lng;
+    private Double latitude;
+    private Double longitude;
     private Boolean isFavorite;
     private String address;
 
     public ReceivingLocationDTO(ReceivingLocation receivingLocation){
         id = receivingLocation.getReceivingLocationId();
         description = receivingLocation.getDescription();
-        lat = receivingLocation.getPLocation().getY();
-        lng = receivingLocation.getPLocation().getX();
-        address = receivingLocation.getAddress();
-    }
-
-    public Location getLocation() {
-        return new Location(lat, lng);
+        latitude = receivingLocation.getPLocation().getY();
+        longitude = receivingLocation.getPLocation().getX();
     }
 
     public ReceivingLocation toEntity(Account account){
 
         return ReceivingLocation.builder()
                 .account(account)
-                .pLocation(GeometriesFactory.createPoint(lat, lng))
+                .pLocation(GeometriesFactory.createPoint(latitude, longitude))
                 .locationRef(Location.builder()
-                        .latitude(lat)
-                        .longitude(lng)
+                        .latitude(latitude)
+                        .longitude(longitude)
                         .build())
                 .description(description)
                 .address(address)
-                .isFavorite(isFavorite)
+                .isFavorite(false)
                 .build();
     }
 }
