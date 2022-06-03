@@ -11,6 +11,8 @@ import lombok.*;
 
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -19,12 +21,15 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class DeliveryRoomEnrollRequestDTO {
+    @NotBlank
     private String content;
     @NotBlank
     private Long receivingLocationId;
+    @NotNull
     private Long limitPerson;
     private String storeCategory;
     private Long deliveryTip;
+    @NotEmpty
     private List<OrderMenuRequestDTO> menuList;
     private ShareStoreDTO shareStore;
 
