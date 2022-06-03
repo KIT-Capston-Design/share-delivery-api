@@ -1,8 +1,11 @@
 package com.kitcd.share_delivery_api.service.impl;
 
+import com.kitcd.share_delivery_api.controller.friend.FriendState;
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
 import com.kitcd.share_delivery_api.domain.jpa.friend.FriendRepository;
+import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
 import com.kitcd.share_delivery_api.service.FriendService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
@@ -11,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -50,10 +55,32 @@ public class FriendServiceImpl implements FriendService {
         //친구 객체 생성 후 저장
         return friendRepository.save(
                 Friend.builder()
-                        .account(ContextHolder.getAccount())
-                        .friendAccount(accountService.findByAccountId(targetId))
+                        .firstAccount(ContextHolder.getAccount())
+                        .secondAccount(accountService.findByAccountId(targetId))
                         .status(State.PENDING)
                         .build()
         );
+    }
+
+    @Override
+    public List<AccountProfileDTO> getFriendList(FriendState status) {
+
+        Long myAccountId = ContextHolder.getAccountId();
+
+        List<Friend> friendList;
+
+        if(status.equals(FriendState.ACCEPTED)) // 현재 친구인 관계
+            friendList = friendRepository.getAcceptedFriendList(myAccountId);
+        else if(status.equals(FriendState.RECEIVED_PENDING_REQUEST)) // 친구 요청 받은 대기중인
+            friendList = friendRepository.getReceivedPendingRequest(myAccountId);
+        else if(status.equals(FriendState.SENT_PENDING_REQUEST)) // 친구 요청한 대기중인
+            friendList = friendRepository.getSentPendingRequest(myAccountId);
+        else
+            throw new IllegalArgumentException("Illegal type");
+
+        return friendList.stream()
+                .map(f -> f.getFriendAccount(myAccountId))
+                .map(Account::toAccountProfileDTO)
+                .collect(Collectors.toList());
     }
 }

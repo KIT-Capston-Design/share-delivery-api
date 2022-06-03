@@ -377,8 +377,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         return friendRepository.save(
                 Friend.builder()
                         .friendId(friendId)
-                        .account(acc1)
-                        .friendAccount(acc2)
+                        .firstAccount(acc1)
+                        .secondAccount(acc2)
                         .status(status)
                         .build()
         );

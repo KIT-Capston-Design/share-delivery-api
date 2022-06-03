@@ -1,7 +1,9 @@
 package com.kitcd.share_delivery_api.controller.friend;
 
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
+import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -27,4 +31,11 @@ public class FriendController {
         return ResponseEntity.status(HttpStatus.OK).body(accountId);
     }
 
+    @GetMapping("")
+    public ResponseEntity<?> getFriendList(@RequestParam(value = "type") FriendState status) {
+
+        List<AccountProfileDTO> result = friendService.getFriendList(status);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }

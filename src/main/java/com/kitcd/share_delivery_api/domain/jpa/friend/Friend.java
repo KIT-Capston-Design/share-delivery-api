@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -23,14 +24,19 @@ public class Friend extends BaseTimeEntity {
    private Long friendId;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "ACCOUNT_ID", nullable = false)
-   private Account account;
+   @JoinColumn(name = "FIRST_ACCOUNT_ID", nullable = false)
+   private Account firstAccount;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "FRIEND_ACCOUNT_ID", nullable = false)
-   private Account friendAccount;
+   @JoinColumn(name = "SECOND_ACCOUNT_ID", nullable = false)
+   private Account secondAccount;
 
    @Column(name = "STATUS", nullable = false)
    private State status;
 
+   public Account getFriendAccount(Long myAccountId){
+      if(Objects.equals(myAccountId, firstAccount.getAccountId())) return secondAccount;
+      else if(Objects.equals(myAccountId, secondAccount.getAccountId())) return firstAccount;
+      throw new IllegalArgumentException("해당 Friend Entity는 내 Friend Entity가 아닙니다.");
+   }
 }
