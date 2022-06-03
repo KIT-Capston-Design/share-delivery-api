@@ -9,6 +9,8 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.PlatformType;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderRepository;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
+import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
+import com.kitcd.share_delivery_api.domain.jpa.friend.FriendRepository;
 import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
 import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFileRepository;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
@@ -60,15 +62,15 @@ import java.util.Optional;
 public class DummyDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
 
-    private StoreCategoryRepository storeCategoryRepository;
-    private DeliveryRoomRepository deliveryRoomRepository;
-    private EntryOrderRepository entryOrderRepository;
-    private OrderMenuRepository orderMenuRepository;
-    private ReceivingLocationRepository receivingLocationRepository;
-    private AccountRepository accountRepository;
-    private AuthService authService;
-
-    private PostCategoryRepository postCategoryRepository;
+    private final StoreCategoryRepository storeCategoryRepository;
+    private final DeliveryRoomRepository deliveryRoomRepository;
+    private final EntryOrderRepository entryOrderRepository;
+    private final OrderMenuRepository orderMenuRepository;
+    private final ReceivingLocationRepository receivingLocationRepository;
+    private final AccountRepository accountRepository;
+    private final AuthService authService;
+    private final PostCategoryRepository postCategoryRepository;
+    private final FriendRepository friendRepository;
 
     private PaymentRepository paymentRepository;
 
@@ -94,7 +96,17 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadEntryOrderData();
         loadOrderMenuData();
         loadPostCategory();
+        loadFriendData();
     }
+
+    private void loadFriendData(){
+        createFriendIfNotFound(1L, 1L, 2L, State.PENDING);
+        createFriendIfNotFound(2L, 1L, 3L, State.ACCEPTED);
+        createFriendIfNotFound(3L, 1L, 4L, State.REJECTED);
+        createFriendIfNotFound(4L, 2L, 3L, State.PENDING);
+    }
+
+
 
     private void loadStoreCategoryData(){
         List<String> categoryNames = new ArrayList<>();
@@ -520,5 +532,30 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .account(findAccount.get())
                 .content(content)
                 ..build())
+    }
+
+    private Friend createFriendIfNotFound(Long friendId, Long accountId, Long account2, State status) {
+        Friend friend = friendRepository.findByFriendId(friendId);
+        if(friend != null) return friend;
+
+
+        Account acc1 = accountRepository.findByAccountId(accountId);
+        Account acc2 = accountRepository.findByAccountId(account2);
+
+        if(acc1 == null || acc2 == null){
+            log.warn("DummyDataLoader::createFriendIfNotFound() : 필요 객체 null");
+            log.warn("  account1 = " + acc1);
+            log.warn("  account2 = " + acc2);
+            return null;
+        }
+
+        return friendRepository.save(
+                Friend.builder()
+                        .friendId(friendId)
+                        .firstAccount(acc1)
+                        .secondAccount(acc2)
+                        .status(status)
+                        .build()
+        );
     }
 }

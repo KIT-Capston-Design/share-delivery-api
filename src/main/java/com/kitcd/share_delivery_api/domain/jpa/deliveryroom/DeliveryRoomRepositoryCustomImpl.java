@@ -3,7 +3,6 @@ package com.kitcd.share_delivery_api.domain.jpa.deliveryroom;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
-import com.kitcd.share_delivery_api.dto.receivinglocation.ReceivingLocationDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Direction;
 import com.kitcd.share_delivery_api.utils.geometry.GeometryUtil;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
@@ -71,7 +70,7 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                                         .longitude((Double) room[12])
                                         .latitude((Double) room[11])
                                         .build())
-                                .deliveryRoomId(bigIntegerObjToLong(room[13]))
+                                .roomId(bigIntegerObjToLong(room[13]))
                                 .deliveryTip(bigIntegerObjToLong(room[14]))
                                 .build()
                 ).collect(Collectors.toList());

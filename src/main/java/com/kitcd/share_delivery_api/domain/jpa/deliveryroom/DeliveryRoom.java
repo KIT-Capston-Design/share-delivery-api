@@ -105,7 +105,7 @@ public class DeliveryRoom extends BaseTimeEntity {
                       .nickname(leader.getNickname())
                       .mannerScore(leader.getMannerScore())
                       .build())
-              .deliveryRoomId(deliveryRoomId)
+              .roomId(deliveryRoomId)
               .content(content)
               .deliveryTip(estimatedDeliveryTip)
               .person(peopleNumber)

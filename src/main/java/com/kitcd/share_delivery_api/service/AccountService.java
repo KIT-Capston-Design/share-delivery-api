@@ -16,6 +16,8 @@ public interface AccountService {
 
     Account saveMyBankAccount(BankAccount toEntity);
 
+    Account findByAccountId(Long accountId);
+
     AccountProfileDTO getAccountProfile(Long accountId);
 
     AccountDTO modifyMyAccountInformation(AccountModificationDTO dto, MultipartFile profileImage);
