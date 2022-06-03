@@ -8,15 +8,15 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class PlaceShareResponseDTO {
+public class PlaceShareDTO {
     private Long placeShareId;
     private Double latitude;
     private Double longitude;
     private String description;
 
 
-    public static PlaceShareResponseDTO parseDTO(PlaceShare placeShare){
-        PlaceShareResponseDTO dto = new PlaceShareResponseDTO();
+    public static PlaceShareDTO parseDTO(PlaceShare placeShare){
+        PlaceShareDTO dto = new PlaceShareDTO();
         dto.description = placeShare.getContent();
         dto.latitude = placeShare.getCoordinate().getLatitude();
         dto.longitude = placeShare.getCoordinate().getLongitude();

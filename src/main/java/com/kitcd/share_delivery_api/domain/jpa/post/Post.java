@@ -12,6 +12,9 @@ import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
+import com.kitcd.share_delivery_api.dto.placeshare.PlaceShareDTO;
+import com.kitcd.share_delivery_api.dto.post.PostDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,5 +82,39 @@ public class Post extends BaseTimeEntity {
    @OneToMany(mappedBy = "post")
    private List<Report> reports = new LinkedList<>();
 
+   public PostDTO toDTO(){
+      if(null == sharedPlace){
+         return PostDTO.builder()
+                 .postId(postId)
+                 .content(content)
+                 .createdDateTime(getCreatedDate())
+                 .writer(SimpleAccountDTO.builder()
+                         .accountId(account.getAccountId())
+                         .mannerScore(account.getMannerScore())
+                         .nickname(account.getNickname())
+                         .build())
+                 .category(postCategory.getCategoryName())
+                 .placeShare(null)
+                 .coordinate(coordinate)
+                 .likes(commentLikes == null ? 0 : (long)commentLikes.size() )
+                 .viewCount(viewCount)
+                 .build();
+      }
+      return PostDTO.builder()
+              .postId(postId)
+              .content(content)
+              .createdDateTime(getCreatedDate())
+              .writer(SimpleAccountDTO.builder()
+                      .accountId(account.getAccountId())
+                      .mannerScore(account.getMannerScore())
+                      .nickname(account.getNickname())
+                      .build())
+              .category(postCategory.getCategoryName())
+              .placeShare(PlaceShareDTO.parseDTO(sharedPlace))
+              .coordinate(coordinate)
+              .likes(commentLikes == null ? 0 : (long)commentLikes.size())
+              .viewCount(viewCount)
+              .build();
+   }
 
 }

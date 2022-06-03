@@ -28,5 +28,11 @@ public class PaymentOrderForm extends BaseTimeEntity {
    @JoinColumn(name = "IMAGE_FILE_ID", nullable = false)
    private ImageFile imageFile;
 
+   public static PaymentOrderForm toEntity(Payment payment, ImageFile imageFile) {
+      return PaymentOrderForm.builder()
+              .payment(payment)
+              .imageFile(imageFile)
+              .build();
 
+   }
 }

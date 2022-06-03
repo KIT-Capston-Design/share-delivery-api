@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.domain.jpa.deliveryroom;
 
+import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.receivinglocation.ReceivingLocationDTO;
@@ -53,7 +54,7 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
         List<DeliveryRoomDTO> deliveryRooms =
                 resultList.stream().map(
                         room -> DeliveryRoomDTO.builder()
-                                .leader(DeliveryRoomDTO.Leader.builder()
+                                .leader(SimpleAccountDTO.builder()
                                         .accountId((Long) room[0])
                                         .nickname((String) room[1])
                                         .mannerScore((Double) room[2])

@@ -28,9 +28,6 @@ public class Payment extends BaseTimeEntity {
    @JoinColumn(name = "DELIVERY_ROOM_ID", nullable = false)
    private DeliveryRoom deliveryRoom;
 
-   @Column(name = "DELIVERY_TIME", nullable = false)
-   private Long deliveryTime;
-
    @Column(name = "DELIVERY_FEE", nullable = false)
    private Long deliveryFee;
 

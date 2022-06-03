@@ -3,6 +3,7 @@ package com.kitcd.share_delivery_api.dto.deliveryroom;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.PlatformType;
+import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DeliveryRoomDTO {
 
-    private Leader leader;
+    private SimpleAccountDTO leader;
 
     private Long deliveryRoomId;
 
@@ -28,17 +29,5 @@ public class DeliveryRoomDTO {
     private PlatformType platformType;
     private DeliveryRoomState status;
     private LocalDateTime createdDateTime;
-
     private LocationDTO receivingLocation;
-
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    public static class Leader{
-        private Long accountId;
-        private String nickname;
-        private Double mannerScore;
-
-    }
 }

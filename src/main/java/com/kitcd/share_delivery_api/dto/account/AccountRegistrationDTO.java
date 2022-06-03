@@ -26,6 +26,7 @@ public class AccountRegistrationDTO {
                 .nickname(nickname)
                 .status(State.NORMAL)
                 .role(RoleType.ROLE_USER)
+                .mannerScore(36.5)
                 .build();
     }
 }

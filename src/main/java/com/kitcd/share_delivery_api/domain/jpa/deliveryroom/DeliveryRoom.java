@@ -9,6 +9,7 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import lombok.Getter;
@@ -99,7 +100,7 @@ public class DeliveryRoom extends BaseTimeEntity {
 
    public DeliveryRoomDTO toDTO() {
       return DeliveryRoomDTO.builder()
-              .leader(DeliveryRoomDTO.Leader.builder()
+              .leader(SimpleAccountDTO.builder()
                       .accountId(leader.getAccountId())
                       .nickname(leader.getNickname())
                       .mannerScore(leader.getMannerScore())
