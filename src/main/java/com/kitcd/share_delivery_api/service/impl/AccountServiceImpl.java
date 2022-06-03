@@ -3,7 +3,6 @@ package com.kitcd.share_delivery_api.service.impl;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
-import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
@@ -59,6 +58,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(ContextHolder.getAccount().saveBankAccount(bankAccount));
     }
 
+    @Override
     public Account findByAccountId(Long accountId){
         Account account = accountRepository.findByAccountId(accountId);
 

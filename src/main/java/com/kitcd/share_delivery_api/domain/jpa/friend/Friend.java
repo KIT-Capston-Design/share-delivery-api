@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.domain.jpa.friend;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "FRIEND")
 public class Friend extends BaseTimeEntity {
+   @JsonIgnore
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "FRIEND_ID", nullable = false)
    private Long friendId;
