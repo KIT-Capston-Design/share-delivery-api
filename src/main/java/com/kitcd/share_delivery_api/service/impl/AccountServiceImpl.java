@@ -31,7 +31,6 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final ImageFileService imageFileService;
-    private final FriendService friendService;
 
     @Override
     public BankAccount getBankAccount(Long accountId) {
@@ -111,15 +110,18 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public State deleteMyAccount() {
 
+        Account myAccount = ContextHolder.getAccount();
+
         //활성화 되어있는 모집글 fetch
-        List<ParticipatedDeliveryRoomDTO> dtos = deliveryRoomRepository.getParticipatingActivatedDeliveryRoom(ContextHolder.getAccountId());
+        List<ParticipatedDeliveryRoomDTO> dtos = deliveryRoomRepository.getParticipatingActivatedDeliveryRoom(myAccount.getAccountId());
 
         if(!dtos.isEmpty()) throw new IllegalStateException("참여하고 있는 활성화된 모집글이 있어 탈퇴할 수 없습니다.");
 
-        //모든 친구 삭제
-        friendService.deleteAllMyFriend();
+        State result = myAccount.withdraw();
 
-        return ContextHolder.getAccount().withdraw();
+        accountRepository.save(myAccount);
+
+        return result;
 
     }
 
