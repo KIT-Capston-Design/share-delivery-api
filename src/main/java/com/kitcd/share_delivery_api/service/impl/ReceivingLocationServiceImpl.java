@@ -5,6 +5,7 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.dto.receivinglocation.ReceivingLocationDTO;
 import com.kitcd.share_delivery_api.service.ReceivingLocationService;
+import com.kitcd.share_delivery_api.utils.address.FindAddressWithLocation;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import javax.persistence.EntityNotFoundException;
 public class ReceivingLocationServiceImpl implements ReceivingLocationService {
 
     private final ReceivingLocationRepository receivingLocationRepository;
+    private final FindAddressWithLocation findAddressWithLocation;
 
     @Override
     public ReceivingLocation findByReceivingLocationId(Long id) {
@@ -34,6 +36,8 @@ public class ReceivingLocationServiceImpl implements ReceivingLocationService {
 
     @Override
     public ReceivingLocationDTO enrollReceivingLocation(Account account, ReceivingLocationDTO dto) {
+        dto.setAddress(findAddressWithLocation.coordToAddr(new Location(dto.getLatitude(), dto.getLongitude())));
+
         return new ReceivingLocationDTO(receivingLocationRepository.save(dto.toEntity(account)));
     }
 
