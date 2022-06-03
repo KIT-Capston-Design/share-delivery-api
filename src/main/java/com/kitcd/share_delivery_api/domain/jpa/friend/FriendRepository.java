@@ -9,6 +9,11 @@ import java.util.List;
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     @Query("select f from Friend f " +
+            "where f.firstAccount.accountId = :myId or f.secondAccount.accountId = :myId")
+    List<Friend> getAllEntitiesByAccountId(Long myId);
+
+
+    @Query("select f from Friend f " +
             "where (f.firstAccount.accountId = :myId and f.secondAccount.accountId = :targetId)" +
             "or (f.secondAccount.accountId = :myId and f.firstAccount.accountId = :targetId)")
     Friend getByAccountIds(Long myId, Long targetId);

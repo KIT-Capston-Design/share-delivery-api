@@ -5,12 +5,14 @@ import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
+import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
+import com.kitcd.share_delivery_api.service.FriendService;
 import com.kitcd.share_delivery_api.service.ImageFileService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final ImageFileService imageFileService;
+    private final FriendService friendService;
 
     @Override
     public BankAccount getBankAccount(Long accountId) {
@@ -67,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
     public Account findByAccountId(Long accountId){
         Account account = accountRepository.findByAccountId(accountId);
 
-        if(account == null) throw new FetchNotFoundException(Account.class.toString(), accountId);
+        if(account == null || account.getStatus().equals(State.NORMAL)) throw new FetchNotFoundException(Account.class.toString(), accountId);
 
         return account;
     }
@@ -107,9 +110,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public State deleteMyAccount() {
+
+        //활성화 되어있는 모집글 fetch
         List<ParticipatedDeliveryRoomDTO> dtos = deliveryRoomRepository.getParticipatingActivatedDeliveryRoom(ContextHolder.getAccountId());
 
-        if(!dtos.isEmpty()) throw new IllegalStateException("참여하고 있는 활성화되어있는 모집글이 있어 탈퇴할 수 없습니다.");
+        if(!dtos.isEmpty()) throw new IllegalStateException("참여하고 있는 활성화된 모집글이 있어 탈퇴할 수 없습니다.");
+
+        //모든 친구 삭제
+        friendService.deleteAllMyFriend();
 
         return ContextHolder.getAccount().withdraw();
 
