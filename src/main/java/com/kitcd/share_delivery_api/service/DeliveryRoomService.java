@@ -10,6 +10,8 @@ import com.kitcd.share_delivery_api.utils.geometry.Location;
 import java.util.List;
 
 public interface DeliveryRoomService {
+
+    public List<ParticipatedDeliveryRoomDTO> getParticipatingActivatedDeliveryRoom(Long accountId);
     DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList);
 
     DeliveryRoomDTO getDeliveryRoomDTO(Long deliveryRoomId);

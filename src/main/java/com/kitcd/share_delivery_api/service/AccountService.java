@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.service;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
@@ -25,4 +26,6 @@ public interface AccountService {
     Long deleteBankAccount(Long accountId);
 
     boolean nickNameDuplicateCheck(String nickName);
+
+    State deleteMyAccount();
 }

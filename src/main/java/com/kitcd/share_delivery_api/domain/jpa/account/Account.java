@@ -197,4 +197,9 @@ public class Account extends BaseTimeEntity {
       bankAccount = null;
 
    }
+
+   public State withdraw() {
+      if(status != State.NORMAL) throw new IllegalStateException("회원 탈퇴할 수 있는 계정 상태가 아닙니다.");
+      return status = State.WITHDRAWN;
+   }
 }

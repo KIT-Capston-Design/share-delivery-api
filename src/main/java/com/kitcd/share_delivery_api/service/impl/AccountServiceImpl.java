@@ -3,10 +3,13 @@ package com.kitcd.share_delivery_api.service.impl;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
 import com.kitcd.share_delivery_api.service.ImageFileService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 @Service
@@ -23,6 +27,7 @@ import javax.transaction.Transactional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final DeliveryRoomRepository deliveryRoomRepository;
     private final ImageFileService imageFileService;
 
     @Override
@@ -98,6 +103,16 @@ public class AccountServiceImpl implements AccountService {
         Integer result = accountRepository.nickNameDuplicateCheck(nickName);
 
         return !(result == null);
+    }
+
+    @Override
+    public State deleteMyAccount() {
+        List<ParticipatedDeliveryRoomDTO> dtos = deliveryRoomRepository.getParticipatingActivatedDeliveryRoom(ContextHolder.getAccountId());
+
+        if(!dtos.isEmpty()) throw new IllegalStateException("참여하고 있는 활성화되어있는 모집글이 있어 탈퇴할 수 없습니다.");
+
+        return ContextHolder.getAccount().withdraw();
+
     }
 
 }

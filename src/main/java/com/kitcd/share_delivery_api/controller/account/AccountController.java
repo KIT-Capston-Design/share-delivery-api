@@ -2,9 +2,11 @@ package com.kitcd.share_delivery_api.controller.account;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.redis.auth.verificationsms.VerificationType;
 import com.kitcd.share_delivery_api.dto.account.*;
 import com.kitcd.share_delivery_api.service.AuthService;
+import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.service.impl.AccountServiceImpl;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,18 @@ public class AccountController {
     @Value("${open-api.naver-sms.activate}") private Boolean smsIsActivated;
     private final AccountServiceImpl accountService;
     private final AuthService authService;
+
+
+    /**
+     *  활성화 된 게시글 없을 경우 회원 탈퇴 진행
+     **/
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteMyAccount(){
+
+        State result = accountService.deleteMyAccount();
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 
     @PatchMapping("")
     public ResponseEntity<?> modifyMyAccountInformation(
