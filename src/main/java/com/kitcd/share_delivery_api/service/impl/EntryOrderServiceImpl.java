@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderRepository;
@@ -9,6 +10,8 @@ import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.EntryOrderService;
+import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
+import com.kitcd.share_delivery_api.service.LoggedOnInformationService;
 import com.kitcd.share_delivery_api.service.OrderMenuService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +25,14 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
+@Transactional
 public class EntryOrderServiceImpl implements EntryOrderService {
 
     private final EntryOrderRepository entryOrderRepository;
     private final OrderMenuService orderMenuService;
-
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final LoggedOnInformationService loggedOnInformationService;
+    private final DeliveryRoomRepository deliveryRoomRepository;
 
     @Override
     public List<OrderResDTO> getOrderInformation(Long deliveryRoomId) {
@@ -60,17 +65,29 @@ public class EntryOrderServiceImpl implements EntryOrderService {
     }
 
     @Override
-    public EntryOrder enrollEntryOrder(DeliveryRoom room, List<OrderMenuRequestDTO> menuList, EntryOrderType entryOrderType, State state) {
+    public EntryOrder enrollEntryOrder(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList, EntryOrderType entryOrderType, State state) {
 
         EntryOrder entryOrder = entryOrderRepository.save(EntryOrder.builder()
                 .account(ContextHolder.getAccount())
                 .orderType(entryOrderType)
                 .status(state)
-                .deliveryRoom(room)
+                .deliveryRoom(deliveryRoom)
                 .orderType(entryOrderType)
                 .build());
 
         orderMenuService.enrollMenu(entryOrder, menuList);
+
+        deliveryRoom.addPerson();
+        deliveryRoomRepository.save(deliveryRoom);
+
+
+        // 방의 주도자에게 참가 신청 알람 전송.
+        firebaseCloudMessageService.sendMessageTo(
+                loggedOnInformationService.getFcmTokenByAccountId(deliveryRoom.getLeader().getAccountId()),
+                deliveryRoom.getContent() + " 방에 새로운 참가 신청이 있습니다.",
+                "null"
+                ,null
+        );
 
         return entryOrder;
     }

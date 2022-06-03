@@ -133,23 +133,9 @@ public class DeliveryRoomController {
 
         DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
-        if(!(room.getPeopleNumber() < room.getLimitPerson())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("인원이 초과되어 참여할 수 없습니다.");
-        }
-
         entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
 
-        // 방의 주도자에게 참가 신청 알람 전송.
-        firebaseCloudMessageService.sendMessageTo(
-                loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
-                room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
-                "null"
-                ,null
-        );
-
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-
-
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
     }
 
     @GetMapping("delivery-rooms/{deliveryRoomId}/close-recruit")

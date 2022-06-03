@@ -39,6 +39,7 @@ import java.util.Optional;
 @ConfigurationProperties(prefix = "property.test")
 @Component
 @AllArgsConstructor
+@Transactional
 public class DummyDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
 
@@ -317,6 +318,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
             log.warn("  account = " + account);
             log.warn("  deliveryRoom = " + deliveryRoom);
             return null;
+        }
+
+        if(status.equals(State.PENDING)){
+            deliveryRoom.get().addPerson();
         }
 
         return entryOrderRepository.save(EntryOrder.builder()
