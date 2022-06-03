@@ -41,10 +41,9 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                 String.format("'LINESTRING(%f %f, %f %f)')",
                         northEast.getLongitude(), northEast.getLatitude(), southWest.getLongitude(), southWest.getLatitude());
 
-        Query query = em.createNativeQuery("SELECT a.account_id, a.nickname, a.manner_score, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude, r.delivery_room_id, r.estimated_delivery_tip"
-                        + " FROM ACCOUNT a JOIN DELIVERY_ROOM r ON r.LEADER_ID = a.ACCOUNT_ID JOIN RECEIVING_LOCATION rl ON r.receiving_location_id = rl.receiving_location_id"
+        Query query = em.createNativeQuery("SELECT a.account_id, a.nickname, a.manner_score, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude, r.delivery_room_id, r.estimated_delivery_tip, sc.category_name"
+                        + " FROM ACCOUNT a JOIN DELIVERY_ROOM r ON r.LEADER_ID = a.ACCOUNT_ID JOIN RECEIVING_LOCATION rl ON r.receiving_location_id = rl.receiving_location_id JOIN STORE_CATEGORY sc ON r.store_category_id = sc.store_category_id"
                         + " WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + mbr + ", rl.location)").setMaxResults(10);
-
 
         List<Object[]> resultList = query.getResultList();
 
@@ -54,16 +53,16 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                 resultList.stream().map(
                         room -> DeliveryRoomDTO.builder()
                                 .leader(SimpleAccountDTO.builder()
-                                        .accountId((Long) room[0])
+                                        .accountId(bigIntegerObjToLong(room[0]))
                                         .nickname((String) room[1])
                                         .mannerScore((Double) room[2])
                                         .build())
                                 .content((String) room[3])
                                 .limitPerson(((BigInteger)room[4]).longValue())
                                 .storeLink((String)room[5])
-                                .status((DeliveryRoomState)room[6])
+                                .status(DeliveryRoomState.valueOf((String) room[6]))
                                 .createdDateTime(((Timestamp) room[7]).toLocalDateTime())
-                                .platformType((PlatformType) room[8])
+                                .platformType( PlatformType.valueOf((String) room[8]))
                                 .receivingLocation(LocationDTO.builder()
                                         .description((String) room[9])
                                         .address((String)room[10])
@@ -72,6 +71,7 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
                                         .build())
                                 .roomId(bigIntegerObjToLong(room[13]))
                                 .deliveryTip(bigIntegerObjToLong(room[14]))
+                                .storeCategory((String)room[15])
                                 .build()
                 ).collect(Collectors.toList());
 
