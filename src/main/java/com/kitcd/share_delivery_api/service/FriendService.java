@@ -9,6 +9,11 @@ import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import java.util.List;
 
 public interface FriendService {
+
+    void deleteAllMyFriend();
+
+    List<Friend> getAllEntitiesByAccountId(Long accountId);
+
     Friend getByTargetAccountId(Long targetId);
 
     boolean isFriend(Long targetId);
