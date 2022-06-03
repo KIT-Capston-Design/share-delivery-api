@@ -19,7 +19,7 @@ public class DeliveryRoomDTO {
 
     private SimpleAccountDTO leader;
 
-    private Long deliveryRoomId;
+    private Long roomId;
 
     private String content;
     private Long deliveryTip;
