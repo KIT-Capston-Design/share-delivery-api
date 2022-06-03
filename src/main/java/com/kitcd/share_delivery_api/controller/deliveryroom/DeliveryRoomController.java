@@ -102,7 +102,7 @@ public class DeliveryRoomController {
 
 
     @GetMapping("delivery-rooms")
-    public ResponseEntity<?> getDeliveryRooms(@RequestParam(name = "lat") @NotNull Double latitude, @RequestParam(name = "lng") @NotNull Double longitude, @RequestParam(name = "radius") @NotNull Double radius) {
+    public ResponseEntity<?> getDeliveryRooms(@RequestParam @NotNull Double latitude, @RequestParam @NotNull Double longitude, @RequestParam(name = "radius") @NotNull Double radius) {
 
         Location location = Location.builder()
                 .latitude(latitude)

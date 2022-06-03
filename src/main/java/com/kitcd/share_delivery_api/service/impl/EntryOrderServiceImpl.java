@@ -67,7 +67,6 @@ public class EntryOrderServiceImpl implements EntryOrderService {
                 .orderType(entryOrderType)
                 .status(state)
                 .deliveryRoom(room)
-                .orderType(entryOrderType)
                 .build());
 
         orderMenuService.enrollMenu(entryOrder, menuList);
