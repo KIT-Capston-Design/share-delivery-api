@@ -22,6 +22,7 @@ public class PostDTO {
     private Long viewCount;
     private Location coordinate;
     private PlaceShareDTO placeShare;
+    private Boolean isLiked;
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
