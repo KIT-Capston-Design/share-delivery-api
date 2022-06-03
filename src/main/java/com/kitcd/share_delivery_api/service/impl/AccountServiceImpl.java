@@ -3,11 +3,16 @@ package com.kitcd.share_delivery_api.service.impl;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.account.AccountRepository;
 import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
+import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.service.AccountService;
+import com.kitcd.share_delivery_api.service.FriendService;
 import com.kitcd.share_delivery_api.service.ImageFileService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 @Service
@@ -23,6 +29,7 @@ import javax.transaction.Transactional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final DeliveryRoomRepository deliveryRoomRepository;
     private final ImageFileService imageFileService;
 
     @Override
@@ -62,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
     public Account findByAccountId(Long accountId){
         Account account = accountRepository.findByAccountId(accountId);
 
-        if(account == null) throw new FetchNotFoundException(Account.class.toString(), accountId);
+        if(account == null || account.getStatus().equals(State.NORMAL)) throw new FetchNotFoundException(Account.class.toString(), accountId);
 
         return account;
     }
@@ -98,6 +105,24 @@ public class AccountServiceImpl implements AccountService {
         Integer result = accountRepository.nickNameDuplicateCheck(nickName);
 
         return !(result == null);
+    }
+
+    @Override
+    public State deleteMyAccount() {
+
+        Account myAccount = ContextHolder.getAccount();
+
+        //활성화 되어있는 모집글 fetch
+        List<ParticipatedDeliveryRoomDTO> dtos = deliveryRoomRepository.getParticipatingActivatedDeliveryRoom(myAccount.getAccountId());
+
+        if(!dtos.isEmpty()) throw new IllegalStateException("참여하고 있는 활성화된 모집글이 있어 탈퇴할 수 없습니다.");
+
+        State result = myAccount.withdraw();
+
+        accountRepository.save(myAccount);
+
+        return result;
+
     }
 
 }

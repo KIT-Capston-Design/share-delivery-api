@@ -9,10 +9,15 @@ import java.util.List;
 
 public interface DeliveryRoomRepository extends JpaRepository<DeliveryRoom, Long>, DeliveryRoomRepositoryCustom {
 
-    //리더 ID 기반 조회
-    //    @Query("select new com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO" +
-    //            "(dr.deliveryRoomId, ac.nickname, dr.content, dr.peopleNumber, dr.limitPerson, dr.storeName, dr.linkPlatformType, dr.createdDate, dr.status, rl.description, cat.categoryName) " +
-    //            "from DeliveryRoom dr join dr.receivingLocation rl join dr.leader ac join dr.storeCategory cat where ac.accountId = :accountId")
+
+
+    @Query("select new com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO" +
+            "(dr.deliveryRoomId, ac.nickname, dr.content, dr.peopleNumber, dr.limitPerson, dr.storeName, dr.linkPlatformType, dr.createdDate, dr.status, rl.description, cat.categoryName) " +
+            "from EntryOrder o join o.account ac0 join o.deliveryRoom dr join dr.leader ac join dr.receivingLocation rl join dr.storeCategory cat " +
+            "where ac0.accountId = :accountId and o.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED " +
+            "and not (dr.status = com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState.COMPLETED " +
+            "or dr.status = com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState.DELETED)")
+    List<ParticipatedDeliveryRoomDTO> getParticipatingActivatedDeliveryRoom(Long accountId);
 
     @Query("select new com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO" +
         "(dr.deliveryRoomId, ac.nickname, dr.content, dr.peopleNumber, dr.limitPerson, dr.storeName, dr.linkPlatformType, dr.createdDate, dr.status, rl.description, cat.categoryName) " +

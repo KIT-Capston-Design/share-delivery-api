@@ -29,6 +29,17 @@ public class FriendServiceImpl implements FriendService {
     private final AccountService accountService;
 
     @Override
+    public void deleteAllMyFriend() {
+        friendRepository.deleteAll(getAllEntitiesByAccountId(ContextHolder.getAccountId()));
+    }
+
+
+    @Override
+    public List<Friend> getAllEntitiesByAccountId(Long accountId){
+        return friendRepository.getAllEntitiesByAccountId(accountId);
+    }
+
+    @Override
     public Friend getByTargetAccountId(Long targetId){
         Friend friend = friendRepository.getByAccountIds(ContextHolder.getAccountId(), targetId);
 
@@ -96,8 +107,6 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public void deleteFriend(Long accountId) {
         Friend friend = getByTargetAccountId(accountId);
-
-
 
         friendRepository.delete(friend);
     }

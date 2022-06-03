@@ -335,6 +335,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .locationRef(location)
                 .description(description)
                 .account(account.get())
+                .isFavorite(isFavorite)
                 .address(address)
                 .isFavorite(isFavorite)
                 .build());

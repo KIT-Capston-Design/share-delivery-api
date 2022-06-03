@@ -77,6 +77,10 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
     }
 
 
+    @Override
+    public List<ParticipatedDeliveryRoomDTO> getParticipatingActivatedDeliveryRoom(Long accountId) {
+        return deliveryRoomRepository.getParticipatingActivatedDeliveryRoom(accountId);
+    }
 
     @Override
     public DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList) {
