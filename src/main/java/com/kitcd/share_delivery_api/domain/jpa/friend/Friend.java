@@ -40,4 +40,38 @@ public class Friend extends BaseTimeEntity {
       else if(Objects.equals(myAccountId, secondAccount.getAccountId())) return firstAccount;
       throw new IllegalArgumentException("해당 Friend Entity는 내 Friend Entity가 아닙니다.");
    }
+
+   public State accept(Long requestedPersonId){
+
+      if(!getFirstAccount().getAccountId().equals(requestedPersonId))
+         throw new IllegalStateException("본인이 신청한 친구 요청을 본인이 수락할 수 없습니다.");
+
+      if(!status.equals(State.PENDING))
+         throw new IllegalStateException("친구 요청을 승낙할 수 있는 상태가 아닙니다.");
+
+      return status = State.ACCEPTED;
+   }
+
+   public State reject(Long requestedPersonId) {
+
+      if(!getFirstAccount().getAccountId().equals(requestedPersonId))
+         throw new IllegalStateException("본인이 신청한 친구 요청을 본인이 거절할 수 없습니다.");
+
+      if(!status.equals(State.PENDING))
+         throw new IllegalStateException("친구 요청을 거절할 수 있는 상태가 아닙니다.");
+
+      return status = State.REJECTED;
+   }
+
+   public State cancel(Long personId) {
+
+      //상대방의 요청을 거절할 수는 있어도 취소할 수는 없음.
+      if(!getSecondAccount().getAccountId().equals(personId))
+         throw new IllegalStateException("잘못된 연산 : 상대방의 요청을 거절할 수는 있어도 취소할 수는 없습니다.");
+
+      if(!status.equals(State.PENDING))
+         throw new IllegalStateException("친구 요청을 취소할 수 있는 상태가 아닙니다.");
+
+      return status = State.CANCELLED;
+   }
 }

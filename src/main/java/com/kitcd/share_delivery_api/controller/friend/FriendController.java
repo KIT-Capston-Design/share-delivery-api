@@ -2,7 +2,6 @@ package com.kitcd.share_delivery_api.controller.friend;
 
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
-import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
 import com.kitcd.share_delivery_api.service.FriendService;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +44,13 @@ public class FriendController {
         friendService.deleteFriend(accountId);
 
         return ResponseEntity.status(HttpStatus.OK).body(accountId);
+    }
+
+    @PatchMapping("/{accountId}")
+    public ResponseEntity<?> processFriendRequest(@PathVariable Long accountId, @RequestBody OperationType type) {
+
+        State result = friendService.processFriendRequest(accountId, type);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

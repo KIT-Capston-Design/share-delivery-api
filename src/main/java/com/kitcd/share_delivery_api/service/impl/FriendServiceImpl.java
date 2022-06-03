@@ -1,6 +1,7 @@
 package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.controller.friend.FriendState;
+import com.kitcd.share_delivery_api.controller.friend.OperationType;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
@@ -29,7 +30,11 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public Friend getByTargetAccountId(Long targetId){
-        return friendRepository.getByAccountIds(ContextHolder.getAccountId(), targetId);
+        Friend friend = friendRepository.getByAccountIds(ContextHolder.getAccountId(), targetId);
+
+        if(friend == null) throw new EntityNotFoundException("해당 유저와 친구 관계가 없습니다.");
+
+        return friend;
     }
 
     @Override
@@ -40,9 +45,10 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public Friend friendRequest(Long targetId) {
 
-        Friend friend = getByTargetAccountId(targetId);
+        try {
+            Friend friend = getByTargetAccountId(targetId);
 
-        if(friend != null){
+            //기존 targetId의 유저와의  Friend 객체가 존재하는 경우
             State status = friend.getStatus();
             if(status == State.PENDING || status == State.ACCEPTED){
                 //예외
@@ -51,18 +57,18 @@ public class FriendServiceImpl implements FriendService {
                 //  3. 상대방이 이미 친구 신청한 경우 == State.PENDING
                 throw new IllegalStateException("친구 신청을 할 수 없습니다.");
             }
-            //REJECTED, CANCELLED의 경우 기존 객체 삭제
+            //REJECTED, CANCELLED의 경우 기존 객체 삭제 후 다시 친구 신청
             friendRepository.delete(friend);
-        }
 
-        //친구 객체 생성 후 저장
+        } catch (EntityNotFoundException ignored){}
+
+        //친구 신청 (친구 객체 생성 후 저장)
         return friendRepository.save(
                 Friend.builder()
                         .firstAccount(ContextHolder.getAccount())
                         .secondAccount(accountService.findByAccountId(targetId))
                         .status(State.PENDING)
-                        .build()
-        );
+                        .build());
     }
 
     @Override
@@ -91,8 +97,27 @@ public class FriendServiceImpl implements FriendService {
     public void deleteFriend(Long accountId) {
         Friend friend = getByTargetAccountId(accountId);
 
-        if(friend == null) throw new EntityNotFoundException("해당 유저와 친구 관계가 없습니다.");
+
 
         friendRepository.delete(friend);
+    }
+
+    @Override
+    public State processFriendRequest(Long accountId, OperationType type) {
+
+        Friend friend = getByTargetAccountId(accountId);
+
+        State result;
+
+        if(type.equals(OperationType.ACCEPT))
+            result = friend.accept(accountId);
+        else if(type.equals(OperationType.REJECT))
+            result = friend.reject(accountId);
+        else if(type.equals(OperationType.CANCEL))
+            result = friend.cancel(accountId);
+        else
+            throw new IllegalStateException("Unknown Operation Type");
+
+        return result;
     }
 }
