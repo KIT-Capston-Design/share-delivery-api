@@ -38,4 +38,12 @@ public class FriendController {
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    @DeleteMapping("/{accountId}")
+    public ResponseEntity<?> deleteFriend(@PathVariable Long accountId) {
+
+        friendService.deleteFriend(accountId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(accountId);
+    }
 }

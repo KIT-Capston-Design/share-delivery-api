@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +27,12 @@ public class FriendServiceImpl implements FriendService {
     private final FriendRepository friendRepository;
     private final AccountService accountService;
 
+    @Override
     public Friend getByTargetAccountId(Long targetId){
         return friendRepository.getByAccountIds(ContextHolder.getAccountId(), targetId);
     }
 
+    @Override
     public boolean isFriend(Long targetId){
         return friendRepository.isFriend(ContextHolder.getAccountId(), targetId);
     }
@@ -82,5 +85,14 @@ public class FriendServiceImpl implements FriendService {
                 .map(f -> f.getFriendAccount(myAccountId))
                 .map(Account::toAccountProfileDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteFriend(Long accountId) {
+        Friend friend = getByTargetAccountId(accountId);
+
+        if(friend == null) throw new EntityNotFoundException("해당 유저와 친구 관계가 없습니다.");
+
+        friendRepository.delete(friend);
     }
 }
