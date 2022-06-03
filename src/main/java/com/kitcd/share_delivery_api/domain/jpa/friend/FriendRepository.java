@@ -17,4 +17,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
             "where (f.account.accountId = :myId and f.friendAccount.accountId = :targetId and f.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED)" +
             "or (f.friendAccount.accountId = :myId and f.account.accountId = :targetId) and f.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED")
     Boolean isFriend(Long myId, Long targetId);
+
+    Friend findByFriendId(Long friendId);
 }
