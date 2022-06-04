@@ -2,8 +2,11 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
 import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
 import com.kitcd.share_delivery_api.domain.jpa.payment.PaymentRepository;
+import com.kitcd.share_delivery_api.domain.jpa.paymentdiscount.PaymentDiscount;
+import com.kitcd.share_delivery_api.domain.jpa.paymentorderform.PaymentOrderForm;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
@@ -13,11 +16,13 @@ import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.FetchNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -47,18 +52,15 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment payment = paymentRepository.save(dto.toEntity(room));
 
-        List<PaymentDiscountEnrollRequestDTO> discounts = dto.getDiscounts();
-
-        paymentDiscountService.enrollPaymentDiscount(discounts, payment);
 
         paymentOrderFormService.enrollPaymentOrderForm(images, payment);
 
+        List<PaymentDiscount> paymentDiscounts = paymentDiscountService.enrollPaymentDiscount(dto.getDiscounts(), payment);
 
-        // 총 할인 금액
-        long totalDiscountAmount = discounts.stream().map(PaymentDiscountEnrollRequestDTO::getAmount).mapToLong(Long::longValue).sum();
+        long totalDiscounts = paymentDiscounts.stream().map(PaymentDiscount::getAmount).mapToLong(Long::longValue).sum();
 
         //Remittance Entity 생성
-        remittanceService.createRemittanceEntities(room, payment, totalDiscountAmount);
+        remittanceService.createRemittanceEntities(room, payment, totalDiscounts);
 
 
         //그룹키 가져오고
@@ -78,5 +80,14 @@ public class PaymentServiceImpl implements PaymentService {
                 data);
 
         return room.getStatus();
+    }
+
+    @Override
+    public Payment getByDeliveryRoomId(Long deliveryRoomId) {
+        Payment payment = paymentRepository.getByDeliveryRoomId(deliveryRoomId);
+
+        if(payment == null) throw new FetchNotFoundException(Payment.class.toString(), deliveryRoomId + "(DeliveryRoom)");
+
+        return payment;
     }
 }

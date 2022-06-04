@@ -50,8 +50,9 @@ public class ReceivingLocation extends BaseTimeEntity {
 
    public LocationDTO toLocationDTO(){
       return LocationDTO.builder()
-//              .latitude(location.getY())
-//              .longitude(location.getX())
+              .longitude(locationRef.getLongitude())
+              .latitude(locationRef.getLatitude())
+              .address(address)
               .description(description)
               .build();
    }

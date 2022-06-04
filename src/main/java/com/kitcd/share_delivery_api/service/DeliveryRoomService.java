@@ -5,13 +5,14 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
+import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 
 import java.util.List;
 
 public interface DeliveryRoomService {
 
-    public List<ParticipatedDeliveryRoomDTO> getParticipatingActivatedDeliveryRoom(Long accountId);
+    List<ParticipatedDeliveryRoomDTO> getParticipatingActivatedDeliveryRoom(Long accountId);
     DeliveryRoom deliveryRoomCreate(DeliveryRoom deliveryRoom, List<OrderMenuRequestDTO> menuList);
 
     DeliveryRoomDTO getDeliveryRoomDTO(Long deliveryRoomId);
@@ -39,4 +40,7 @@ public interface DeliveryRoomService {
      Long deleteDeliveryRoom(Long deliveryRoom);
 
     Long exitDeliveryRoom(Long deliveryRoomId);
+
+    FinalOrderInformationDTO getFinalOrderInformation(Long deliveryRoomId);
+
 }
