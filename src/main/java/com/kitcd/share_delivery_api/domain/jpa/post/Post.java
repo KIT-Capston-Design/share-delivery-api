@@ -114,4 +114,8 @@ public class Post extends BaseTimeEntity {
               .images(imageUrlList)
               .build();
    }
+
+   public void increaseViewCount(){
+      viewCount += 1;
+   }
 }

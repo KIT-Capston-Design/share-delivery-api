@@ -85,6 +85,8 @@ public class PostServiceImpl implements PostService {
             return null;
         }
 
+        post.get().increaseViewCount();
+        postRepository.save(post.get());
         Boolean isLiked = postLikeService.isPostLiked(ContextHolder.getAccountId(), post.get().getPostId());
 
         return post.get().toDTO(isLiked);
