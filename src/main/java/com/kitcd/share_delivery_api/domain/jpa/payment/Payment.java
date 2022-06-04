@@ -39,4 +39,9 @@ public class Payment extends BaseTimeEntity {
 
    @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
    private List<PaymentOrderForm> paymentOrderForms = new LinkedList<>();
+
+
+   public Long getTotalDiscountAmount(){
+      return paymentDiscounts.stream().map(PaymentDiscount::getAmount).mapToLong(Long::longValue).sum();
+   }
 }
