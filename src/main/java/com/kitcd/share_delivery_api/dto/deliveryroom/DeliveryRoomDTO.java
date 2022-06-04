@@ -26,6 +26,7 @@ public class DeliveryRoomDTO {
     private Long person;
     private Long limitPerson;
     private String storeLink;
+    private String storeCategory;
     private PlatformType platformType;
     private DeliveryRoomState status;
     private LocalDateTime createdDateTime;
