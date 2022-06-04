@@ -1,0 +1,13 @@
+package com.kitcd.share_delivery_api.service;
+
+
+import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
+import com.kitcd.share_delivery_api.dto.comment.CommentDTO;
+import com.kitcd.share_delivery_api.dto.comment.CommentWriteDTO;
+
+public interface CommentService {
+
+    CommentDTO writeComment(CommentWriteDTO dto);
+
+    Comment getComment(Long id);
+}
