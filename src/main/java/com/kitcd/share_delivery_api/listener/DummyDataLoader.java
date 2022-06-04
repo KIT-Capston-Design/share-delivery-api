@@ -59,8 +59,6 @@ import java.util.Optional;
 @Transactional
 public class DummyDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Value("${web.static.base-dir}")
-    private String fileBaseDir;
     private final StoreCategoryRepository storeCategoryRepository;
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final EntryOrderRepository entryOrderRepository;
@@ -81,6 +79,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        loadImageFileData();
         loadAccountData();
         loadStoreCategoryData();
         loadReceivingLocationData();
@@ -91,7 +90,6 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadFriendData();
         loadPaymentData();
         loadPaymentDiscountData();
-        loadImageFileData();
         loadPaymentOrderFormData();
         loadPostData();
         loadPlaceShareData();
@@ -107,7 +105,12 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadImageFileData(){
-        createImageFileIfNotFound(1L, "dummyfile", "dummyfile","", fileBaseDir, 0d);
+        createImageFileIfNotFound(1L, "DUMMYIMAGE_1", "DUMMYIMAGE_1","png", "images/", 0d);
+        createImageFileIfNotFound(2L, "DUMMYIMAGE_2", "DUMMYIMAGE_2","png", "images/", 0d);
+        createImageFileIfNotFound(3L, "DUMMYIMAGE_3", "DUMMYIMAGE_3","png", "images/", 0d);
+        createImageFileIfNotFound(4L, "DUMMYIMAGE_4", "DUMMYIMAGE_4","png", "images/", 0d);
+        createImageFileIfNotFound(5L, "DUMMYIMAGE_5", "DUMMYIMAGE_5","png", "images/", 0d);
+        createImageFileIfNotFound(6L, "DUMMYIMAGE_6", "DUMMYIMAGE_6","png", "images/", 0d);
     }
     private void loadPaymentOrderFormData(){
         createPaymentOrderFormIfNotFound(1L,1L, 1L);
@@ -157,10 +160,12 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadAccountData(){
-        createAccountDataIfNotFound(1L,"01000000001", "DUMMY USER 1", RoleType.ROLE_USER);
-        createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER);
-        createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER);
-        createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER);
+        createAccountDataIfNotFound(1L,"01000000001", "DUMMY USER 1", RoleType.ROLE_USER, 1L);
+        createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER, 2L);
+        createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER, 3L);
+        createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER, 4L);
+        createAccountDataIfNotFound(4L,"01000000005", "DUMMY USER 5", RoleType.ROLE_USER, 5L);
+        createAccountDataIfNotFound(4L,"01000000006", "DUMMY USER 6", RoleType.ROLE_USER, 6L);
     }
 
     private void loadReceivingLocationData(){
@@ -253,14 +258,21 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName, RoleType role){
+    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName, RoleType role, Long profileImageId){
 
         Account account = accountRepository.findByPhoneNumber(phoneNum);
+        Optional<ImageFile> image = imageFileRepository.findById(profileImageId);
 
         if(account != null){
             saveDummyLoginInformationToRedis(account);
             return account;
         }
+
+        if(image.isEmpty()){
+            log.warn("DummyDataLoader.createAccountDataIfNotFound() : ImageFile " + profileImageId + " is null");
+            return null;
+        }
+
 
         //DB 저장
         Account savedAccount = accountRepository.save(Account.builder()
@@ -268,6 +280,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .nickname(nickName)
                 .email("DUMMY EMAIL DATA")
                 .status(State.NORMAL)
+                .profileImage(image.get())
                 .role(RoleType.ROLE_USER)
                         .mannerScore(36.5)
                 .bankAccount(BankAccount.builder()
@@ -494,10 +507,10 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private ImageFile createImageFileIfNotFound(Long imageFileId, String originalFileName, String fileName, String fileExtension, String dirPath, Double fileSize){
-        Optional<ImageFile> findImageFiles = imageFileRepository.findById(imageFileId);
+        Optional<ImageFile> findImageFile = imageFileRepository.findById(imageFileId);
 
-        if(findImageFiles.isPresent()){
-            return findImageFiles.get();
+        if(findImageFile.isPresent()){
+            return findImageFile.get();
         }
 
         return imageFileRepository.save(ImageFile.builder()
