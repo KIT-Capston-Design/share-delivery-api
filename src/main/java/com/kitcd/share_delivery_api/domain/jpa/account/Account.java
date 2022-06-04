@@ -181,7 +181,7 @@ public class Account extends BaseTimeEntity {
       String newEmail = dto.getEmail();
       String newNickName = dto.getNickName();
 
-      if(newEmail == null && newNickName == null && imageFile != null ){
+      if(newEmail == null && newNickName == null && imageFile == null ){
          throw new IllegalArgumentException("적어도 하나 이상의 수정사항이 있어야 합니다.");
       }
 
