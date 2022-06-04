@@ -13,12 +13,11 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PaymentEnrollRequestDTO {
-    private Long deliveryTip;
     private List<PaymentDiscountEnrollRequestDTO> discounts;
 
     public Payment toEntity(DeliveryRoom deliveryRoom){
         return Payment.builder().deliveryRoom(deliveryRoom)
-                .deliveryFee(deliveryTip)
+                .deliveryFee(deliveryRoom.getEstimatedDeliveryTip())
                 .build();
 
     }
