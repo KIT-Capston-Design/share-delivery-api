@@ -8,9 +8,11 @@ import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLikeRepository;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
 import com.kitcd.share_delivery_api.service.PostImageService;
+import com.kitcd.share_delivery_api.service.PostLikeService;
 import com.kitcd.share_delivery_api.service.PostService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.address.FindAddressWithLocation;
@@ -38,6 +40,8 @@ public class PostServiceImpl implements PostService {
 
     private final PostImageService postImageService;
 
+    private final PostLikeService postLikeService;
+
     @Override
     public PostDTO writePost(WritePostRequestDTO dto, List<MultipartFile> images) {
 
@@ -56,10 +60,10 @@ public class PostServiceImpl implements PostService {
         }
 
         if(null != dto.getSharePlace()) {
-            PlaceShare placeShare = placeShareRepository.save(dto.getSharePlace().toEntity(post, findAddressWithLocation));
-            post = postRepository.save(dto.toEntity(placeShare, category, address));
+            placeShareRepository.save(dto.getSharePlace().toEntity(post, findAddressWithLocation));
         }
-
-        return post.toDTO();
+        Boolean isLiked = postLikeService.isPostLiked(ContextHolder.getAccountId(), post.getPostId());
+        return post.toDTO(isLiked);
     }
+
 }

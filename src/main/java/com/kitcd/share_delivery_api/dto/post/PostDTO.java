@@ -27,4 +27,5 @@ public class PostDTO {
     private PlaceShareDTO placeShare;
     private Boolean isLiked;
     private List<String> images;
+
 }

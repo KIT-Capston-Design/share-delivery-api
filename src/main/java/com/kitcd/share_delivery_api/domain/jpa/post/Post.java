@@ -82,7 +82,7 @@ public class Post extends BaseTimeEntity {
    @OneToMany(mappedBy = "post")
    private List<Report> reports = new LinkedList<>();
 
-   public PostDTO toDTO(){
+   public PostDTO toDTO(Boolean isLiked){
 
       return PostDTO.builder()
               .postId(postId)
@@ -97,6 +97,7 @@ public class Post extends BaseTimeEntity {
               .placeShare(null == sharedPlace ? null : PlaceShareDTO.parseDTO(sharedPlace))
               .coordinate(coordinate)
               .likes(commentLikes == null ? 0 : (long)commentLikes.size())
+              .isLiked(isLiked)
               .viewCount(viewCount)
               .build();
    }
