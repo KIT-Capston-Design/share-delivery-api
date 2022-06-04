@@ -45,7 +45,7 @@ public class DeliveryRoomEnrollRequestDTO {
                 .storeLink(shareStore.link)
                 .estimatedDeliveryTip(deliveryTip)
                 .storeCategory(storeCategory)
-                .peopleNumber(1L)
+                .peopleNumber(0L)
                 .build();
     }
 

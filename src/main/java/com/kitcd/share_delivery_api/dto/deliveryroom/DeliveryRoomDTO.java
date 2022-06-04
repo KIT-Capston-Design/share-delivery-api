@@ -25,6 +25,7 @@ public class DeliveryRoomDTO {
     private Long deliveryTip;
     private Long person;
     private Long limitPerson;
+    private String storeName;
     private String storeLink;
     private String storeCategory;
     private PlatformType platformType;
