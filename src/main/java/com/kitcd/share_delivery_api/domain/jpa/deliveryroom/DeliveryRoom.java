@@ -114,6 +114,7 @@ public class DeliveryRoom extends BaseTimeEntity {
               .storeLink(storeLink)
               .platformType(linkPlatformType)
               .status(status)
+              .storeCategory(storeCategory.getCategoryName())
               .createdDateTime(getCreatedDate())
               .receivingLocation(LocationDTO.builder()
                       .longitude(receivingLocation.getLocationRef().getLongitude())

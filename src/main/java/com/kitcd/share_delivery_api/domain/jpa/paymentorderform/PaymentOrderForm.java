@@ -33,6 +33,5 @@ public class PaymentOrderForm extends BaseTimeEntity {
               .payment(payment)
               .imageFile(imageFile)
               .build();
-
    }
 }
