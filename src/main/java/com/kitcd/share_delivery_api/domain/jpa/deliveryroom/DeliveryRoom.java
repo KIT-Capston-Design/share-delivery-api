@@ -3,6 +3,7 @@ package com.kitcd.share_delivery_api.domain.jpa.deliveryroom;
 import com.kitcd.share_delivery_api.domain.jpa.chat.Chat;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
@@ -18,9 +19,10 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -140,5 +142,18 @@ public class DeliveryRoom extends BaseTimeEntity {
          throw new IllegalStateException("모집글을 삭제할 수 있는 상태가 아닙니다.");
       }
       status = DeliveryRoomState.DELETED;
+   }
+
+   //주도자를 제외한 참여자들의 주문 가져오기
+   public List<EntryOrder> getParticipantsOrder(){
+      return getOrders().stream()
+              .filter(order -> (order.getStatus() == State.ACCEPTED) && (!Objects.equals(order.getAccount().getAccountId(), leader.getAccountId())))
+              .collect(Collectors.toList());
+   }
+
+   public DeliveryRoomState enrollPaymentStatusCheck() {
+      if(!status.equals(DeliveryRoomState.WAITING_PAYMENT)) throw new IllegalStateException("주문서를 등록할 수 있는 모집글 상태가 아닙니다.");
+
+      return status = DeliveryRoomState.WAITING_DELIVERY;
    }
 }

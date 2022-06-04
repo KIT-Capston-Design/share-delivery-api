@@ -36,7 +36,7 @@ public class Remittance extends BaseTimeEntity {
    @Column(name = "AMOUNT", nullable = false)
    private Long amount;
 
-   @Enumerated
+   @Enumerated(EnumType.STRING)
    @Column(name = "IS_REMITTED", nullable = false)
    private State isRemitted;
 

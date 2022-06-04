@@ -6,6 +6,8 @@ import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.ordermenu.OrderMenu;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
+import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,4 +90,29 @@ public class EntryOrder extends BaseTimeEntity {
               .build();
    }
 
+   public Long getTotalPrice(){
+      return getOrderMenus().stream()
+              .map(menu-> menu.getPrice() * menu.getQuantity())
+              .mapToLong(Long::longValue)
+              .sum();
+   }
+
+   public Remittance toRemittanceEntity(Account recipient, Payment payment, Long additionalAmount){
+
+      long value = getTotalPrice() + additionalAmount;
+
+      //백원 이하 올림
+      value = (long) (Math.ceil(((double)value)/100)) * 100;
+
+      //0원 이하 0원으로
+      if(value < 0) value = 0;
+
+      return Remittance.builder()
+              .remitter(getAccount())
+              .recipient(recipient)
+              .payment(payment)
+              .amount(value)
+              .isRemitted(State.PENDING)
+              .build();
+   }
 }
