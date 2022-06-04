@@ -33,4 +33,11 @@ public class PaymentOrderFormServiceImpl implements PaymentOrderFormService {
 
         return paymentOrderFormRepository.saveAll(orderForms);
     }
+
+    @Override
+    public List<String> getOrderFormImagesByPaymentId(Long paymentId) {
+        List<PaymentOrderForm> allByPaymentId = paymentOrderFormRepository.getAllByPaymentId(paymentId);
+
+        return allByPaymentId.stream().map(f->f.getImageFile().extractUrl()).collect(Collectors.toList());
+    }
 }

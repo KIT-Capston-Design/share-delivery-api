@@ -4,18 +4,19 @@ import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
+import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
+import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
-import com.kitcd.share_delivery_api.service.DeliveryRoomService;
-import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
-import com.kitcd.share_delivery_api.service.LoggedOnInformationService;
+import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
+import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
-import com.kitcd.share_delivery_api.service.EntryOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,31 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
     private final EntryOrderService entryOrderService;
     private final LoggedOnInformationService loggedOnInformationService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final PaymentService paymentService;
+    private final PaymentOrderFormService paymentOrderFormService;
+
+
+    @Override
+    public FinalOrderInformationDTO getFinalOrderInformation(Long deliveryRoomId) {
+
+        DeliveryRoom deliveryRoom = findByDeliveryRoomId(deliveryRoomId);
+
+        if(
+                !(
+                        deliveryRoom.getStatus().equals(DeliveryRoomState.WAITING_DELIVERY)
+                                || deliveryRoom.getStatus().equals(DeliveryRoomState.WAITING_REMITTANCE)
+                                || deliveryRoom.getStatus().equals(DeliveryRoomState.COMPLETED)
+                )
+        ) throw new IllegalStateException("최종 주문 정보를 조회할 수 없습니다.");
+
+
+        Payment payment = paymentService.getByDeliveryRoomId(deliveryRoomId);
+        List<OrderResDTO> orders = entryOrderService.getAcceptedOrderInformation(deliveryRoomId);
+        List<String> imageUrls = paymentOrderFormService.getOrderFormImagesByPaymentId(payment.getPaymentId());
+
+        return deliveryRoom.toFinalOrderInformationDTO(payment, orders, imageUrls);
+    }
+
 
     @Override
     public DeliveryRoomDTO getDeliveryRoomDTO(Long deliveryRoomId) {
@@ -48,6 +74,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         return deliveryRoom.toDTO();
     }
 
+    @Override
     public List<DeliveryRoomDTO> getDeliveryRooms(Location location, Double distance){
         return deliveryRoomRepository.findDeliveryRoomDTOWithLocation(location, distance);
     }
@@ -175,5 +202,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         return deliveryRoomId;
     }
+
+
 
 }
