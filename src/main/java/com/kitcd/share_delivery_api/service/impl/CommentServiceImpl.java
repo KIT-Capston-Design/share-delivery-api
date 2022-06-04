@@ -1,13 +1,18 @@
 package com.kitcd.share_delivery_api.service.impl;
 
+import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
 import com.kitcd.share_delivery_api.domain.jpa.comment.CommentRepository;
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLikeRepository;
+import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.dto.comment.CommentDTO;
 import com.kitcd.share_delivery_api.dto.comment.CommentWriteDTO;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
+import com.kitcd.share_delivery_api.service.CommentLikeService;
 import com.kitcd.share_delivery_api.service.CommentService;
 import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
 import com.kitcd.share_delivery_api.service.LoggedOnInformationService;
+import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bytecode.Throw;
@@ -16,7 +21,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +37,15 @@ public class CommentServiceImpl implements CommentService {
 
     private final LoggedOnInformationService loggedOnInformationService;
 
+    private final CommentLikeService commentLikeService;
+
     @Override
     public CommentDTO writeComment(CommentWriteDTO dto) {
         Comment parent = null;
 
         //fcm title, body, data 초기화
         Long fcmTargetId;
-        String title;
+        String title = "내가 작성한 글에 댓글이 달렸어요!";
         HashMap<String, Object> data = new HashMap<>();
         data.put("postId", dto.getPostId());
         data.put("type", FCMDataType.POST_COMMENT);
@@ -53,7 +62,6 @@ public class CommentServiceImpl implements CommentService {
 
         //댓글일 경우
         Comment comment = commentRepository.save(dto.toEntity(parent));
-        title = "내가 작성한 글에 댓글이 달렸어요!";
 
 
         //글작성자에게 전송.
@@ -76,5 +84,17 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return findComment.get();
+    }
+
+    @Override
+    public List<CommentDTO> getCommentsByPostId(Long postId) {
+        Long nowSessionId = ContextHolder.getAccountId();
+        List<CommentDTO> findList = commentRepository.findCommentsByPostId(postId).stream()
+                .map(i ->{
+                    Boolean isLiked = commentLikeService.isLiked(i.getCommentId(), nowSessionId);
+                    return i.toDTO(isLiked);
+                })
+                .collect(Collectors.toList());
+        return findList;
     }
 }

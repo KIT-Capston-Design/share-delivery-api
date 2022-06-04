@@ -1,8 +1,8 @@
 package com.kitcd.share_delivery_api.domain.jpa.commentlike;
 
+import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
-import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +25,8 @@ public class CommentLike extends BaseTimeEntity {
    private Account account;
 
    @ManyToOne
-   @JoinColumn(name = "POST_ID", nullable = false)
-   private Post post;
+   @JoinColumn(name = "COMMENT_ID", nullable = false)
+   private Comment comment;
 
 
 }

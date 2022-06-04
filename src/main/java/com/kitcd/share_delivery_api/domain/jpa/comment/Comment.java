@@ -66,5 +66,4 @@ public class Comment extends BaseTimeEntity {
               .parentId(!(null==parent) ? parent.getCommentId() : null)
               .build();
    }
-
 }
