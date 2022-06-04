@@ -10,6 +10,7 @@ import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryR
 import com.kitcd.share_delivery_api.dto.deliveryroom.*;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
 import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
+import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,15 @@ public class DeliveryRoomController {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final LoggedOnInformationService loggedOnInformationService;
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
+
+
+    @GetMapping("/api/delivery-rooms/{deliveryRoomId}/order-detail")
+    public ResponseEntity<?> getFinalOrderInformation(@PathVariable Long deliveryRoomId) {
+
+        FinalOrderInformationDTO result = deliveryRoomService.getFinalOrderInformation(deliveryRoomId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 
     @GetMapping("delivery-rooms/{deliveryRoomId}/exit-room")
     public ResponseEntity<?> exitDeliveryRoom(@PathVariable Long deliveryRoomId) {
@@ -130,11 +141,11 @@ public class DeliveryRoomController {
     }
 
     @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
-    public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody List<OrderMenuRequestDTO> dtoList){
+    public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody JoinRequestDeliveryRoomDTO dto){
 
         DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
-        entryOrderService.enrollEntryOrder(room, dtoList, EntryOrderType.PARTICIPATION, State.PENDING);
+        entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
     }

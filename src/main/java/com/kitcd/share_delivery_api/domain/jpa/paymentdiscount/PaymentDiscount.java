@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.domain.jpa.paymentdiscount;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
@@ -15,11 +16,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "PAYMENT_DISCOUNT")
 public class PaymentDiscount extends BaseTimeEntity {
+   @JsonIgnore
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "PAYMENT_DISCOUNT_ID", nullable = false)
    private Long paymentDiscountId;
 
-   @ManyToOne
+   @JsonIgnore
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PAYMENT_ID", nullable = false)
    private Payment payment;
 

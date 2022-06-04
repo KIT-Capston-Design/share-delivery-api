@@ -88,20 +88,20 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadOrderMenuData();
         loadPostCategory();
         loadFriendData();
-        loadPaymentData();
-        loadPaymentDiscountData();
+//        loadPaymentData();
+//        loadPaymentDiscountData();
         loadPaymentOrderFormData();
         loadPostData();
         loadPlaceShareData();
     }
     private void loadPaymentData(){
-        createPaymentIfNotFound(1L, 3L, 1L); //3번방만 풀방..
+        createPaymentIfNotFound(1L, 1L, 5000L);
     }
 
     private void loadPaymentDiscountData(){
-        createPaymentDiscountIfNotFound(1L, 1L, "DUMMY_DISCOUNT_NAME1", 123456L);
-        createPaymentDiscountIfNotFound(2L, 1L, "DUMMY_DISCOUNT_NAME2", 123456L);
-        createPaymentDiscountIfNotFound(3L, 1L, "DUMMY_DISCOUNT_NAME3", 123456L);
+        createPaymentDiscountIfNotFound(1L, 1L, "DUMMY_DISCOUNT_NAME1", 4000L);
+        createPaymentDiscountIfNotFound(2L, 1L, "DUMMY_DISCOUNT_NAME2", 5000L);
+        createPaymentDiscountIfNotFound(3L, 1L, "DUMMY_DISCOUNT_NAME3", 8000L);
     }
 
     private void loadImageFileData(){
@@ -179,7 +179,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadDeliveryRoomData(){
-        createDeliveryRoomIfNotFound(1L, "DUMMY CONTENT 1", 1L,4L, 123456L,1L, "CHICKEN", 1L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
+        createDeliveryRoomIfNotFound(1L, "DUMMY CONTENT 1", 4L,4L, 123456L,1L, "CHICKEN", 1L, DeliveryRoomState.WAITING_PAYMENT, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
         createDeliveryRoomIfNotFound(2L, "DUMMY CONTENT 2", 1L,4L, 123456L,2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
         createDeliveryRoomIfNotFound(3L, "DUMMY CONTENT 3", 1L,4L, 123456L,3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
         createDeliveryRoomIfNotFound(4L, "DUMMY CONTENT 4", 1L,4L, 123456L,1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
@@ -195,30 +195,30 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createEntryOrderIfNotFound(4L, 3L, 3L, EntryOrderType.LEAD, State.ACCEPTED);
 
         //PARTICIPATION
-        createEntryOrderIfNotFound(5L, 2L, 1L, EntryOrderType.PARTICIPATION, State.PENDING);
-        createEntryOrderIfNotFound(6L, 3L, 1L, EntryOrderType.PARTICIPATION, State.PENDING);
-        createEntryOrderIfNotFound(7L, 4L, 1L, EntryOrderType.PARTICIPATION, State.PENDING);
+        createEntryOrderIfNotFound(5L, 2L, 1L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(6L, 3L, 1L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(7L, 4L, 1L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
     }
 
 
 
     private void loadOrderMenuData(){
-        createOrderMenuIfNotFound(1L, 1L, 16000L, 1L, "DUMMY MENU 1", null);
-        createOrderMenuIfNotFound(2L,1L,500L, 1L,"DUMMY OPTION 1", 1L);
-        createOrderMenuIfNotFound(3L, 1L, 4000L, 2L, "DUMMY MENU 2", null);
-        createOrderMenuIfNotFound(4L, 1L, 6000L, 2L, "DUMMY MENU 3", null);
-        createOrderMenuIfNotFound(5L, 1L, 1500L, 3L, "DUMMY MENU 4", null);
-        createOrderMenuIfNotFound(6L, 1L, 300L, 3L, "DUMMY OPTION 2", 5L);
-        createOrderMenuIfNotFound(7L, 1L, 6400L, 3L, "DUMMY MENU 5", null);
-        createOrderMenuIfNotFound(8L, 1L, 1000L,3L, "DUMMY OPTION 3", 7L);
-        createOrderMenuIfNotFound(9L, 1L, 16000L, 1L, "DUMMY MENU 6", null);
+        createOrderMenuIfNotFound(1L, 1L, 1600000L, 1L, "DUMMY MENU 1", null);
+        createOrderMenuIfNotFound(2L,1L,500000L, 1L,"DUMMY OPTION 1", 1L);
+        createOrderMenuIfNotFound(3L, 1L, 400000L, 2L, "DUMMY MENU 2", null);
+        createOrderMenuIfNotFound(4L, 1L, 600000L, 2L, "DUMMY MENU 3", null);
+        createOrderMenuIfNotFound(5L, 1L, 1500000L, 3L, "DUMMY MENU 4", null);
+        createOrderMenuIfNotFound(6L, 1L, 30000L, 3L, "DUMMY OPTION 2", 5L);
+        createOrderMenuIfNotFound(7L, 1L, 64000L, 3L, "DUMMY MENU 5", null);
+        createOrderMenuIfNotFound(8L, 1L, 100000L,3L, "DUMMY OPTION 3", 7L);
+        createOrderMenuIfNotFound(9L, 1L, 160000L, 1L, "DUMMY MENU 6", null);
 
-        createOrderMenuIfNotFound(10L,1L,500L, 5L,"DUMMY MENU 7", null);
-        createOrderMenuIfNotFound(11L,1L,500L, 6L,"DUMMY MENU 8", null);
-        createOrderMenuIfNotFound(12L,1L,500L, 7L,"DUMMY MENU 9", null);
-        createOrderMenuIfNotFound(13L,1L,500L, 5L,"DUMMY MENU 10", null);
-        createOrderMenuIfNotFound(14L,1L,500L, 6L,"DUMMY MENU 11", null);
-        createOrderMenuIfNotFound(15L,1L,500L, 7L,"DUMMY MENU 12", null);
+        createOrderMenuIfNotFound(10L,1L,500000L, 5L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(11L,1L,500000L, 6L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(12L,1L,500000L, 7L,"DUMMY MENU 9", null);
+        createOrderMenuIfNotFound(13L,1L,500000L, 5L,"DUMMY MENU 10", null);
+        createOrderMenuIfNotFound(14L,1L,500000L, 6L,"DUMMY MENU 11", null);
+        createOrderMenuIfNotFound(15L,1L,500000L, 7L,"DUMMY MENU 12", null);
     }
 
     private void loadPostCategory(){

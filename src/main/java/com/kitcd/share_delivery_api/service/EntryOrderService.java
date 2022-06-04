@@ -20,5 +20,7 @@ public interface EntryOrderService {
 
     List<OrderResDTO> getOrderInformation(Long deliveryRoomId);
 
+    List<OrderResDTO> getAcceptedOrderInformation(Long deliveryRoomId);
+
     Long acceptOrders(Long deliveryRoomId);
 }

@@ -45,6 +45,16 @@ public class EntryOrderServiceImpl implements EntryOrderService {
     }
 
     @Override
+    public List<OrderResDTO> getAcceptedOrderInformation(Long deliveryRoomId) {
+
+        List<EntryOrder> orders = entryOrderRepository.getAcceptedOrderInformation(deliveryRoomId);
+
+        if(orders == null) throw new EntityNotFoundException(EntryOrder.class.toString());
+
+        return orders.stream().map(EntryOrder::toResponseDTO).collect(Collectors.toList());
+    }
+
+    @Override
     public Long acceptOrders(Long deliveryRoomId) {
 
         List<EntryOrder> eos = getPendingEntryOrderByDeliveryRoomId(deliveryRoomId);

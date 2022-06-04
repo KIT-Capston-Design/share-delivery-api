@@ -15,4 +15,9 @@ public interface EntryOrderRepository extends JpaRepository<EntryOrder, Long> {
 
     @Query("select o from EntryOrder o join o.deliveryRoom dr where o.status = com.kitcd.share_delivery_api.domain.jpa.common.State.PENDING and dr.deliveryRoomId = :deliveryRoomId")
     List<EntryOrder> getPendingEntryOrderByDeliveryRoomId(Long deliveryRoomId);
+
+
+    @Query("select distinct o from EntryOrder o join fetch o.orderMenus join fetch o.account " +
+            "where o.deliveryRoom.deliveryRoomId = :deliveryRoomId and o.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED")
+    List<EntryOrder> getAcceptedOrderInformation(Long deliveryRoomId);
 }
