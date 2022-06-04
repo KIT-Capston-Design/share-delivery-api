@@ -45,7 +45,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
 
         Query query = em.createNativeQuery("SELECT p.post_id, a.nickname, a.manner_score, a.account_id, p.content, pc.category_name, p.created_date"
                                                 + " FROM ACCOUNT a JOIN POST p ON  p.USER_ID = a.ACCOUNT_ID JOIN POST_CATEGORY pc ON p.POST_CATEGORY_ID = pc.POST_CATEGORY_ID"
-                                                + " WHERE MBRContains(ST_LINESTRINGFROMTEXT("+ mbr + ", p.location) AND p.created_date <= :endDate ORDER BY p.created_date").setMaxResults(20);
+                                                + " WHERE MBRContains(ST_LINESTRINGFROMTEXT("+ mbr + ", p.location) AND p.created_date <= :endDate ORDER BY p.created_date DESC").setMaxResults(20);
 
         query.setParameter("endDate", localToTimestamp(lastCreatedDateTime));
 
