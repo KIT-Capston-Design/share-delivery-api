@@ -32,11 +32,9 @@ import java.util.List;
 public class PaymentController {
 
     private final PaymentService paymentService;
-    private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
-
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     private final DeliveryRoomService deliveryRoomService;
+
 
     @PostMapping("/delivery-rooms/{deliveryRoomId}/order-detail")
     public ResponseEntity<?> enrollPayment(@Validated @RequestPart(value = "orderDetail")PaymentEnrollRequestDTO dto, @RequestParam(value = "orderFormList")List<MultipartFile> images, @PathVariable Long deliveryRoomId){

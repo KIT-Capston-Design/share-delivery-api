@@ -9,4 +9,6 @@ import java.util.List;
 public interface PaymentOrderFormService {
 
     List<PaymentOrderForm> enrollPaymentOrderForm(List<MultipartFile> orderImages, Payment payment);
+
+    List<String> getOrderFormImagesByPaymentId(Long paymentId);
 }
