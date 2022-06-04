@@ -13,6 +13,8 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
+import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -118,12 +120,7 @@ public class DeliveryRoom extends BaseTimeEntity {
               .status(status)
               .storeCategory(storeCategory.getCategoryName())
               .createdDateTime(getCreatedDate())
-              .receivingLocation(LocationDTO.builder()
-                      .longitude(receivingLocation.getLocationRef().getLongitude())
-                      .latitude(receivingLocation.getLocationRef().getLatitude())
-                      .address(receivingLocation.getAddress())
-                      .description(receivingLocation.getDescription())
-                      .build())
+              .receivingLocation(receivingLocation.toLocationDTO())
               .build();
    }
    public void closeRecruit(){
@@ -155,5 +152,22 @@ public class DeliveryRoom extends BaseTimeEntity {
       if(!status.equals(DeliveryRoomState.WAITING_PAYMENT)) throw new IllegalStateException("주문서를 등록할 수 있는 모집글 상태가 아닙니다.");
 
       return status = DeliveryRoomState.WAITING_DELIVERY;
+   }
+
+   public FinalOrderInformationDTO toFinalOrderInformationDTO(Payment payment, List<OrderResDTO> orders, List<String> imageUrls) {
+      return FinalOrderInformationDTO.builder()
+              .roomId(deliveryRoomId)
+              .orders(orders)
+              .discounts(payment.getPaymentDiscounts())
+              .totalDiscountAmount(payment.getTotalDiscountAmount())
+              .deliveryFee(payment.getDeliveryFee())
+              .orderFormUrlList(imageUrls)
+              .receivingLocation(receivingLocation.toLocationDTO())
+              .leader(SimpleAccountDTO.builder()
+                      .accountId(getLeader().getAccountId())
+                      .nickname(getLeader().getNickname())
+                      .bankAccount(getLeader().getBankAccount())
+                      .build()
+              ).build();
    }
 }
