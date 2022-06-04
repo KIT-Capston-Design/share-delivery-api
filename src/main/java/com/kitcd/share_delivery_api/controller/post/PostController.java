@@ -1,5 +1,7 @@
 package com.kitcd.share_delivery_api.controller.post;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
@@ -33,7 +35,15 @@ public class PostController {
 
 
     @PostMapping("")                //multipart로 데이터를 받아옴.                  //null 일 수 있음.
-    public ResponseEntity<?> writePost(@RequestPart(value = "post") WritePostRequestDTO dto, @RequestParam(value = "postImages",required = false) List<MultipartFile> images){
+    public ResponseEntity<?> writePost(@RequestParam(value = "post") String postDetails, @RequestParam(value = "postImages",required = false) List<MultipartFile> images){
+        ObjectMapper om = new ObjectMapper();
+
+        WritePostRequestDTO dto = null;
+        try {
+            dto = om.readValue(postDetails, WritePostRequestDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         PostDTO post = postService.writePost(dto, images);
 
