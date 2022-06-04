@@ -10,6 +10,7 @@ import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryR
 import com.kitcd.share_delivery_api.dto.deliveryroom.*;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
 import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
+import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.*;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
@@ -129,11 +130,11 @@ public class DeliveryRoomController {
     }
 
     @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
-    public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody JoinRequestDeliveryRoomDTO dto){
+    public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody List<OrderMenuRequestDTO> dtoList){
 
         DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
-        entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
+        entryOrderService.enrollEntryOrder(room, dtoList, EntryOrderType.PARTICIPATION, State.PENDING);
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
     }

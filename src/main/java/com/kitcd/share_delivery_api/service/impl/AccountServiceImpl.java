@@ -6,6 +6,7 @@ import com.kitcd.share_delivery_api.domain.jpa.account.BankAccount;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
 import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
 import com.kitcd.share_delivery_api.dto.account.AccountDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountModificationDTO;
 import com.kitcd.share_delivery_api.dto.account.AccountProfileDTO;
@@ -93,7 +94,11 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = findByAccountId(ContextHolder.getAccountId());
 
-        account.updateAccountInformation(dto, imageFileService.save(profileImage));
+        // 이미지 파일이 존재할 경우 저장
+        ImageFile imageFile = (profileImage != null && !profileImage.isEmpty()) ?
+                imageFileService.save(profileImage) : null;
+
+        account.updateAccountInformation(dto, imageFile);
 
         return account.toDTO();
     }
