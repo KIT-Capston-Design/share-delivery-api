@@ -8,6 +8,7 @@ import com.kitcd.share_delivery_api.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -35,5 +38,11 @@ public class PostController {
         PostDTO post = postService.writePost(dto, images);
 
         return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getPosts(@RequestParam @NotNull Double latitude, @RequestParam @NotNull Double longitude, @RequestParam @NotNull Long radius, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedDateTime){
+
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostLists(latitude, longitude, radius, lastCreatedDateTime));
     }
 }

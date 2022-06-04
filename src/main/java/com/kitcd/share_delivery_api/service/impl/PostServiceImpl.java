@@ -9,6 +9,7 @@ import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLikeRepository;
+import com.kitcd.share_delivery_api.dto.post.PostListDTO;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
 import com.kitcd.share_delivery_api.service.PostImageService;
@@ -16,6 +17,7 @@ import com.kitcd.share_delivery_api.service.PostLikeService;
 import com.kitcd.share_delivery_api.service.PostService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.address.FindAddressWithLocation;
+import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -66,4 +69,10 @@ public class PostServiceImpl implements PostService {
         return post.toDTO(isLiked);
     }
 
+    @Override
+    public List<PostListDTO> getPostLists(Double latitude, Double longitude, Long radius, LocalDateTime lastCreatedDateTime) {
+        Location location = new Location(latitude, longitude);
+
+        return postRepository.findPostListDTOWithLocationAndPagingWithLastCreatedDateTime(location, radius, lastCreatedDateTime);
+    }
 }

@@ -575,6 +575,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
             log.warn("  Account = " + findAccount);
             return null;
         }
+        Point point = GeometriesFactory.createPoint(accurateLocation.getLatitude(), accurateLocation.getLongitude());
 
         return postRepository.save(Post.builder()
                 .status(State.NORMAL)
@@ -586,6 +587,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .content(content)
                 .postId(postId)
                 .viewCount(0L)
+                .pLocation(point)
                 .build());
     }
 

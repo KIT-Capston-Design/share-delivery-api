@@ -15,10 +15,12 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.placeshare.PlaceShareDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
+import com.kitcd.share_delivery_api.dto.post.PostListDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -54,6 +56,9 @@ public class Post extends BaseTimeEntity {
 
    @Column(name = "VIEW_COUNT", nullable = false)
    private Long viewCount;
+
+   @Column(name = "LOCATION", nullable = false)
+   private Point pLocation;
 
    @Embedded
    private Location coordinate;
@@ -102,4 +107,17 @@ public class Post extends BaseTimeEntity {
               .build();
    }
 
+   public PostListDTO toPostListDTO(){
+      return PostListDTO.builder()
+              .category(postCategory.getCategoryName())
+              .postId(postId)
+              .content(content)
+              .writer(SimpleAccountDTO.builder()
+                      .accountId(account.getAccountId())
+                      .mannerScore(account.getMannerScore())
+                      .nickname(account.getNickname())
+                      .build())
+              .createdDateTime(getCreatedDate())
+              .build();
+   }
 }
