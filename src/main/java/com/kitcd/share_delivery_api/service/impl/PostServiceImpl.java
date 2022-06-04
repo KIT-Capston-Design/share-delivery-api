@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -56,7 +57,7 @@ public class PostServiceImpl implements PostService {
 
         if(images != null) {
             try {
-                postImageService.saveAll(images, post.getPostId());
+                postImageService.saveAll(images, post);
             } catch (FileUploadException e) {
                 throw new RuntimeException(e.getMessage());
             }
@@ -74,5 +75,18 @@ public class PostServiceImpl implements PostService {
         Location location = new Location(latitude, longitude);
 
         return postRepository.findPostListDTOWithLocationAndPagingWithLastCreatedDateTime(location, radius, lastCreatedDateTime);
+    }
+
+    @Override
+    public PostDTO getPost(Long postId) {
+        Optional<Post> post = postRepository.findById(postId);
+
+        if(post.isEmpty()){
+            return null;
+        }
+
+        Boolean isLiked = postLikeService.isPostLiked(ContextHolder.getAccountId(), post.get().getPostId());
+
+        return post.get().toDTO(isLiked);
     }
 }

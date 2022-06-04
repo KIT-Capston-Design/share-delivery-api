@@ -45,4 +45,15 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostLists(latitude, longitude, radius, lastCreatedDateTime));
     }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable Long postId){
+        PostDTO postDTO = postService.getPost(postId);
+
+        if(postDTO == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("postId가 적절하지 않습니다.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(postDTO);
+    }
 }

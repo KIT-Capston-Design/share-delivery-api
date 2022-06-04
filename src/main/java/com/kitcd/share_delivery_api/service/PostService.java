@@ -13,4 +13,6 @@ public interface PostService {
     PostDTO writePost(WritePostRequestDTO dto, List<MultipartFile> images);
 
     List<PostListDTO> getPostLists(Double latitude, Double longitude, Long radius, LocalDateTime lastCreatedDateTime);
+
+    PostDTO getPost(Long postId);
 }

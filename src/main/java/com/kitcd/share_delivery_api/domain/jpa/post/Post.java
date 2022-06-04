@@ -25,6 +25,7 @@ import org.locationtech.jts.geom.Point;
 import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -88,6 +89,12 @@ public class Post extends BaseTimeEntity {
    private List<Report> reports = new LinkedList<>();
 
    public PostDTO toDTO(Boolean isLiked){
+      List<String> imageUrlList =  (null != images) ? images.stream()
+                  .map(i -> i.getImageFile()
+                             .extractUrl())
+                  .collect(Collectors.toList())
+              : null;
+
 
       return PostDTO.builder()
               .postId(postId)
@@ -104,20 +111,7 @@ public class Post extends BaseTimeEntity {
               .likes(commentLikes == null ? 0 : (long)commentLikes.size())
               .isLiked(isLiked)
               .viewCount(viewCount)
-              .build();
-   }
-
-   public PostListDTO toPostListDTO(){
-      return PostListDTO.builder()
-              .category(postCategory.getCategoryName())
-              .postId(postId)
-              .content(content)
-              .writer(SimpleAccountDTO.builder()
-                      .accountId(account.getAccountId())
-                      .mannerScore(account.getMannerScore())
-                      .nickname(account.getNickname())
-                      .build())
-              .createdDateTime(getCreatedDate())
+              .images(imageUrlList)
               .build();
    }
 }
