@@ -110,6 +110,7 @@ public class DeliveryRoom extends BaseTimeEntity {
               .deliveryTip(estimatedDeliveryTip)
               .person(peopleNumber)
               .limitPerson(limitPerson)
+              .storeName(storeName)
               .storeCategory(storeCategory.getCategoryName())
               .storeLink(storeLink)
               .platformType(linkPlatformType)
