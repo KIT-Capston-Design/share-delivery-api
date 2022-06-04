@@ -69,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
     public Account findByAccountId(Long accountId){
         Account account = accountRepository.findByAccountId(accountId);
 
-        if(account == null || account.getStatus().equals(State.NORMAL)) throw new FetchNotFoundException(Account.class.toString(), accountId);
+        if(account == null || !account.getStatus().equals(State.NORMAL)) throw new FetchNotFoundException(Account.class.toString(), accountId);
 
         return account;
     }

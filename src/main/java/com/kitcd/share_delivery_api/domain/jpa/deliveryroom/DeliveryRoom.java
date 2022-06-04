@@ -40,7 +40,7 @@ public class DeliveryRoom extends BaseTimeEntity {
    @JoinColumn(name = "RECEIVING_LOCATION_ID", nullable = false)
    private ReceivingLocation receivingLocation;
 
-   @ManyToOne(fetch=FetchType.LAZY)
+   @ManyToOne(fetch=FetchType.EAGER)
    @JoinColumn(name = "STORE_CATEGORY_ID", nullable = false)
    private StoreCategory storeCategory;
 
@@ -110,9 +110,11 @@ public class DeliveryRoom extends BaseTimeEntity {
               .deliveryTip(estimatedDeliveryTip)
               .person(peopleNumber)
               .limitPerson(limitPerson)
+              .storeCategory(storeCategory.getCategoryName())
               .storeLink(storeLink)
               .platformType(linkPlatformType)
               .status(status)
+              .storeCategory(storeCategory.getCategoryName())
               .createdDateTime(getCreatedDate())
               .receivingLocation(LocationDTO.builder()
                       .longitude(receivingLocation.getLocationRef().getLongitude())
