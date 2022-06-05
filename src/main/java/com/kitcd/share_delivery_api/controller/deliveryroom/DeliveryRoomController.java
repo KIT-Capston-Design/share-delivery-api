@@ -29,10 +29,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Validated
@@ -144,8 +141,19 @@ public class DeliveryRoomController {
     @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
     public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody @NotEmpty List<OrderMenuRequestDTO> dtos){
 
+        Long myId = ContextHolder.getAccountId();
+
         DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
+        //자신이 리더일 경우 참여할 수 없으므로 예외 발생
+        if(Objects.equals(myId, room.getLeader().getAccountId())) throw new IllegalStateException("이미 참여 중 입니다.");
+
+        //이미 참여 신청한 경우 참여할 수 없으므로 예외 발생
+        List<Long> participantsIds = deliveryRoomService.getParticipantsIds(deliveryRoomId, State.PENDING); //
+        for(Long id : participantsIds)
+            if (Objects.equals(id, myId)) throw new IllegalStateException("이미 참여 중 입니다.");
+
+        //참여 절차 시작
         entryOrderService.enrollEntryOrder(room, dtos, EntryOrderType.PARTICIPATION, State.PENDING);
 
         // 방의 주도자에게 참가 신청 알람 전송.
