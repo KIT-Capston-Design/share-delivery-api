@@ -33,6 +33,8 @@ import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
 import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImageRepository;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
+import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
+import com.kitcd.share_delivery_api.domain.jpa.remittance.RemittanceRepository;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategoryRepository;
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformation;
@@ -79,6 +81,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private final PostImageRepository postImageRepository;
     private final PlaceShareRepository placeShareRepository;
     private final CommentRepository commentRepository;
+    private final RemittanceRepository remittanceRepository;
 
     @Override
     @Transactional
@@ -92,21 +95,84 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadOrderMenuData();
         loadPostCategory();
         loadFriendData();
-//        loadPaymentData();
-//        loadPaymentDiscountData();
+        loadPaymentData();
+        loadPaymentDiscountData();
         loadPaymentOrderFormData();
         loadPostData();
         loadPlaceShareData();
         loadCommentData();
+        loadRemittanceData();
     }
+
+    private void loadRemittanceData(){
+        //3번 방
+        createRemittanceIfNotFound(1L, 4L, 3L, 1L, 998800L, false);
+        createRemittanceIfNotFound(2L, 5L, 3L, 1L, 998800L, false);
+        createRemittanceIfNotFound(3L, 6L, 3L, 1L, 998800L, false);
+
+
+        //4번 방
+        createRemittanceIfNotFound(4L, 7L, 4L, 2L, 998800L, false);
+        createRemittanceIfNotFound(5L, 8L, 4L, 2L, 998800L, false);
+        createRemittanceIfNotFound(6L, 9L, 4L, 2L, 998800L, false);
+
+        //5번 방
+        createRemittanceIfNotFound(7L, 10L, 5L, 3L, 998800L, true);
+        createRemittanceIfNotFound(8L, 11L, 5L, 3L, 998800L, true);
+        createRemittanceIfNotFound(9L, 12L, 5L, 3L, 998800L, true);
+
+    }
+
+    private Remittance createRemittanceIfNotFound(Long remittanceId, Long remitterId, Long recipientId, Long paymentId, Long amount, boolean isRemitted) {
+
+        Optional<Remittance> opt = remittanceRepository.findById(remittanceId);
+
+        if(opt.isPresent()){
+            return opt.get();
+        }
+
+
+        // 연관관계 위한 필요 객체 확인
+        Optional<Account> remitter = accountRepository.findById(remitterId);
+        Optional<Account> recipient = accountRepository.findById(recipientId);
+
+        Optional<Payment> payment = paymentRepository.findById(paymentId);
+
+        if(remitter.isEmpty() || recipient.isEmpty() || payment.isEmpty()){
+            log.warn("DummyDataLoader.createRemittanceIfNotFound() : 필요 객체 null");
+            log.warn("  remitter = " + remitter);
+            log.warn("  recipient = " + recipient);
+            log.warn("  payment = " + payment);
+            return null;
+        }
+        return remittanceRepository.save(
+                    Remittance.builder()
+                        .remitter(remitter.get())
+                        .recipient(recipient.get())
+                        .payment(payment.get())
+                        .amount(amount)
+                        .isRemitted(isRemitted)
+                        .build()
+                );
+
+    }
+
     private void loadPaymentData(){
-        createPaymentIfNotFound(1L, 1L, 5000L);
+        createPaymentIfNotFound(1L, 3L, 15000L);
+        createPaymentIfNotFound(2L, 4L, 15000L);
+        createPaymentIfNotFound(3L, 5L, 15000L);
     }
 
     private void loadPaymentDiscountData(){
-        createPaymentDiscountIfNotFound(1L, 1L, "DUMMY_DISCOUNT_NAME1", 4000L);
-        createPaymentDiscountIfNotFound(2L, 1L, "DUMMY_DISCOUNT_NAME2", 5000L);
-        createPaymentDiscountIfNotFound(3L, 1L, "DUMMY_DISCOUNT_NAME3", 8000L);
+        createPaymentDiscountIfNotFound(1L, 1L, "DUMMY_DISCOUNT_NAME 1", 10000L);
+        createPaymentDiscountIfNotFound(2L, 1L, "DUMMY_DISCOUNT_NAME 2", 10000L);
+
+        createPaymentDiscountIfNotFound(3L, 2L, "DUMMY_DISCOUNT_NAME 3", 10000L);
+        createPaymentDiscountIfNotFound(4L, 2L, "DUMMY_DISCOUNT_NAME 4", 10000L);
+
+        createPaymentDiscountIfNotFound(5L, 3L, "DUMMY_DISCOUNT_NAME 5", 10000L);
+        createPaymentDiscountIfNotFound(6L, 3L, "DUMMY_DISCOUNT_NAME 6", 10000L);
+
     }
 
     private void loadCommentData(){
