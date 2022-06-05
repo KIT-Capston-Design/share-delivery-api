@@ -3,6 +3,7 @@ package com.kitcd.share_delivery_api.service.impl;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFileRepository;
 import com.kitcd.share_delivery_api.domain.jpa.placeshare.PlaceShare;
 import com.kitcd.share_delivery_api.domain.jpa.placeshare.PlaceShareRepository;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
@@ -10,11 +11,14 @@ import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
+import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImageRepository;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
 import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLikeRepository;
 import com.kitcd.share_delivery_api.dto.post.PostListDTO;
 import com.kitcd.share_delivery_api.dto.post.UpdatePostDTO;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
+import com.kitcd.share_delivery_api.service.ImageFileService;
 import com.kitcd.share_delivery_api.service.PostImageService;
 import com.kitcd.share_delivery_api.service.PostLikeService;
 import com.kitcd.share_delivery_api.service.PostService;
@@ -33,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.nio.file.FileSystemException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,10 +53,12 @@ public class PostServiceImpl implements PostService {
     private final PostCategoryRepository postCategoryRepository;
     private final PlaceShareRepository placeShareRepository;
     private final FindAddressWithLocation findAddressWithLocation;
-
     private final PostImageService postImageService;
-
+    private final PostLikeRepository postLikeRepository;
     private final PostLikeService postLikeService;
+    private final ImageFileRepository imageFileRepository;
+    private final PostImageRepository postImageRepository;
+    private final ImageFileService imageFileService;
 
     @Override
     public PostDTO writePost(WritePostRequestDTO dto, List<MultipartFile> images) {
@@ -165,5 +172,48 @@ public class PostServiceImpl implements PostService {
         }
 
         return postTemp.toDTO(isLiked);
+    }
+
+    @Override
+    public void deletePost(Long postId) {
+        Post findPost = postRepository.findPostByPostId(postId);
+
+        if(!findPost.getAccount().getAccountId().equals(ContextHolder.getAccountId())){
+            throw new IllegalArgumentException("글 작성자가 아닙니다");
+        }
+
+        //포스트 좋아요 삭제
+        List<PostLike> postLikes = findPost.getPostLikes();
+        if(postLikes != null){
+            postLikeRepository.deleteAll(postLikes);
+        }
+
+        //포스트 이미지 삭제
+        List<PostImage> postImages = findPost.getImages();
+        List<ImageFile> imageFiles;
+
+        if(postImages != null) {
+            imageFiles = postImages.stream()
+                    .map(PostImage::getImageFile)
+                    .collect(Collectors.toList());
+
+            imageFiles.forEach(imageFile -> {
+                try {
+                    imageFileService.delete(imageFile.getFileName()+"."+imageFile.getFileExtension());
+                } catch (FileSystemException e) {
+                    throw new RuntimeException(e);
+                }
+                imageFileRepository.delete(imageFile);
+            });
+            postImageRepository.deleteAll(postImages);
+        }
+
+
+        //위치 공유 삭제
+        PlaceShare findSharePlace = findPost.getSharedPlace();
+
+        if(findSharePlace != null){
+            placeShareRepository.delete(findSharePlace);
+        }
     }
 }

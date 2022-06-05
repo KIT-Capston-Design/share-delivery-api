@@ -20,4 +20,6 @@ public interface PostService {
     List<PostListDTO> getPostListsWithCategoryFilter(Double latitude, Double longitude, Long radius, LocalDateTime lastCreatedDateTime, String categoryName);
 
     PostDTO updatePost(UpdatePostDTO dto, List<MultipartFile> images, Long postId);
+
+    void deletePost(Long postId);
 }

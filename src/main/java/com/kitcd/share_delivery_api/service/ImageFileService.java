@@ -12,6 +12,9 @@ public interface ImageFileService {
 
     ImageFile save(MultipartFile multipartFile);
 
+    /**
+     파일명.확장자만 보내면 되도록.
+     */
     void delete(String filePath) throws FileSystemException;
 
     List<ImageFile> saveAll(List<MultipartFile> multipartFiles);

@@ -98,4 +98,10 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.OK).body(postLikeDTO);
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId){
+        postService.deletePost(postId);
+        return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
+    }
 }
