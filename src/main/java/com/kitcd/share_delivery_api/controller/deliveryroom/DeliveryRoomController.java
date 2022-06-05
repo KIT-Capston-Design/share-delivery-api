@@ -47,7 +47,7 @@ public class DeliveryRoomController {
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
 
-    @GetMapping("/api/delivery-rooms/{deliveryRoomId}/order-detail")
+    @GetMapping("delivery-rooms/{deliveryRoomId}/order-detail")
     public ResponseEntity<?> getFinalOrderInformation(@PathVariable Long deliveryRoomId) {
 
         FinalOrderInformationDTO result = deliveryRoomService.getFinalOrderInformation(deliveryRoomId);
