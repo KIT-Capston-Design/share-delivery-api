@@ -4,6 +4,7 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
 import com.kitcd.share_delivery_api.domain.jpa.comment.CommentRepository;
 import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLikeRepository;
+import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.dto.comment.CommentDTO;
 import com.kitcd.share_delivery_api.dto.comment.CommentWriteDTO;
@@ -37,11 +38,13 @@ public class CommentServiceImpl implements CommentService {
 
     private final LoggedOnInformationService loggedOnInformationService;
 
+    private final PostRepository postRepository;
     private final CommentLikeService commentLikeService;
 
     @Override
     public CommentDTO writeComment(CommentWriteDTO dto) {
         Comment parent = null;
+
 
         //fcm title, body, data 초기화
         Long fcmTargetId;
@@ -59,15 +62,20 @@ public class CommentServiceImpl implements CommentService {
             data.replace("type", FCMDataType.COMMENT_PLUS);  //덮어쓰기
             data.replace("parentId", dto.getParentId());
         }
+        Optional<Post> findPost = postRepository.findById(dto.getPostId());
 
-        //댓글일 경우
-        Comment comment = commentRepository.save(dto.toEntity(parent));
+        if(findPost.isEmpty()){
+            throw new EntityNotFoundException("해당 post를 찾을 수 없습니다.");
+        }
+
+        //그냥 댓글일 경우 저장..!
+        Comment comment = commentRepository.save(dto.toEntity(parent, findPost.get()));
 
 
         //글작성자에게 전송.
         fcmTargetId = comment.getPost().getAccount().getAccountId();
 
-
+        //fcm 전송
         firebaseCloudMessageService.sendMessageTo(
                 loggedOnInformationService.getFcmTokenByAccountId(fcmTargetId),
                 title, comment.getContent(),data);
@@ -89,7 +97,13 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDTO> getCommentsByPostId(Long postId) {
         Long nowSessionId = ContextHolder.getAccountId();
-        List<CommentDTO> findList = commentRepository.findCommentsByPostId(postId).stream()
+        Optional<Post> findPost = postRepository.findById(postId);
+
+        if(findPost.isEmpty()){
+            throw new EntityNotFoundException("해당하는 게시글이 없습니다.");
+        }
+
+        List<CommentDTO> findList = commentRepository.findCommentsByPost(findPost.get()).stream()
                 .map(i ->{
                     Boolean isLiked = commentLikeService.isLiked(i.getCommentId(), nowSessionId);
                     return i.toDTO(isLiked);

@@ -80,9 +80,6 @@ public class Post extends BaseTimeEntity {
    private List<PostLike> postLikes = new LinkedList<>();
 
    @OneToMany(mappedBy = "post")
-   private List<CommentLike> commentLikes = new LinkedList<>();
-
-   @OneToMany(mappedBy = "post")
    private List<PostAlarm> postAlarms = new LinkedList<>();
 
    @OneToMany(mappedBy = "post")
@@ -108,7 +105,7 @@ public class Post extends BaseTimeEntity {
               .category(postCategory.getCategoryName())
               .placeShare(null == sharedPlace ? null : PlaceShareDTO.parseDTO(sharedPlace))
               .coordinate(coordinate)
-              .likes(commentLikes == null ? 0 : (long)commentLikes.size())
+              .likes(likeCount)
               .isLiked(isLiked)
               .viewCount(viewCount)
               .images(imageUrlList)
@@ -118,4 +115,5 @@ public class Post extends BaseTimeEntity {
    public void increaseViewCount(){
       viewCount += 1;
    }
+   public void increaseLikeCount() { likeCount += 1;}
 }
