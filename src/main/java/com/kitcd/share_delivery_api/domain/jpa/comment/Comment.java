@@ -76,6 +76,7 @@ public class Comment extends BaseTimeEntity {
                       .nickname(account.getNickname())
                       .build())
               .parentId(!(null==parent) ? parent.getCommentId() : null)
+              .content(content)
               .build();
    }
 }
