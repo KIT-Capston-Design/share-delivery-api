@@ -1,6 +1,8 @@
 package com.kitcd.share_delivery_api.listener;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.*;
+import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
+import com.kitcd.share_delivery_api.domain.jpa.comment.CommentRepository;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
@@ -44,6 +46,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,6 +78,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private final ImageFileRepository imageFileRepository;
     private final PostImageRepository postImageRepository;
     private final PlaceShareRepository placeShareRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     @Transactional
@@ -93,6 +97,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadPaymentOrderFormData();
         loadPostData();
         loadPlaceShareData();
+        loadCommentData();
     }
     private void loadPaymentData(){
         createPaymentIfNotFound(1L, 1L, 5000L);
@@ -102,6 +107,14 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createPaymentDiscountIfNotFound(1L, 1L, "DUMMY_DISCOUNT_NAME1", 4000L);
         createPaymentDiscountIfNotFound(2L, 1L, "DUMMY_DISCOUNT_NAME2", 5000L);
         createPaymentDiscountIfNotFound(3L, 1L, "DUMMY_DISCOUNT_NAME3", 8000L);
+    }
+
+    private void loadCommentData(){
+        createCommentIfNotFound(1L, 1L, null, 1L, "DUMMY_CONTENT_1");
+        createCommentIfNotFound(2L, 1L, 1L, 1L, "DUMMY_CONTENT_2");
+        createCommentIfNotFound(3L, 2L, 2L, 1L, "DUMMY_CONTENT_3");
+        createCommentIfNotFound(4L, 1L, null, 2L, "DUMMY_CONTENT_1");
+
     }
 
     private void loadImageFileData(){
@@ -695,5 +708,35 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                         .status(status)
                         .build()
         );
+    }
+
+    private Comment createCommentIfNotFound(Long commentId, Long accountId, Long parentId, Long postId, String content){
+        Optional<Comment> findComment = commentRepository.findById(commentId);
+
+        if(findComment.isPresent()){
+            return findComment.get();
+        }
+
+        if(parentId == null) parentId = -1L;
+        Optional<Comment> findParrentComment = commentRepository.findById(parentId);
+        Optional<Account> findAccount = accountRepository.findById(accountId);
+        Optional<Post> findPost = postRepository.findById(postId);
+
+        if(findAccount.isEmpty() || findPost.isEmpty()){
+            log.warn("DummyDataLoader::createCommentIfNotFound() : 필요 객체 null");
+            log.warn("  writer         : " + findAccount);
+            log.warn("  post           : " + findPost);
+            return null;
+        }
+
+        return commentRepository.save(Comment.builder()
+                .parent(findParrentComment.orElse(null))
+                .likeCount(0L)
+                .content(content)
+                .account(findAccount.get())
+                .commentId(commentId)
+                .post(findPost.get())
+                .status(State.NORMAL)
+                .build());
     }
 }
