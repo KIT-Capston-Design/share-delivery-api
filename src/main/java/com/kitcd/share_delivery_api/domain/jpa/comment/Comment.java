@@ -75,7 +75,8 @@ public class Comment extends BaseTimeEntity {
                       .mannerScore(account.getMannerScore())
                       .nickname(account.getNickname())
                       .build())
-              .parentId(!(null==parent) ? parent.getCommentId() : null)
+              .parentId(!(null==parent) ? parent.getCommentId() : commentId)
+              .content(content)
               .build();
    }
 }
