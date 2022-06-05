@@ -80,12 +80,18 @@ public class DeliveryRoomController {
         deliveryRoom.checkLeader(ContextHolder.getAccountId());
         entryOrderService.rejectEntryOrder(accountId, deliveryRoom);
 
+
         // 거절된 참여자에게 push 알림 전송
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", FCMDataType.ORDER_REJECTED);
+        data.put("roomId", roomId);
+
+
         firebaseCloudMessageService.sendMessageTo(
                 loggedOnInformationService.getFcmTokenByAccountId(accountId),
                 deliveryRoom.getContent() + " 방 입장이 거절되었습니다.",
                 "null",
-                null
+                data
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
