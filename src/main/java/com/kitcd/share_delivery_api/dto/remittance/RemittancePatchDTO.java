@@ -1,17 +1,18 @@
 package com.kitcd.share_delivery_api.dto.remittance;
 
-import com.kitcd.share_delivery_api.domain.jpa.common.State;
+
 import lombok.*;
+
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RemittanceDTO {
+public class RemittancePatchDTO {
+    @NotNull
     private Long remittanceId;
-    private Long accountId;
-    private String nickname;
-    private Long amount;
+    @NotNull
     private Boolean isRemitted;
 }

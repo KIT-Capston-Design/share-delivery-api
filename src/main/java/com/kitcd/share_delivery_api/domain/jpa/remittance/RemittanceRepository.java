@@ -13,4 +13,6 @@ public interface RemittanceRepository extends JpaRepository<Remittance, Long> {
             "from Remittance r join r.remitter ac join r.payment p " +
             "where p.deliveryRoom.deliveryRoomId = :deliveryRoomId")
     List<RemittanceDTO> getRemittanceDTOsByDeliveryRoomId(Long deliveryRoomId);
+
+    Remittance findRemittanceByRemittanceId(Long remittanceId);
 }

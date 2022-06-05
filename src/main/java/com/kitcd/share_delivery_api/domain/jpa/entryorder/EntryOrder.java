@@ -112,7 +112,7 @@ public class EntryOrder extends BaseTimeEntity {
               .recipient(recipient)
               .payment(payment)
               .amount(value)
-              .isRemitted(State.PENDING)
+              .isRemitted(false)
               .build();
    }
 }
