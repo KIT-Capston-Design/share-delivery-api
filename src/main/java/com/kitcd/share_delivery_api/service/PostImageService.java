@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface PostImageService {
 
-    List<PostImage> saveAll(List<MultipartFile> imageFiles, Long postId) throws FileUploadException;
+    List<PostImage> saveAll(List<MultipartFile> imageFiles, Post post) throws FileUploadException;
 
-    PostImage save(MultipartFile imageFile, Long postId) throws FileUploadException;
+    PostImage save(MultipartFile imageFile, Post post) throws FileUploadException;
 
 }
