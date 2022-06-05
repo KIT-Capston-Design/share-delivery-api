@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,8 +50,8 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     public String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens) {
 
         try {
-            //요청 데이터 생성
-            String requestData = makeFCMGroupRequest(requestType, groupTokenName, groupKey, userTokens);
+            //요청 데이터 생성 (그룹 네임 중복방지 위해 현재시각 추가)
+            String requestData = makeFCMGroupRequest(requestType, groupTokenName + "(" + LocalDateTime.now() + ")", groupKey, userTokens);
 
             //전송
             Response response = legacyForward(requestData);
