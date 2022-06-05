@@ -58,10 +58,11 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
             //실패시 null 반환
             if (!response.isSuccessful()) {
                 log.error(response.toString());
+                log.error((response.body() != null) ?  "response body : "+ response.body().string() : "response body : null");
                 return null;
             }
 
-            String body = Objects.requireNonNull(response.body()).toString();
+            String body = Objects.requireNonNull(response.body()).string();
             JSONObject jsonBody = new JSONObject(body);
 
             //성공 시 notification_key 반환

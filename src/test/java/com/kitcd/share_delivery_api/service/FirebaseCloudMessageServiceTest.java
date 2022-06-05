@@ -85,16 +85,16 @@ public class FirebaseCloudMessageServiceTest {
     @Test
     void FCM_Push_그룹_메시지_테스트() {
 
-        List<String> fcmToken = new LinkedList<>();
-        String targetToken = "dTHVuLKXQ5KDR-2hoFH3_S:APA91bEVSgcPRUmq_vYHVosRjypQ0xxn2-D6gUnLlZvn2xxmMePvT15mYznhx-lmJ7iErgPg007vG6-bRoLWJFscauOHzYPp3lmlV4CmFtjk7KIxPcqLgkrmgeqnNCENlebxPZlNbwnM";
-        fcmToken.add(targetToken);
+        List<String> fcmTokens = new LinkedList<>();
+        String targetToken = "cuwDvC9eTcC_4kbQyh6sNi:APA91bGumEYeG2hrEF_QwFqG_P-RfSiCLkY-2Ti8XLzzb_1fJmiUynQRjf7u7w_CEJ6ra_fZhnrI9mRjPumViwuCMJ-bAWAmwZwYvCUlzTbQgn2f7EkMuCwizGOrCoEvbP8o_zIqXSiF";
+        fcmTokens.add(targetToken);
 
         //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
         String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
                 FCMGroupRequest.Type.create,
-                "DeliveryRoom",
+                "DeliveryRoomergsdafasfd",
                 null,
-                fcmToken
+                fcmTokens
         );
 
         String testMsgTitle = "test group msg title";
