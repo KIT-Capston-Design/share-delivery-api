@@ -1,10 +1,12 @@
 package com.kitcd.share_delivery_api.domain.jpa.comment;
 
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLike;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.comment.CommentDTO;
 import lombok.Getter;
@@ -12,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -49,9 +53,17 @@ public class Comment extends BaseTimeEntity {
    @Column(name = "STATUS", nullable = false)
    private State status;
 
+   @OneToMany(mappedBy = "comment")
+   private List<CommentLike> commentLikes = new LinkedList<>();
+
    public void addLikePerson(){
       this.likeCount += likeCount;
    }
+
+   public void increaseLikeCount(){
+      likeCount += 1;
+   }
+
    public CommentDTO toDTO(Boolean isLiked){
       return CommentDTO.builder()
               .id(commentId)
