@@ -6,7 +6,9 @@ import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.dto.post.UpdatePostDTO;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
+import com.kitcd.share_delivery_api.dto.postlike.PostLikeDTO;
 import com.kitcd.share_delivery_api.service.PostImageService;
+import com.kitcd.share_delivery_api.service.PostLikeService;
 import com.kitcd.share_delivery_api.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +35,14 @@ public class PostController {
 
     private final PostService postService;
 
+    private final PostLikeService postLikeService;
 
 
     @PostMapping("")                //multipart로 데이터를 받아옴.                  //null 일 수 있음.
     public ResponseEntity<?> writePost(@RequestParam(value = "post") String postDetails, @RequestParam(value = "postImages",required = false) List<MultipartFile> images){
         ObjectMapper om = new ObjectMapper();
 
-        WritePostRequestDTO dto = null;
+        WritePostRequestDTO dto;
         try {
             dto = om.readValue(postDetails, WritePostRequestDTO.class);
         } catch (JsonProcessingException e) {
@@ -77,7 +80,7 @@ public class PostController {
                                         @RequestParam(value = "postImages", required = false)List<MultipartFile> images ){
         ObjectMapper om = new ObjectMapper();
 
-        UpdatePostDTO dto =  null;
+        UpdatePostDTO dto;
         try{
             dto = om.readValue(postDetails, UpdatePostDTO.class);
         }catch (JsonProcessingException e){
@@ -87,5 +90,12 @@ public class PostController {
         PostDTO updatedPost = postService.updatePost(dto, images, postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
+    }
+
+    @PostMapping("/{postId}/toggle-likes")
+    public ResponseEntity<?> postLikeToggle(@PathVariable Long postId){
+        PostLikeDTO postLikeDTO = postLikeService.clickedLike(postId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postLikeDTO);
     }
 }
