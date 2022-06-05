@@ -12,10 +12,12 @@ import com.kitcd.share_delivery_api.domain.jpa.report.Report;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.placeshare.PlaceShareDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
 import com.kitcd.share_delivery_api.dto.post.PostListDTO;
+import com.kitcd.share_delivery_api.dto.post.UpdatePostDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,7 +67,7 @@ public class Post extends BaseTimeEntity {
    private Location coordinate;
 
    @Column(name = "CITY", nullable = false)
-   private String Address;
+   private String address;
 
    @OneToMany(mappedBy = "post")
    private List<Comment> comments = new LinkedList<>();
@@ -112,8 +114,17 @@ public class Post extends BaseTimeEntity {
               .build();
    }
 
+   public Post updatePost(UpdatePostDTO dto, PostCategory postCategory, PlaceShare placeShare, Point pLocation, String city){
+      this.coordinate = dto.getCoordinate();
+      this.content = dto.getContent();
+      this.sharedPlace = placeShare;
+      this.postCategory = postCategory;
+      this.pLocation = pLocation;
+      this.address = city;
+      return this;
+   }
    public void increaseViewCount(){
       viewCount += 1;
-   }
+}
    public void increaseLikeCount() { likeCount += 1;}
 }

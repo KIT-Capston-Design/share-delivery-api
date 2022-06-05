@@ -3,6 +3,7 @@ package com.kitcd.share_delivery_api.domain.jpa.placeshare;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
+import com.kitcd.share_delivery_api.dto.placeshare.PlaceShareDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,10 @@ public class PlaceShare extends BaseTimeEntity {
    @Column(name = "ADDRESS", nullable = false)
    private String address;
 
-
+   public PlaceShare updatePlaceShare(PlaceShareDTO dto, String address){
+      this.content = dto.getDescription();
+      this.address =  address;
+      this.coordinate = new Location(dto.getLatitude(), dto.getLongitude());
+      return this;
+   }
 }

@@ -14,6 +14,7 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,5 +49,15 @@ public class PostImageServiceImpl implements PostImageService {
                 .post(post)
                 .imageFile(savedImage)
                 .build());
+    }
+
+    @Override
+    public List<PostImage> replaceAll(String postPath, MultipartFile imageFile) throws FileUploadException {
+        return null;
+    }
+
+    @Override
+    public PostImage findPostImageWithFilePath(String filePath) throws EntityNotFoundException {
+        return postImageRepository.getPostImagesWithFileName(filePath);
     }
 }

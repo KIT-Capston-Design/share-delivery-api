@@ -1,6 +1,7 @@
 package com.kitcd.share_delivery_api.service;
 
 import com.kitcd.share_delivery_api.dto.post.PostListDTO;
+import com.kitcd.share_delivery_api.dto.post.UpdatePostDTO;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,4 +18,6 @@ public interface PostService {
     PostDTO getPost(Long postId);
 
     List<PostListDTO> getPostListsWithCategoryFilter(Double latitude, Double longitude, Long radius, LocalDateTime lastCreatedDateTime, String categoryName);
+
+    PostDTO updatePost(UpdatePostDTO dto, List<MultipartFile> images, Long postId);
 }

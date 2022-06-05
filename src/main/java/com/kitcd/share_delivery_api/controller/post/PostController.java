@@ -3,6 +3,7 @@ package com.kitcd.share_delivery_api.controller.post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
+import com.kitcd.share_delivery_api.dto.post.UpdatePostDTO;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
 import com.kitcd.share_delivery_api.service.PostImageService;
@@ -68,5 +69,23 @@ public class PostController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(postDTO);
+    }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<?> updatePost(@PathVariable Long postId,
+                                        @RequestParam(value = "post") String postDetails,
+                                        @RequestParam(value = "postImages", required = false)List<MultipartFile> images ){
+        ObjectMapper om = new ObjectMapper();
+
+        UpdatePostDTO dto =  null;
+        try{
+            dto = om.readValue(postDetails, UpdatePostDTO.class);
+        }catch (JsonProcessingException e){
+            throw new RuntimeException(e);
+        }
+
+        PostDTO updatedPost = postService.updatePost(dto, images, postId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 }

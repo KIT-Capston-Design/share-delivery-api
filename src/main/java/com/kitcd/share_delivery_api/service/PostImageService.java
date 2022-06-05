@@ -6,6 +6,8 @@ import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface PostImageService {
@@ -14,4 +16,7 @@ public interface PostImageService {
 
     PostImage save(MultipartFile imageFile, Post post) throws FileUploadException;
 
+    List<PostImage> replaceAll(String filePath, MultipartFile imageFile) throws FileUploadException;
+
+    PostImage findPostImageWithFilePath(String filePath) throws EntityNotFoundException;
 }

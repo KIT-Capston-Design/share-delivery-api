@@ -23,8 +23,8 @@ public class WritePostRequestDTO {
     private Location coordinate;
     private String content;
     private String category;
-    @JsonInclude(JsonInclude.Include.NON_NULL) //sharePlace가 null이면 필드 안쓰도록.
-    private PlaceShareRequestDTO sharePlace;
+    @JsonInclude(JsonInclude.Include.NON_NULL) //placeShare가 null이면 필드 안쓰도록.
+    private PlaceShareRequestDTO placeShare;
 
 
 
@@ -32,7 +32,7 @@ public class WritePostRequestDTO {
         return Post.builder()
                 .content(content)
                 .account(ContextHolder.getAccount())
-                .Address(address)
+                .address(address)
                 .coordinate(coordinate)
                 .likeCount(0L)
                 .viewCount(0L)
