@@ -91,4 +91,11 @@ public class PostServiceImpl implements PostService {
 
         return post.get().toDTO(isLiked);
     }
+
+    @Override
+    public List<PostListDTO> getPostListsWithCategoryFilter(Double latitude, Double longitude, Long radius, LocalDateTime lastCreatedDateTime, String categoryName) {
+        Location location = new Location(latitude, longitude);
+
+        return postRepository.findPostListDTOWithLocationAndPagingWithLastCreatedDateTimeAndFiltWithCategoryName(location, radius, lastCreatedDateTime, categoryName);
+    }
 }

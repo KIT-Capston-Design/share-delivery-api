@@ -51,7 +51,10 @@ public class PostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getPosts(@RequestParam @NotNull Double latitude, @RequestParam @NotNull Double longitude, @RequestParam @NotNull Long radius, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedDateTime){
+    public ResponseEntity<?> getPosts(@RequestParam @NotNull Double latitude, @RequestParam @NotNull Double longitude, @RequestParam @NotNull Long radius, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedDateTime, @RequestParam(required = false) String category){
+        if(category != null){
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostListsWithCategoryFilter(latitude, longitude, radius, lastCreatedDateTime, category));
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostLists(latitude, longitude, radius, lastCreatedDateTime));
     }

@@ -15,4 +15,6 @@ public interface PostService {
     List<PostListDTO> getPostLists(Double latitude, Double longitude, Long radius, LocalDateTime lastCreatedDateTime);
 
     PostDTO getPost(Long postId);
+
+    List<PostListDTO> getPostListsWithCategoryFilter(Double latitude, Double longitude, Long radius, LocalDateTime lastCreatedDateTime, String categoryName);
 }

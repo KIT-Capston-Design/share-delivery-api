@@ -9,4 +9,6 @@ import java.util.List;
 public interface PostRepositoryCustom {
 
     List<PostListDTO> findPostListDTOWithLocationAndPagingWithLastCreatedDateTime(Location location, Long radius, LocalDateTime lastCreatedDateTime);
+
+    List<PostListDTO> findPostListDTOWithLocationAndPagingWithLastCreatedDateTimeAndFiltWithCategoryName(Location location, Long radius, LocalDateTime lastCreatedDateTime, String categoryName);
 }
