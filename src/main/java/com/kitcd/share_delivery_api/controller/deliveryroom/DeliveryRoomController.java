@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Arrays;
@@ -141,11 +142,11 @@ public class DeliveryRoomController {
     }
 
     @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
-    public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody JoinRequestDeliveryRoomDTO dto){
+    public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody @NotEmpty List<OrderMenuRequestDTO> dtos){
 
         DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
-        entryOrderService.enrollEntryOrder(room, dto.getMenuList(), EntryOrderType.PARTICIPATION, State.PENDING);
+        entryOrderService.enrollEntryOrder(room, dtos, EntryOrderType.PARTICIPATION, State.PENDING);
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
     }
