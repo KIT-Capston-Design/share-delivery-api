@@ -5,10 +5,12 @@ import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.RemittanceRepository;
-import com.kitcd.share_delivery_api.dto.paymentdiscount.PaymentDiscountEnrollRequestDTO;
+import com.kitcd.share_delivery_api.dto.remittance.RemittanceDTO;
 import com.kitcd.share_delivery_api.service.RemittanceService;
+import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.FetchNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,6 +23,30 @@ import java.util.List;
 @Service
 public class RemittanceServiceImpl implements RemittanceService {
     private final RemittanceRepository remittanceRepository;
+
+    @Override
+    public List<RemittanceDTO> getRemittanceDTOsByDeliveryRoomId(Long deliveryRoomId) {
+        return remittanceRepository.getRemittanceDTOsByDeliveryRoomId(deliveryRoomId);
+    }
+
+    @Override
+    public boolean approveRemittance(Long remittanceId, DeliveryRoom deliveryRoom) {
+
+        deliveryRoom.checkLeader(ContextHolder.getAccountId());
+
+        Remittance remittance = findRemittanceByRemittanceId(remittanceId);
+
+        return remittance.approve();
+    }
+
+    @Override
+    public Remittance findRemittanceByRemittanceId(Long remittanceId){
+        Remittance remittance = remittanceRepository.findRemittanceByRemittanceId(remittanceId);
+
+        if(remittance == null) throw new FetchNotFoundException(Remittance.class.toString(), remittanceId);
+
+        return remittance;
+    }
 
     @Override
     public List<Remittance> saveAll(List<Remittance> remittances) {
@@ -41,4 +67,6 @@ public class RemittanceServiceImpl implements RemittanceService {
 
         return saveAll(remittances);
     }
+
+
 }
