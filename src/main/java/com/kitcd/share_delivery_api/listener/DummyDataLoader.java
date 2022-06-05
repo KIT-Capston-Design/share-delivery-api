@@ -251,6 +251,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createAccountDataIfNotFound(10L,"010000000010", "DUMMY USER 10", RoleType.ROLE_USER, 4L);
         createAccountDataIfNotFound(11L,"01000000011", "DUMMY USER 11", RoleType.ROLE_USER, 5L);
         createAccountDataIfNotFound(12L,"01000000012", "DUMMY USER 12", RoleType.ROLE_USER, 6L);
+        createAccountDataIfNotFound(13L,"01000000013", "DUMMY USER 13", RoleType.ROLE_USER, 1L);
+        createAccountDataIfNotFound(14L,"01000000014", "DUMMY USER 14", RoleType.ROLE_USER, 2L);
     }
 
     private void loadReceivingLocationData(){
@@ -265,7 +267,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
     private void loadDeliveryRoomData(){
         createDeliveryRoomIfNotFound(1L, "(WAITING_PAYMENT) DUMMY CONTENT 1 ", 4L,4L, 123456L,1L, "CHICKEN", 1L, DeliveryRoomState.WAITING_PAYMENT, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
-        createDeliveryRoomIfNotFound(2L, "(OPEN) DUMMY CONTENT 2 ", 1L,4L, 123456L,2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
+        createDeliveryRoomIfNotFound(2L, "(OPEN) DUMMY CONTENT 2 ", 3L,4L, 123456L,2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
         createDeliveryRoomIfNotFound(3L, "(WAITING_DELIVERY) DUMMY CONTENT 3 ", 4L,4L, 123456L,3L, "FASTFOOD", 3L, DeliveryRoomState.WAITING_DELIVERY, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
         createDeliveryRoomIfNotFound(4L, "(WAITING_REMITTANCE) DUMMY CONTENT 4 ", 4L,4L, 123456L,1L, "LUNCHBOX", 4L, DeliveryRoomState.WAITING_REMITTANCE, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
         createDeliveryRoomIfNotFound(5L, "(COMPLETED) DUMMY CONTENT 5 ", 4L,4L, 123456L,2L, "LUNCHBOX", 5L, DeliveryRoomState.COMPLETED, PlatformType.YOGIYO, "DUMMY STORE NAME 4", "https://yogiyo.onelink.me/BlI7/im8nou2o");
@@ -305,6 +307,11 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         createEntryOrderIfNotFound(17L, 5L, 5L, EntryOrderType.LEAD, State.ACCEPTED);
         createEntryOrderIfNotFound(18L, 6L, 6L, EntryOrderType.LEAD, State.ACCEPTED);
+
+        //2번 방 참여
+        createEntryOrderIfNotFound(19L, 13L, 2L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(20L, 14L, 2L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+
 
 
     }
@@ -364,6 +371,12 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         //6번 방 참여
         createOrderMenuIfNotFound(30L,1L,500000L, 18L,"DUMMY MENU 7", null);
         createOrderMenuIfNotFound(31L,1L,500000L, 18L,"DUMMY MENU 8", null);
+
+        //2번 방 참여
+        createOrderMenuIfNotFound(32L,1L,500000L, 19L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(33L,1L,500000L, 19L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(34L,1L,500000L, 20L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(35L,1L,500000L, 20L,"DUMMY MENU 8", null);
 
 
 
@@ -450,8 +463,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         LoggedOnInformation loggedOnInf = LoggedOnInformation.builder()
                 .accountId(account.getAccountId())
                 .phoneNumber(account.getPhoneNumber())
-                .refreshToken("Dummy Refresh Token")
-                .fcmToken("Dummy FCM Token")
+                .refreshToken("Dummy Refresh Token " + account.getAccountId())
+                .fcmToken("Dummy FCM Token " + account.getAccountId())
                 .build();
 
         authService.saveLoggedOnInformation(loggedOnInf);
