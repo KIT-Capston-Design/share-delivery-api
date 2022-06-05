@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
         //글작성자에게 전송.
         fcmTargetId = comment.getPost().getAccount().getAccountId();
 
-        //fcm 전송
+
         firebaseCloudMessageService.sendMessageTo(
                 loggedOnInformationService.getFcmTokenByAccountId(fcmTargetId),
                 title, comment.getContent(),data);
