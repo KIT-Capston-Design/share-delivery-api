@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.service.impl;
 
 
 import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFileRepository;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.domain.jpa.post.PostRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.FileNotFoundException;
+import java.nio.file.FileSystemException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +29,8 @@ public class PostImageServiceImpl implements PostImageService {
     private final PostImageRepository postImageRepository;
     private final ImageFileService imageFileService;
 
-    private final PostRepository postRepository;
+    private final ImageFileRepository imageFileRepository;
+
 
     @Override
     public List<PostImage> saveAll(List<MultipartFile> imageFiles, Post post) throws FileUploadException {
@@ -52,12 +56,18 @@ public class PostImageServiceImpl implements PostImageService {
     }
 
     @Override
-    public List<PostImage> replaceAll(String postPath, MultipartFile imageFile) throws FileUploadException {
-        return null;
+    public void delete(String filePath){
+
+        PostImage postImage = postImageRepository.getPostImagesWithFileName(filePath);
+
+        imageFileRepository.delete(postImage.getImageFile());
+
+        postImageRepository.delete(postImage);
+        try {
+            imageFileService.delete(filePath);
+        } catch (FileSystemException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
-    public PostImage findPostImageWithFilePath(String filePath) throws EntityNotFoundException {
-        return postImageRepository.getPostImagesWithFileName(filePath);
-    }
 }

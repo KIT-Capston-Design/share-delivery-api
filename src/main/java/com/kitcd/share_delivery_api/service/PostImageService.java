@@ -16,7 +16,6 @@ public interface PostImageService {
 
     PostImage save(MultipartFile imageFile, Post post) throws FileUploadException;
 
-    List<PostImage> replaceAll(String filePath, MultipartFile imageFile) throws FileUploadException;
 
-    PostImage findPostImageWithFilePath(String filePath) throws EntityNotFoundException;
+    void delete(String filePath);
 }

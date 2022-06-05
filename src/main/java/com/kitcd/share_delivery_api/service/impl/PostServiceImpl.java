@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.service.impl;
 
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
 import com.kitcd.share_delivery_api.domain.jpa.placeshare.PlaceShare;
 import com.kitcd.share_delivery_api.domain.jpa.placeshare.PlaceShareRepository;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
@@ -119,8 +120,7 @@ public class PostServiceImpl implements PostService {
 
         //get 때기 위해
         Post postTemp = postTarget.get();
-
-        PlaceShare placeShareTemp = placeShareTarget.get();
+        PlaceShare placeShareTemp = placeShareTarget.orElse(null);
 
         //연관관계를 위해 필요한 Entity 찾기
         PostCategory postCategory = postCategoryRepository.findByCategoryName(dto.getCategory());
@@ -129,29 +129,41 @@ public class PostServiceImpl implements PostService {
 
         //만약 null이 아닌 아이디라면..( null 일수도 있음. )
         if(placeShareTemp != null) {
-            placeShareTemp = placeShareTemp.updatePlaceShare(dto.getSharePlace(), sharedPlaceAddress);
-            placeShareTemp = placeShareRepository.save(placeShareTemp);
+            //만약 다른 위치거나 다른 content 라면...!
+            if(!placeShareTemp.getCoordinate().equals(dto.getCoordinate()) || !placeShareTemp.getContent().equals(dto.getSharePlace().getDescription())){
+                placeShareTemp = placeShareTemp.updatePlaceShare(dto.getSharePlace(), sharedPlaceAddress);
+                placeShareTemp = placeShareRepository.save(placeShareTemp);
+            }
+
         }
 
-        Point point = GeometriesFactory.createPoint(dto.getCoordinate().getLatitude(), dto.getCoordinate().getLongitude());
+        // 만약 위치 데이터가 다르다면..!
+        if(!postTemp.getCoordinate().equals(dto.getCoordinate())) {
+            Point point = GeometriesFactory.createPoint(dto.getCoordinate().getLatitude(), dto.getCoordinate().getLongitude());
+            postTemp = postTemp.updatePost(dto, postCategory, placeShareTemp, point, postCity);
+        }
 
-        postTemp = postTemp.updatePost(dto, postCategory, placeShareTemp, point, postCity);
         postTemp = postRepository.save(postTemp);
 
         Boolean isLiked = postLikeService.isPostLiked(ContextHolder.getAccountId(), postId);
 
-        if(images != null && dto.getDeletedImages() != null){
-            List<PostImage> findPostImage = postTemp.getImages();
-            List<PostImage> deleteTargetPostImage = dto.getDeletedImages().stream()
-                    .map(fileName -> postImageService.findPostImageWithFilePath(fileName))
-                    .collect(Collectors.toList());
+        //postImage entity 및 파일 삭제
+        if(dto.getDeletedImages() != null) {
+            //파일
+            List<String> fileNames = dto.getDeletedImages().stream().map(ImageFile::getFileName).collect(Collectors.toList());
 
-
-
+            fileNames.forEach(postImageService::delete);
         }
-        else{
-            throw new RuntimeException("형식에 맞지 않은 수정입니다.");
+
+        //이미지가 null이 아니면
+        if(images != null){
+            try {
+                postImageService.saveAll(images, postTemp);
+            } catch (FileUploadException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
+
         return postTemp.toDTO(isLiked);
     }
 }
