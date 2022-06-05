@@ -15,14 +15,17 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.placeshare.PlaceShareDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
+import com.kitcd.share_delivery_api.dto.post.PostListDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -55,6 +58,9 @@ public class Post extends BaseTimeEntity {
    @Column(name = "VIEW_COUNT", nullable = false)
    private Long viewCount;
 
+   @Column(name = "LOCATION", nullable = false)
+   private Point pLocation;
+
    @Embedded
    private Location coordinate;
 
@@ -83,6 +89,12 @@ public class Post extends BaseTimeEntity {
    private List<Report> reports = new LinkedList<>();
 
    public PostDTO toDTO(Boolean isLiked){
+      List<String> imageUrlList =  (null != images) ? images.stream()
+                  .map(i -> i.getImageFile()
+                             .extractUrl())
+                  .collect(Collectors.toList())
+              : null;
+
 
       return PostDTO.builder()
               .postId(postId)
@@ -99,7 +111,11 @@ public class Post extends BaseTimeEntity {
               .likes(commentLikes == null ? 0 : (long)commentLikes.size())
               .isLiked(isLiked)
               .viewCount(viewCount)
+              .images(imageUrlList)
               .build();
    }
 
+   public void increaseViewCount(){
+      viewCount += 1;
+   }
 }

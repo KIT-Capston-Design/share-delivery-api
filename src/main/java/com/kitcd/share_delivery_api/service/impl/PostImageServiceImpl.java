@@ -28,10 +28,9 @@ public class PostImageServiceImpl implements PostImageService {
     private final PostRepository postRepository;
 
     @Override
-    public List<PostImage> saveAll(List<MultipartFile> imageFiles, Long postId) throws FileUploadException {
+    public List<PostImage> saveAll(List<MultipartFile> imageFiles, Post post) throws FileUploadException {
         List<ImageFile> savedFiles = imageFileService.saveAll(imageFiles);
 
-        Post post = postRepository.findById(postId).get();
 
         List<PostImage> postImages = savedFiles.stream().map(i -> postImageRepository.save(PostImage.builder()
                         .post(post)
@@ -42,10 +41,8 @@ public class PostImageServiceImpl implements PostImageService {
     }
 
     @Override
-    public PostImage save(MultipartFile imageFile, Long postId) throws FileUploadException {
+    public PostImage save(MultipartFile imageFile, Post post) throws FileUploadException {
         ImageFile savedImage = imageFileService.save(imageFile);
-
-        Post post = postRepository.findById(postId).get();
 
         return postImageRepository.save(PostImage.builder()
                 .post(post)

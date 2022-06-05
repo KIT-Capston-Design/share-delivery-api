@@ -9,6 +9,7 @@ import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.dto.placeshare.PlaceShareRequestDTO;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import com.kitcd.share_delivery_api.utils.address.FindAddressWithLocation;
+import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.*;
 
@@ -37,19 +38,7 @@ public class WritePostRequestDTO {
                 .viewCount(0L)
                 .postCategory(postCategory)
                 .status(State.NORMAL)
-                .build();
-    }
-    public Post toEntity(PlaceShare placeShare, PostCategory postCategory, String address){
-        return Post.builder()
-                .content(content)
-                .account(ContextHolder.getAccount())
-                .Address(address)
-                .coordinate(coordinate)
-                .likeCount(0L)
-                .viewCount(0L)
-                .postCategory(postCategory)
-                .sharedPlace(placeShare)
-                .status(State.NORMAL)
+                .pLocation(GeometriesFactory.createPoint(coordinate.getLatitude(), coordinate.getLongitude()))
                 .build();
     }
 }
