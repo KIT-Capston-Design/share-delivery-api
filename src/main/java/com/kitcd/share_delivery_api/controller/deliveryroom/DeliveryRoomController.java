@@ -148,6 +148,14 @@ public class DeliveryRoomController {
 
         entryOrderService.enrollEntryOrder(room, dtos, EntryOrderType.PARTICIPATION, State.PENDING);
 
+        // 방의 주도자에게 참가 신청 알람 전송.
+        firebaseCloudMessageService.sendMessageTo(
+                loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
+                room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
+                "null"
+                ,null
+        );
+
         return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
     }
 

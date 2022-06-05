@@ -89,15 +89,6 @@ public class EntryOrderServiceImpl implements EntryOrderService {
         deliveryRoom.addPerson();
         deliveryRoomRepository.save(deliveryRoom);
 
-
-        // 방의 주도자에게 참가 신청 알람 전송.
-        firebaseCloudMessageService.sendMessageTo(
-                loggedOnInformationService.getFcmTokenByAccountId(deliveryRoom.getLeader().getAccountId()),
-                deliveryRoom.getContent() + " 방에 새로운 참가 신청이 있습니다.",
-                "null"
-                ,null
-        );
-
         return entryOrder;
     }
 
