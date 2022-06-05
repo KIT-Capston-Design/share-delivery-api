@@ -36,7 +36,7 @@ public class PaymentController {
     private final DeliveryRoomService deliveryRoomService;
 
 
-    @PostMapping("/delivery-rooms/{deliveryRoomId}/order-detail")
+    @PostMapping("/delivery-rooms/{deliveryRoomId}/completed-order")
     public ResponseEntity<?> enrollPayment(@Validated @RequestPart(value = "orderDetail")PaymentEnrollRequestDTO dto, @RequestParam(value = "orderFormList")List<MultipartFile> images, @PathVariable Long deliveryRoomId){
         DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
