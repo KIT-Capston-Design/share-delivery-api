@@ -164,8 +164,14 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER, 2L);
         createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER, 3L);
         createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER, 4L);
-        createAccountDataIfNotFound(4L,"01000000005", "DUMMY USER 5", RoleType.ROLE_USER, 5L);
-        createAccountDataIfNotFound(4L,"01000000006", "DUMMY USER 6", RoleType.ROLE_USER, 6L);
+        createAccountDataIfNotFound(5L,"01000000005", "DUMMY USER 5", RoleType.ROLE_USER, 5L);
+        createAccountDataIfNotFound(6L,"01000000006", "DUMMY USER 6", RoleType.ROLE_USER, 6L);
+        createAccountDataIfNotFound(7L,"01000000007", "DUMMY USER 7", RoleType.ROLE_USER, 1L);
+        createAccountDataIfNotFound(8L,"01000000008", "DUMMY USER 8", RoleType.ROLE_USER, 2L);
+        createAccountDataIfNotFound(9L,"01000000009", "DUMMY USER 9", RoleType.ROLE_USER, 3L);
+        createAccountDataIfNotFound(10L,"010000000010", "DUMMY USER 10", RoleType.ROLE_USER, 4L);
+        createAccountDataIfNotFound(11L,"01000000011", "DUMMY USER 11", RoleType.ROLE_USER, 5L);
+        createAccountDataIfNotFound(12L,"01000000012", "DUMMY USER 12", RoleType.ROLE_USER, 6L);
     }
 
     private void loadReceivingLocationData(){
@@ -179,25 +185,49 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadDeliveryRoomData(){
-        createDeliveryRoomIfNotFound(1L, "DUMMY CONTENT 1", 4L,4L, 123456L,1L, "CHICKEN", 1L, DeliveryRoomState.WAITING_PAYMENT, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
-        createDeliveryRoomIfNotFound(2L, "DUMMY CONTENT 2", 1L,4L, 123456L,2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
-        createDeliveryRoomIfNotFound(3L, "DUMMY CONTENT 3", 1L,4L, 123456L,3L, "FASTFOOD", 3L, DeliveryRoomState.OPEN, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
-        createDeliveryRoomIfNotFound(4L, "DUMMY CONTENT 4", 1L,4L, 123456L,1L, "LUNCHBOX", 1L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
-        createDeliveryRoomIfNotFound(5L, "DUMMY CONTENT 5", 1L,4L, 123456L,2L, "LUNCHBOX", 4L, DeliveryRoomState.OPEN, PlatformType.YOGIYO, "DUMMY STORE NAME 4", "https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(1L, "(WAITING_PAYMENT) DUMMY CONTENT 1 ", 4L,4L, 123456L,1L, "CHICKEN", 1L, DeliveryRoomState.WAITING_PAYMENT, PlatformType.BAEMIN, "DUMMY STORE NAME 0", "https://baemin.me/JsDPOYYqUd");
+        createDeliveryRoomIfNotFound(2L, "(OPEN) DUMMY CONTENT 2 ", 1L,4L, 123456L,2L, "DESERT", 2L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
+        createDeliveryRoomIfNotFound(3L, "(WAITING_DELIVERY) DUMMY CONTENT 3 ", 4L,4L, 123456L,3L, "FASTFOOD", 3L, DeliveryRoomState.WAITING_DELIVERY, PlatformType.BAEMIN, "DUMMY STORE NAME 2", "https://baemin.me/gzJ_2H5-o");
+        createDeliveryRoomIfNotFound(4L, "(WAITING_REMITTANCE) DUMMY CONTENT 4 ", 4L,4L, 123456L,1L, "LUNCHBOX", 4L, DeliveryRoomState.WAITING_REMITTANCE, PlatformType.YOGIYO, "DUMMY STORE NAME 3", "https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(5L, "(COMPLETED) DUMMY CONTENT 5 ", 4L,4L, 123456L,2L, "LUNCHBOX", 5L, DeliveryRoomState.COMPLETED, PlatformType.YOGIYO, "DUMMY STORE NAME 4", "https://yogiyo.onelink.me/BlI7/im8nou2o");
+        createDeliveryRoomIfNotFound(6L, "(OPEN) DUMMY CONTENT 6 ", 1L,4L, 123456L,2L, "DESERT", 6L, DeliveryRoomState.OPEN, PlatformType.BAEMIN,"DUMMY STORE NAME 1", "https://baemin.me/jpaPFsg-B");
+
     }
 
     private void loadEntryOrderData(){
 
         //LEAD
         createEntryOrderIfNotFound(1L, 1L, 1L, EntryOrderType.LEAD, State.ACCEPTED);
-        createEntryOrderIfNotFound(2L, 1L, 4L, EntryOrderType.LEAD, State.ACCEPTED);
-        createEntryOrderIfNotFound(3L, 2L, 2L, EntryOrderType.LEAD, State.ACCEPTED);
-        createEntryOrderIfNotFound(4L, 3L, 3L, EntryOrderType.LEAD, State.ACCEPTED);
+        createEntryOrderIfNotFound(2L, 2L, 2L, EntryOrderType.LEAD, State.ACCEPTED);
+        createEntryOrderIfNotFound(3L, 3L, 3L, EntryOrderType.LEAD, State.ACCEPTED);
+        createEntryOrderIfNotFound(4L, 4L, 4L, EntryOrderType.LEAD, State.ACCEPTED);
 
-        //PARTICIPATION
+
+        //1번 방 PARTICIPATION
         createEntryOrderIfNotFound(5L, 2L, 1L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
         createEntryOrderIfNotFound(6L, 3L, 1L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
         createEntryOrderIfNotFound(7L, 4L, 1L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+
+        //3번 방 PARTICIPATION
+        createEntryOrderIfNotFound(8L, 4L, 3L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(9L, 5L, 3L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(10L, 6L, 3L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+
+
+        //4번 방 PARTICIPATION
+        createEntryOrderIfNotFound(11L, 7L, 4L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(12L, 8L, 4L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(13L, 9L, 4L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+
+        //5번 방 PARTICIPATION
+        createEntryOrderIfNotFound(14L, 10L, 5L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(15L, 11L, 5L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+        createEntryOrderIfNotFound(16L, 12L, 5L, EntryOrderType.PARTICIPATION, State.ACCEPTED);
+
+        createEntryOrderIfNotFound(17L, 5L, 5L, EntryOrderType.LEAD, State.ACCEPTED);
+        createEntryOrderIfNotFound(18L, 6L, 6L, EntryOrderType.LEAD, State.ACCEPTED);
+
+
     }
 
 
@@ -213,12 +243,51 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createOrderMenuIfNotFound(8L, 1L, 100000L,3L, "DUMMY OPTION 3", 7L);
         createOrderMenuIfNotFound(9L, 1L, 160000L, 1L, "DUMMY MENU 6", null);
 
+        //1번 방 참여
         createOrderMenuIfNotFound(10L,1L,500000L, 5L,"DUMMY MENU 7", null);
         createOrderMenuIfNotFound(11L,1L,500000L, 6L,"DUMMY MENU 8", null);
         createOrderMenuIfNotFound(12L,1L,500000L, 7L,"DUMMY MENU 9", null);
         createOrderMenuIfNotFound(13L,1L,500000L, 5L,"DUMMY MENU 10", null);
         createOrderMenuIfNotFound(14L,1L,500000L, 6L,"DUMMY MENU 11", null);
         createOrderMenuIfNotFound(15L,1L,500000L, 7L,"DUMMY MENU 12", null);
+
+        //3번 방 참여
+        createOrderMenuIfNotFound(16L,1L,500000L, 8L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(17L,1L,500000L, 8L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(18L,1L,500000L, 9L,"DUMMY MENU 9", null);
+        createOrderMenuIfNotFound(19L,1L,500000L, 9L,"DUMMY MENU 10", null);
+        createOrderMenuIfNotFound(20L,1L,500000L, 10L,"DUMMY MENU 11", null);
+        createOrderMenuIfNotFound(21L,1L,500000L, 10L,"DUMMY MENU 12", null);
+
+        //4번 방 참여
+
+        createOrderMenuIfNotFound(22L,1L,500000L, 4L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(23L,1L,500000L, 4L,"DUMMY MENU 8", null);
+
+        createOrderMenuIfNotFound(24L,1L,500000L, 11L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(25L,1L,500000L, 11L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(26L,1L,500000L, 12L,"DUMMY MENU 9", null);
+        createOrderMenuIfNotFound(27L,1L,500000L, 12L,"DUMMY MENU 10", null);
+        createOrderMenuIfNotFound(28L,1L,500000L, 13L,"DUMMY MENU 11", null);
+        createOrderMenuIfNotFound(29L,1L,500000L, 13L,"DUMMY MENU 12", null);
+
+        //5번 방 참여
+        createOrderMenuIfNotFound(30L,1L,500000L, 17L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(31L,1L,500000L, 17L,"DUMMY MENU 8", null);
+
+        createOrderMenuIfNotFound(32L,1L,500000L, 14L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(33L,1L,500000L, 14L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(34L,1L,500000L, 15L,"DUMMY MENU 9", null);
+        createOrderMenuIfNotFound(35L,1L,500000L, 15L,"DUMMY MENU 10", null);
+        createOrderMenuIfNotFound(36L,1L,500000L, 16L,"DUMMY MENU 11", null);
+        createOrderMenuIfNotFound(37L,1L,500000L, 16L,"DUMMY MENU 12", null);
+
+        //6번 방 참여
+        createOrderMenuIfNotFound(30L,1L,500000L, 18L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(31L,1L,500000L, 18L,"DUMMY MENU 8", null);
+
+
+
     }
 
     private void loadPostCategory(){
