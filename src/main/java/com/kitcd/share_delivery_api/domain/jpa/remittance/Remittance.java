@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.domain.jpa.remittance;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;

@@ -5,7 +5,7 @@ import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.RemittanceRepository;
-import com.kitcd.share_delivery_api.dto.paymentdiscount.PaymentDiscountEnrollRequestDTO;
+import com.kitcd.share_delivery_api.dto.remittance.RemittanceDTO;
 import com.kitcd.share_delivery_api.service.RemittanceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,11 @@ import java.util.List;
 @Service
 public class RemittanceServiceImpl implements RemittanceService {
     private final RemittanceRepository remittanceRepository;
+
+    @Override
+    public List<RemittanceDTO> getRemittanceDTOsByDeliveryRoomId(Long deliveryRoomId) {
+        return remittanceRepository.getRemittanceDTOsByDeliveryRoomId(deliveryRoomId);
+    }
 
     @Override
     public List<Remittance> saveAll(List<Remittance> remittances) {
@@ -41,4 +46,6 @@ public class RemittanceServiceImpl implements RemittanceService {
 
         return saveAll(remittances);
     }
+
+
 }
