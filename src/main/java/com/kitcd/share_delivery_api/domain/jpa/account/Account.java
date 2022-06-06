@@ -10,7 +10,6 @@ import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.fastdeliveryparticipation.FastDeliveryParticipation;
-import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
 import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.accountevaluation.AccountEvaluation;
@@ -179,14 +178,14 @@ public class Account extends BaseTimeEntity {
    public void updateAccountInformation(AccountModificationDTO dto, ImageFile imageFile){
 
       String newEmail = dto.getEmail();
-      String newNickName = dto.getNickName();
+      String newNickname = dto.getNickname();
 
-      if(newEmail == null && newNickName == null && imageFile == null ){
+      if(newEmail == null && newNickname == null && imageFile == null ){
          throw new IllegalArgumentException("적어도 하나 이상의 수정사항이 있어야 합니다.");
       }
 
       if(newEmail != null) email = newEmail;
-      if(newNickName != null) nickname = newNickName;
+      if(newNickname != null) nickname = newNickname;
       if(imageFile != null) profileImage = imageFile;
 
    }

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +15,6 @@ public class AccountModificationDTO {
     @Email
     private String email;
 
-    private String nickName;
+    private String nickname;
 
 }
