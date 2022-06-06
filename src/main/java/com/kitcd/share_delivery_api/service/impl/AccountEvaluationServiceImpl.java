@@ -46,19 +46,23 @@ public class AccountEvaluationServiceImpl  implements AccountEvaluationService {
 
 
 		// AccountEvaluation 생성하기
-		AccountEvaluation accountEvaluation = accountEvaluationRepository.save(dto.toEntity(targetAccount, evaluator, evaluationCategory));
+		accountEvaluationRepository.save(dto.toEntity(targetAccount, evaluator, evaluationCategory));
 
 
-		// NOTE : 원래라면 항목에 따라 가산점을 계산하는 코드가 필요하지만, 시간 관계상 랜덤으로 0.3 ~ 0.7 로 주겠습니다.
-		// NOTE : 단, 사용자의 매너 점수가 양극단에 가까워질수록 점수 변화폭이 줄어듭니다.
-		double basePoint = (Math.random() * 0.4 + 0.3);
+		/** NOTE
+		 * 원래라면 항목에 따라 가산점을 계산하는 코드가 필요하지만, 시간 관계상 랜덤으로 0.3 ~ 0.7 로 주겠습니다.
+		 * 단, 사용자의 매너 점수가 양극단에 가까워질수록 점수 변화폭이 줄어듭니다.
+		 * evaluationCategory.getValue() == 1L	=> 긍정적인 평가, 매너 점수 상승
+		 * evaluationCategory.getValue() == -1L	=> 부정적인 평가, 매너 점수 하강
+		 */
+		double basePoint = (Math.random() * 0.4 + 0.3) * evaluationCategory.getValue();
 		double ratio =  defaultMannerScore / (defaultMannerScore + Math.abs(targetAccount.getMannerScore() - defaultMannerScore));
 		Double point = Math.round(basePoint * ratio * 10) / 10.0;
 
 
 		// 평가받은 유저의 매너 점수 조정
 		targetAccount.updateMannerScore(point);
-		Account newResult =  accountRepository.save(targetAccount);
+		accountRepository.save(targetAccount);
 
 	}
 

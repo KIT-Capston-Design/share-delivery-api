@@ -402,17 +402,27 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
     private void loadEvaluationCategory() {
 
-        createEvaluationCategoryIfNotFound("시간 약속을 잘 지켜요");
-        createEvaluationCategoryIfNotFound("친절해요");
-        createEvaluationCategoryIfNotFound("응답이 빨라요");
+        // Positive evaluation category
+        createEvaluationCategoryIfNotFound("시간 약속을 잘 지켜요", 1L);
+        createEvaluationCategoryIfNotFound("친절해요", 1L);
+        createEvaluationCategoryIfNotFound("응답이 빨라요", 1L);
+
+        // Negative evaluation category
+        createEvaluationCategoryIfNotFound("시간 약속을 안 지켜요", -1L);
+        createEvaluationCategoryIfNotFound("불친절해요", -1L);
+        createEvaluationCategoryIfNotFound("연락이 안돼요", -1L);
 
     }
 
     private void loadReportCategory() {
 
+        createReportCategoryIfNotFound("돈을 지불하지 않았어요");
+        createReportCategoryIfNotFound("욕설을 해요");
+        createReportCategoryIfNotFound("성희롱을 해요");
         createReportCategoryIfNotFound("시간 약속을 안 지켜요");
-        createReportCategoryIfNotFound("불친절해요");
-        createReportCategoryIfNotFound("연락이 안돼요");
+        createReportCategoryIfNotFound("비매너 행동을 했어요");
+        createReportCategoryIfNotFound("주문을 제대로 진행하지 않았어요");
+        createReportCategoryIfNotFound("연락이 두절됐어요");
 
     }
 
@@ -843,7 +853,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private EvaluationCategory createEvaluationCategoryIfNotFound(String categoryName) {
+    private EvaluationCategory createEvaluationCategoryIfNotFound(String categoryName, Long value) {
 
         EvaluationCategory evaluationCategory = evaluationCategoryRepository.findByCategoryName(categoryName);
 
@@ -853,7 +863,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         return evaluationCategoryRepository.save(EvaluationCategory.builder()
                 .categoryName(categoryName)
-                .value(0L)
+                .value(value)
                 .build());
 
     }
