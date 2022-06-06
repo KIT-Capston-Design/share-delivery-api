@@ -14,5 +14,5 @@ public class SimpleAccountDTO {
     private Long accountId;
     private String nickname;
     private Double mannerScore;
-    private BankAccount bankAccount;
+    private BankAccountDTO bankAccount;
 }

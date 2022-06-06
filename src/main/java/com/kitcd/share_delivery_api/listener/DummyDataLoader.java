@@ -247,20 +247,20 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadAccountData(){
-        createAccountDataIfNotFound(1L,"01000000001", "DUMMY USER 1", RoleType.ROLE_USER, 1L);
-        createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER, 2L);
-        createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER, 3L);
-        createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER, 4L);
-        createAccountDataIfNotFound(5L,"01000000005", "DUMMY USER 5", RoleType.ROLE_USER, 5L);
-        createAccountDataIfNotFound(6L,"01000000006", "DUMMY USER 6", RoleType.ROLE_USER, 6L);
-        createAccountDataIfNotFound(7L,"01000000007", "DUMMY USER 7", RoleType.ROLE_USER, 1L);
-        createAccountDataIfNotFound(8L,"01000000008", "DUMMY USER 8", RoleType.ROLE_USER, 2L);
-        createAccountDataIfNotFound(9L,"01000000009", "DUMMY USER 9", RoleType.ROLE_USER, 3L);
-        createAccountDataIfNotFound(10L,"010000000010", "DUMMY USER 10", RoleType.ROLE_USER, 4L);
-        createAccountDataIfNotFound(11L,"01000000011", "DUMMY USER 11", RoleType.ROLE_USER, 5L);
-        createAccountDataIfNotFound(12L,"01000000012", "DUMMY USER 12", RoleType.ROLE_USER, 6L);
-        createAccountDataIfNotFound(13L,"01000000013", "DUMMY USER 13", RoleType.ROLE_USER, 1L);
-        createAccountDataIfNotFound(14L,"01000000014", "DUMMY USER 14", RoleType.ROLE_USER, 2L);
+        createAccountDataIfNotFound(1L,"01000000001", "DUMMY USER 1", RoleType.ROLE_USER, 1L, BankType.SHB);
+        createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER, 2L, BankType.NONGHYUP);
+        createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER, 3L, BankType.KAKAO);
+        createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER, 4L, BankType.SUHYUP);
+        createAccountDataIfNotFound(5L,"01000000005", "DUMMY USER 5", RoleType.ROLE_USER, 5L, BankType.EPOST);
+        createAccountDataIfNotFound(6L,"01000000006", "DUMMY USER 6", RoleType.ROLE_USER, 6L, BankType.HANA);
+        createAccountDataIfNotFound(7L,"01000000007", "DUMMY USER 7", RoleType.ROLE_USER, 1L, BankType.KAKAO);
+        createAccountDataIfNotFound(8L,"01000000008", "DUMMY USER 8", RoleType.ROLE_USER, 2L, BankType.KAKAO);
+        createAccountDataIfNotFound(9L,"01000000009", "DUMMY USER 9", RoleType.ROLE_USER, 3L, BankType.DGB);
+        createAccountDataIfNotFound(10L,"010000000010", "DUMMY USER 10", RoleType.ROLE_USER, 4L, BankType.WOORI);
+        createAccountDataIfNotFound(11L,"01000000011", "DUMMY USER 11", RoleType.ROLE_USER, 5L, BankType.WOORI);
+        createAccountDataIfNotFound(12L,"01000000012", "DUMMY USER 12", RoleType.ROLE_USER, 6L, BankType.EPOST);
+        createAccountDataIfNotFound(13L,"01000000013", "DUMMY USER 13", RoleType.ROLE_USER, 1L, BankType.JBB);
+        createAccountDataIfNotFound(14L,"01000000014", "DUMMY USER 14", RoleType.ROLE_USER, 2L, BankType.IBK);
     }
 
     private void loadReceivingLocationData(){
@@ -453,7 +453,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName, RoleType role, Long profileImageId){
+    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName, RoleType role, Long profileImageId, BankType bankType){
 
         Account account = accountRepository.findByPhoneNumber(phoneNum);
         Optional<ImageFile> image = imageFileRepository.findById(profileImageId);
@@ -481,7 +481,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .bankAccount(BankAccount.builder()
                         .accountHolder("DUMMY NAME")
                         .accountNumber("DUMMY ACCOUNT NUMBER")
-                        .bank(BankType.KAKAO)
+                        .bank(bankType)
                         .build()
                 )
                 .role(role)

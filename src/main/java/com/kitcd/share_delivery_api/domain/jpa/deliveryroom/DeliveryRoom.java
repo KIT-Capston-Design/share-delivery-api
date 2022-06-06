@@ -167,7 +167,7 @@ public class DeliveryRoom extends BaseTimeEntity {
               .leader(SimpleAccountDTO.builder()
                       .accountId(getLeader().getAccountId())
                       .nickname(getLeader().getNickname())
-                      .bankAccount(getLeader().getBankAccount())
+                      .bankAccount(getLeader().getBankAccount().toDTO())
                       .build()
               ).build();
    }
