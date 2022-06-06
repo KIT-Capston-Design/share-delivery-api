@@ -433,6 +433,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createPostCategoryIfNotFound(4L, "취미생활");
         createPostCategoryIfNotFound(5L, "분실/실종");
         createPostCategoryIfNotFound(6L, "품앗이");
+        createPostCategoryIfNotFound(7L, "기타");
 
     }
 
