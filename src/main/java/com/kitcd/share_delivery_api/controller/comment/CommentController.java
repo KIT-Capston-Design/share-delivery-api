@@ -3,6 +3,9 @@ package com.kitcd.share_delivery_api.controller.comment;
 
 import com.kitcd.share_delivery_api.dto.comment.CommentDTO;
 import com.kitcd.share_delivery_api.dto.comment.CommentWriteDTO;
+import com.kitcd.share_delivery_api.dto.commentlike.CommentLikeDTO;
+import com.kitcd.share_delivery_api.dto.postlike.PostLikeDTO;
+import com.kitcd.share_delivery_api.service.CommentLikeService;
 import com.kitcd.share_delivery_api.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,8 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+
+    private final CommentLikeService commentLikeService;
 
     @PostMapping("")
     public ResponseEntity<?> writeComment(@RequestBody CommentWriteDTO dto){
@@ -48,5 +53,12 @@ public class CommentController {
         commentService.deleteComment(commentId);
 
         return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
+    }
+
+    @PostMapping("/{commentId}/toggle-likes")
+    public ResponseEntity<?> commentLikeToggle(@PathVariable Long commentId){
+        CommentLikeDTO commentLikeDTO = commentLikeService.clickedLike(commentId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commentLikeDTO);
     }
 }

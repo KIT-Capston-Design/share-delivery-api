@@ -63,7 +63,9 @@ public class Comment extends BaseTimeEntity {
    public void increaseLikeCount(){
       likeCount += 1;
    }
-
+   public void decreaseLikeCount() {
+      likeCount -= 1;
+   }
    public CommentDTO toDTO(Boolean isLiked){
       return CommentDTO.builder()
               .id(commentId)
