@@ -22,6 +22,6 @@ public interface RemittanceRepository extends JpaRepository<Remittance, Long> {
     Remittance findRemittanceByRemittanceId(Long remittanceId);
 
     @Query("select count(r) from Remittance r join r.payment p " +
-            "where r.isRemitted and p.deliveryRoom.deliveryRoomId = :deliveryRoomId")
+            "where r.isRemitted = true and p.deliveryRoom.deliveryRoomId = :deliveryRoomId")
     Long getNumberOfPeopleRemittedWith(Long deliveryRoomId);
 }
