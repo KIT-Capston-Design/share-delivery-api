@@ -171,4 +171,13 @@ public class DeliveryRoom extends BaseTimeEntity {
                       .build()
               ).build();
    }
+
+   public DeliveryRoomState deliveryComplete() {
+
+      if(!(status.equals(DeliveryRoomState.WAITING_DELIVERY))){
+         throw new IllegalStateException("배달 대기 상태가 아니기에 배달 완료 작업을 수행할 수 없습니다.");
+      }
+
+      return status = DeliveryRoomState.WAITING_REMITTANCE;
+   }
 }
