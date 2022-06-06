@@ -3,9 +3,12 @@ package com.kitcd.share_delivery_api.controller.post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
+import com.kitcd.share_delivery_api.dto.post.UpdatePostDTO;
 import com.kitcd.share_delivery_api.dto.post.WritePostRequestDTO;
 import com.kitcd.share_delivery_api.dto.post.PostDTO;
+import com.kitcd.share_delivery_api.dto.postlike.PostLikeDTO;
 import com.kitcd.share_delivery_api.service.PostImageService;
+import com.kitcd.share_delivery_api.service.PostLikeService;
 import com.kitcd.share_delivery_api.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +35,14 @@ public class PostController {
 
     private final PostService postService;
 
+    private final PostLikeService postLikeService;
 
 
     @PostMapping("")                //multipart로 데이터를 받아옴.                  //null 일 수 있음.
     public ResponseEntity<?> writePost(@RequestParam(value = "post") String postDetails, @RequestParam(value = "postImages",required = false) List<MultipartFile> images){
         ObjectMapper om = new ObjectMapper();
 
-        WritePostRequestDTO dto = null;
+        WritePostRequestDTO dto;
         try {
             dto = om.readValue(postDetails, WritePostRequestDTO.class);
         } catch (JsonProcessingException e) {
@@ -51,7 +55,10 @@ public class PostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getPosts(@RequestParam @NotNull Double latitude, @RequestParam @NotNull Double longitude, @RequestParam @NotNull Long radius, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedDateTime){
+    public ResponseEntity<?> getPosts(@RequestParam @NotNull Double latitude, @RequestParam @NotNull Double longitude, @RequestParam @NotNull Long radius, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedDateTime, @RequestParam(required = false) String category){
+        if(category != null){
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostListsWithCategoryFilter(latitude, longitude, radius, lastCreatedDateTime, category));
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostLists(latitude, longitude, radius, lastCreatedDateTime));
     }
@@ -65,5 +72,36 @@ public class PostController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(postDTO);
+    }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<?> updatePost(@PathVariable Long postId,
+                                        @RequestParam(value = "post") String postDetails,
+                                        @RequestParam(value = "postImages", required = false)List<MultipartFile> images ){
+        ObjectMapper om = new ObjectMapper();
+
+        UpdatePostDTO dto;
+        try{
+            dto = om.readValue(postDetails, UpdatePostDTO.class);
+        }catch (JsonProcessingException e){
+            throw new RuntimeException(e);
+        }
+
+        PostDTO updatedPost = postService.updatePost(dto, images, postId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
+    }
+
+    @PostMapping("/{postId}/toggle-likes")
+    public ResponseEntity<?> postLikeToggle(@PathVariable Long postId){
+        PostLikeDTO postLikeDTO = postLikeService.clickedLike(postId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postLikeDTO);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId){
+        postService.deletePost(postId);
+        return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
     }
 }

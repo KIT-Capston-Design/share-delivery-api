@@ -4,6 +4,7 @@ import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.post.Post;
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.postlike.PostLikeDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -28,5 +29,10 @@ public class PostLike extends BaseTimeEntity {
    @JoinColumn(name = "POST_ID", nullable = false)
    private Post post;
 
-
+   public static PostLikeDTO toDTO(Long postLikesNum, Boolean isNull, Long postId){
+      return PostLikeDTO.builder()
+              .isLiked(isNull)
+              .postId(postId)
+              .likes(postLikesNum).build();
+   }
 }
