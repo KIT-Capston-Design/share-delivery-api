@@ -60,7 +60,7 @@ public class RemittanceServiceImpl implements RemittanceService {
     public boolean approveRemittance(Long remittanceId, DeliveryRoom deliveryRoom) {
 
         deliveryRoom.checkLeader(ContextHolder.getAccountId());
-        if(!deliveryRoom.getStatus().equals(DeliveryRoomState.WAITING_PAYMENT))
+        if(!deliveryRoom.getStatus().equals(DeliveryRoomState.WAITING_REMITTANCE))
             throw new IllegalStateException("송금대기 상태가 아니기에 송금 처리를 수행할 수 없습니다.");
 
         Remittance remittance = findRemittanceByRemittanceId(remittanceId);
