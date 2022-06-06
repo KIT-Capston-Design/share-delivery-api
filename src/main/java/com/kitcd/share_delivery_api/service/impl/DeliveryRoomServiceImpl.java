@@ -61,7 +61,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
 
         Payment payment = paymentService.getByDeliveryRoomId(deliveryRoomId);
-        List<OrderResDTO> orders = entryOrderService.getAcceptedOrderInformation(deliveryRoomId);
+        List<OrderResDTO> orders = entryOrderService.getOrderInformation(deliveryRoomId, State.ACCEPTED);
         List<String> imageUrls = paymentOrderFormService.getOrderFormImagesByPaymentId(payment.getPaymentId());
 
         return deliveryRoom.toFinalOrderInformationDTO(payment, orders, imageUrls);
