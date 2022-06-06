@@ -15,4 +15,5 @@ public class SimpleAccountDTO {
     private String nickname;
     private Double mannerScore;
     private BankAccountDTO bankAccount;
+    private String profileImage;
 }

@@ -103,6 +103,7 @@ public class Post extends BaseTimeEntity {
                       .accountId(account.getAccountId())
                       .mannerScore(account.getMannerScore())
                       .nickname(account.getNickname())
+                      .profileImage((account.getProfileImage() != null)? account.getProfileImage().extractUrl() : null)
                       .build())
               .category(postCategory.getCategoryName())
               .placeShare(null == sharedPlace ? null : PlaceShareDTO.parseDTO(sharedPlace))
