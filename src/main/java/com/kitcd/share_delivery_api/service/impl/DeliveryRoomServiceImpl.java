@@ -79,7 +79,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         //FCM push 송신
         Map<String, Object> data = new HashMap<>();
         data.put("type", FCMDataType.COMPLETE_DELIVERY);
-        data.put("roomId", deliveryRoomId);
+        data.put("roomId", deliveryRoomId.toString());
 
         String groupFcmToken = activatedDeliveryRoomInfoRedisService.getGroupFcmToken(deliveryRoomId);
         firebaseCloudMessageService.sendMessageTo(
@@ -193,7 +193,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
         Map<String, Object> data = new HashMap<>();
         data.put("type", FCMDataType.CLOSE_RECRUIT);
-        data.put("roomId", deliveryRoomId);
+        data.put("roomId", deliveryRoomId.toString());
         firebaseCloudMessageService.sendMessageTo(
                 fcmGroupToken, "해당 모집글의 인원 모집이 종료되었습니다. 이제 주문이 시작됩니다.", deliveryRoom.getContent(), data
         );
@@ -248,7 +248,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         Map<String, Object> fcmData = new HashMap<>();
         fcmData.put("type", FCMDataType.EXIT_ROOM);
-        fcmData.put("roomId", deliveryRoomId);
+        fcmData.put("roomId", deliveryRoomId.toString());
 
         firebaseCloudMessageService.sendMessageTo(
                 leaderFcmToken,

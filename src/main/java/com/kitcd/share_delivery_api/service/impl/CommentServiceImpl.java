@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
         Long fcmTargetId;
         String title = "내가 작성한 글에 댓글이 달렸어요!";
         HashMap<String, Object> data = new HashMap<>();
-        data.put("postId", dto.getPostId());
+        data.put("postId", dto.getPostId().toString());
         data.put("type", FCMDataType.POST_COMMENT);
         data.put("parentId", null);
 
@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
             fcmTargetId = parent.getAccount().getAccountId();
             title = "내가 작성한 댓글에 대댓글이 달렸어요!";
             data.replace("type", FCMDataType.COMMENT_PLUS);  //덮어쓰기
-            data.replace("parentId", dto.getParentId());
+            data.replace("parentId", dto.getParentId().toString());
         }
         Optional<Post> findPost = postRepository.findById(dto.getPostId());
 
