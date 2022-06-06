@@ -16,5 +16,9 @@ public interface RemittanceService {
 
     List<RemittanceDTO> getRemittanceDTOsByDeliveryRoomId(Long deliveryRoomId);
 
+    List<Remittance> getRemittancesByDeliveryRoomId(Long deliveryRoomId);
+
+    long getNumberOfPeopleRemittedWith(Long deliveryRoomId);
+
     boolean approveRemittance(Long remittanceId, DeliveryRoom deliveryRoom);
 }
