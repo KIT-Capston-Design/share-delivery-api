@@ -5,11 +5,14 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomReposito
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.payment.Payment;
+import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
+import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
+import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
 import com.kitcd.share_delivery_api.service.*;
@@ -40,6 +43,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final PaymentService paymentService;
     private final PaymentOrderFormService paymentOrderFormService;
+    private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
 
     @Override
@@ -57,7 +61,7 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
 
         Payment payment = paymentService.getByDeliveryRoomId(deliveryRoomId);
-        List<OrderResDTO> orders = entryOrderService.getAcceptedOrderInformation(deliveryRoomId);
+        List<OrderResDTO> orders = entryOrderService.getOrderInformation(deliveryRoomId, State.ACCEPTED);
         List<String> imageUrls = paymentOrderFormService.getOrderFormImagesByPaymentId(payment.getPaymentId());
 
         return deliveryRoom.toFinalOrderInformationDTO(payment, orders, imageUrls);
@@ -144,11 +148,40 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         // 모집글 상태 변경
         DeliveryRoom deliveryRoom = findByDeliveryRoomId(deliveryRoomId);
-        deliveryRoom.closeRecruit();
 
+        //클라이언트가 방장인지 체크. 방장이 아닐 경우 AccessDeniedException
+        deliveryRoom.checkLeader(ContextHolder.getAccountId());
+
+        deliveryRoom.closeRecruit();
 
         // 참여자 상태 변경 Pending -> Accepted
         entryOrderService.acceptOrders(deliveryRoomId);
+
+
+        //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
+        String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
+                FCMGroupRequest.Type.create,
+                "DeliveryRoom_" + deliveryRoomId.toString(),
+                null, //생성 시에는 그룹 키 null로 전송
+                getParticipantFCMTokens(deliveryRoomId, State.ACCEPTED) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
+        );
+
+        //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", FCMDataType.CLOSE_RECRUIT);
+        data.put("roomId", deliveryRoomId);
+        firebaseCloudMessageService.sendMessageTo(
+                fcmGroupToken, "해당 모집글의 인원 모집이 종료되었습니다. 이제 주문이 시작됩니다.", deliveryRoom.getContent(), data
+        );
+
+        //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
+        activatedDeliveryRoomInfoRedisRepository.save(
+                ActivatedDeliveryRoomInfo.builder()
+                        .deliveryRoomId(deliveryRoomId)
+                        .fcmGroupToken(fcmGroupToken)
+                        .users(getParticipantsIds(deliveryRoomId, State.ACCEPTED))
+                        .build()
+        );
 
         return deliveryRoom;
     }
@@ -160,16 +193,20 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         deliveryRoom.checkLeader(ContextHolder.getAccountId());
 
+        DeliveryRoomState status = deliveryRoom.getStatus(); //삭제 이전의 상태 저장
+
         deliveryRoom.delete();
 
         //fcm 메시지 발송
-        State participantsOrderStatus = (deliveryRoom.getStatus() == DeliveryRoomState.OPEN) ? State.PENDING : State.ACCEPTED;
+        State participantsOrderStatus = (status == DeliveryRoomState.OPEN) ? State.PENDING : State.ACCEPTED;
         List<String> participantFCMTokens = getParticipantFCMTokens(deliveryRoomId, participantsOrderStatus);
+        String leaderFcmToken = loggedOnInformationService.getFcmTokenByAccountId(ContextHolder.getAccountId());
 
         //TODO: FCM 레거시 API 활용하여 여러 사용자에 한 번에 전송하도록 추후 개선 필요.
-        participantFCMTokens.forEach(
-                token -> firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent(), null)
-        );
+        for(String token : participantFCMTokens){
+            if(!leaderFcmToken.equals(token)) //리더가 아닌 유저에게만 push
+                firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent(), null);
+        }
 
         return deliveryRoomId;
     }

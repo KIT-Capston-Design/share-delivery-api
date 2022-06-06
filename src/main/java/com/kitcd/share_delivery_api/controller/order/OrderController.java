@@ -1,8 +1,9 @@
 package com.kitcd.share_delivery_api.controller.order;
 
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
-import com.kitcd.share_delivery_api.dto.account.AccountRegistrationDTO;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.service.EntryOrderService;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -29,9 +29,11 @@ public class OrderController {
 
 
     @GetMapping("orders/{deliveryRoomId}")
-    public ResponseEntity<?> getOrders(@PathVariable @NotNull Long deliveryRoomId) {
+    public ResponseEntity<?> getOrderInformation(@PathVariable @NotNull Long deliveryRoomId) {
 
-        List<OrderResDTO> orders = entryOrderService.getOrderInformation(deliveryRoomId);
+        List<OrderResDTO> orders = entryOrderService.getOrderInformation(deliveryRoomId, State.PENDING);
+        orders.addAll(entryOrderService.getOrderInformation(deliveryRoomId, State.ACCEPTED));
+
         return ResponseEntity.status(HttpStatus.OK).body(orders);
 
     }

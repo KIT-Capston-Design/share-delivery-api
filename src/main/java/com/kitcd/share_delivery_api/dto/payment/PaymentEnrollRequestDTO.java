@@ -19,7 +19,6 @@ public class PaymentEnrollRequestDTO {
     @NotNull
     private Long deliveryFee;
 
-    @NotEmpty
     private List<PaymentDiscountEnrollRequestDTO> discounts;
 
     public Payment toEntity(DeliveryRoom deliveryRoom){

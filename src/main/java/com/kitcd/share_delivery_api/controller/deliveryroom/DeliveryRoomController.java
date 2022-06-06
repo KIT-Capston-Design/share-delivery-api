@@ -29,10 +29,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Validated
@@ -50,7 +47,7 @@ public class DeliveryRoomController {
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
 
-    @GetMapping("/api/delivery-rooms/{deliveryRoomId}/order-detail")
+    @GetMapping("delivery-rooms/{deliveryRoomId}/order-detail")
     public ResponseEntity<?> getFinalOrderInformation(@PathVariable Long deliveryRoomId) {
 
         FinalOrderInformationDTO result = deliveryRoomService.getFinalOrderInformation(deliveryRoomId);
@@ -77,18 +74,24 @@ public class DeliveryRoomController {
 
 
     @GetMapping("delivery-rooms/orders-reject")
-    public ResponseEntity<?> rejectOrder(@RequestParam(name = "userId") @NotNull Long userId, @RequestParam(name = "roomId") @NotNull Long roomId) {
+    public ResponseEntity<?> rejectOrder(@RequestParam(name = "userId") @NotNull Long accountId, @RequestParam(name = "roomId") @NotNull Long roomId) {
 
         DeliveryRoom deliveryRoom = deliveryRoomService.findByDeliveryRoomId(roomId);
         deliveryRoom.checkLeader(ContextHolder.getAccountId());
-        entryOrderService.rejectEntryOrder(userId, deliveryRoom);
+        entryOrderService.rejectEntryOrder(accountId, deliveryRoom);
+
 
         // 거절된 참여자에게 push 알림 전송
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", FCMDataType.ORDER_REJECTED);
+        data.put("roomId", roomId);
+
+
         firebaseCloudMessageService.sendMessageTo(
-                loggedOnInformationService.getFcmTokenByAccountId(ContextHolder.getAccountId()),
+                loggedOnInformationService.getFcmTokenByAccountId(accountId),
                 deliveryRoom.getContent() + " 방 입장이 거절되었습니다.",
                 "null",
-                null
+                data
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -144,9 +147,32 @@ public class DeliveryRoomController {
     @PostMapping("delivery-rooms/{deliveryRoomId}/entry-orders")
     public ResponseEntity<?> requestJoinDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody @NotEmpty List<OrderMenuRequestDTO> dtos){
 
+        Long myId = ContextHolder.getAccountId();
+
         DeliveryRoom room = deliveryRoomService.findByDeliveryRoomId(deliveryRoomId);
 
+        //자신이 리더일 경우 참여할 수 없으므로 예외 발생
+        if(Objects.equals(myId, room.getLeader().getAccountId())) throw new IllegalStateException("이미 참여 중 입니다.");
+
+        //이미 참여 신청한 경우 참여할 수 없으므로 예외 발생
+        List<Long> participantsIds = deliveryRoomService.getParticipantsIds(deliveryRoomId, State.PENDING); //
+        for(Long id : participantsIds)
+            if (Objects.equals(id, myId)) throw new IllegalStateException("이미 참여 중 입니다.");
+
+        //참여 절차 시작
         entryOrderService.enrollEntryOrder(room, dtos, EntryOrderType.PARTICIPATION, State.PENDING);
+
+        // 방의 주도자에게 참가 신청 알람 전송.
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", FCMDataType.ENTRY_ORDERS);
+        data.put("roomId", deliveryRoomId);
+
+        firebaseCloudMessageService.sendMessageTo(
+                loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),
+                room.getContent() + " 방에 새로운 참가 신청이 있습니다.",
+                ContextHolder.getAccount().getNickname()+"님이 참가 신청 하셨습니다. 메뉴와 금액을 확인해주세요.",
+                data
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomId);
     }
@@ -155,34 +181,6 @@ public class DeliveryRoomController {
     public ResponseEntity<?> closeRecruit(@PathVariable Long deliveryRoomId){
 
         DeliveryRoom deliveryRoom = deliveryRoomService.closeRecruit(deliveryRoomId);
-
-        //클라이언트가 방장인지 체크. 방장이 아닐 경우 AccessDeniedException
-        deliveryRoom.checkLeader(ContextHolder.getAccountId());
-
-        //  파이어베이스에 FCM 그룹 생성 요청 보내고 그룹 토큰 반환받는다. // throwable JSONException, IOException
-        String fcmGroupToken = firebaseCloudMessageService.sendGroupRequest(
-                FCMGroupRequest.Type.create,
-                "DeliveryRoom_" + deliveryRoomId.toString(),
-                null, //생성 시에는 그룹 키 null로 전송
-                deliveryRoomService.getParticipantFCMTokens(deliveryRoomId, State.ACCEPTED) //모집글에 참여한 유저 토큰들 받아서 넘겨주기
-        );
-
-        //그룹 토큰 통해 해당 모집글 참여자들에게 메시지 전송
-        Map<String, Object> data = new HashMap<>();
-        data.put("type", FCMDataType.CLOSE_RECRUIT);
-        data.put("roomId", deliveryRoomId);
-        firebaseCloudMessageService.sendMessageTo(
-                fcmGroupToken, "해당 모집글의 인원 모집이 종료되었습니다. 이제 주문이 시작됩니다.", deliveryRoom.getContent(), data
-        );
-
-        //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
-        activatedDeliveryRoomInfoRedisRepository.save(
-                ActivatedDeliveryRoomInfo.builder()
-                        .deliveryRoomId(deliveryRoomId)
-                        .fcmGroupToken(fcmGroupToken)
-                        .users(deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED))
-                        .build()
-        );
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryRoom.getDeliveryRoomId());
 

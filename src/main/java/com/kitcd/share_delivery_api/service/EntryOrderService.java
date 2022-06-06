@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.service;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
@@ -18,9 +19,7 @@ public interface EntryOrderService {
 
     void rejectEntryOrder(Long userId, DeliveryRoom deliveryRoom);
 
-    List<OrderResDTO> getOrderInformation(Long deliveryRoomId);
-
-    List<OrderResDTO> getAcceptedOrderInformation(Long deliveryRoomId);
+    List<OrderResDTO> getOrderInformation(Long deliveryRoomId, State orderStatus);
 
     Long acceptOrders(Long deliveryRoomId);
 }

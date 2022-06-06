@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,8 +50,8 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     public String sendGroupRequest(FCMGroupRequest.Type requestType, String groupTokenName, String groupKey, List<String> userTokens) {
 
         try {
-            //요청 데이터 생성
-            String requestData = makeFCMGroupRequest(requestType, groupTokenName, groupKey, userTokens);
+            //요청 데이터 생성 (그룹 네임 중복방지 위해 현재시각 추가)
+            String requestData = makeFCMGroupRequest(requestType, groupTokenName + "(" + LocalDateTime.now() + ")", groupKey, userTokens);
 
             //전송
             Response response = legacyForward(requestData);
@@ -58,10 +59,11 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
             //실패시 null 반환
             if (!response.isSuccessful()) {
                 log.error(response.toString());
+                log.error((response.body() != null) ?  "response body : "+ response.body().string() : "response body : null");
                 return null;
             }
 
-            String body = Objects.requireNonNull(response.body()).toString();
+            String body = Objects.requireNonNull(response.body()).string();
             JSONObject jsonBody = new JSONObject(body);
 
             //성공 시 notification_key 반환

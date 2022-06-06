@@ -10,8 +10,6 @@ import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.EntryOrderService;
-import com.kitcd.share_delivery_api.service.FirebaseCloudMessageService;
-import com.kitcd.share_delivery_api.service.LoggedOnInformationService;
 import com.kitcd.share_delivery_api.service.OrderMenuService;
 import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
@@ -30,26 +28,11 @@ public class EntryOrderServiceImpl implements EntryOrderService {
 
     private final EntryOrderRepository entryOrderRepository;
     private final OrderMenuService orderMenuService;
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
-    private final LoggedOnInformationService loggedOnInformationService;
     private final DeliveryRoomRepository deliveryRoomRepository;
 
     @Override
-    public List<OrderResDTO> getOrderInformation(Long deliveryRoomId) {
-
-        List<EntryOrder> orders = entryOrderRepository.getOrderInformation(deliveryRoomId);
-
-        if(orders == null) throw new EntityNotFoundException(EntryOrder.class.toString());
-
-        return orders.stream().map(EntryOrder::toResponseDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<OrderResDTO> getAcceptedOrderInformation(Long deliveryRoomId) {
-
-        List<EntryOrder> orders = entryOrderRepository.getAcceptedOrderInformation(deliveryRoomId);
-
-        if(orders == null) throw new EntityNotFoundException(EntryOrder.class.toString());
+    public List<OrderResDTO> getOrderInformation(Long deliveryRoomId, State orderStatus){
+        List<EntryOrder> orders = entryOrderRepository.getOrderInformation(deliveryRoomId, orderStatus);
 
         return orders.stream().map(EntryOrder::toResponseDTO).collect(Collectors.toList());
     }
@@ -88,15 +71,6 @@ public class EntryOrderServiceImpl implements EntryOrderService {
 
         deliveryRoom.addPerson();
         deliveryRoomRepository.save(deliveryRoom);
-
-
-        // 방의 주도자에게 참가 신청 알람 전송.
-        firebaseCloudMessageService.sendMessageTo(
-                loggedOnInformationService.getFcmTokenByAccountId(deliveryRoom.getLeader().getAccountId()),
-                deliveryRoom.getContent() + " 방에 새로운 참가 신청이 있습니다.",
-                "null"
-                ,null
-        );
 
         return entryOrder;
     }
