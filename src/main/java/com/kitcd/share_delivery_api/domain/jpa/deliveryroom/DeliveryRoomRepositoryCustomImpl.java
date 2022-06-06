@@ -43,7 +43,7 @@ public class DeliveryRoomRepositoryCustomImpl implements DeliveryRoomRepositoryC
 
         Query query = em.createNativeQuery("SELECT a.account_id, a.nickname, a.manner_score, r.CONTENT, r.limit_person, r.store_link, r.status, r.created_date, r.link_platform_type, rl.description, rl.address, rl.latitude, rl.longitude, r.delivery_room_id, r.estimated_delivery_tip, sc.category_name, r.people_number, r.store_name"
                         + " FROM ACCOUNT a JOIN DELIVERY_ROOM r ON r.LEADER_ID = a.ACCOUNT_ID JOIN RECEIVING_LOCATION rl ON r.receiving_location_id = rl.receiving_location_id JOIN STORE_CATEGORY sc ON r.store_category_id = sc.store_category_id"
-                        + " WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + mbr + ", rl.location)").setMaxResults(10);
+                        + " WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + mbr + ", rl.location) AND r.status = 'OPEN'").setMaxResults(50) ;
 
         List<Object[]> resultList = query.getResultList();
 
