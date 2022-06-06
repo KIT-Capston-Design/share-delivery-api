@@ -75,9 +75,8 @@ public class ImageFileServiceImpl implements ImageFileService {
 
     @Override
     public void delete(String filePath) throws FileSystemException {
-        String fileBaseDirPlusImageDir = BASE_DIR + IMAGE_DIR;
-        File file = new File(fileBaseDirPlusImageDir + filePath);
-
+        File file = new File(BASE_DIR + filePath);
+        log.error(BASE_DIR + filePath);
         if(!file.exists()) throw new IllegalStateException("해당 파일이 존재하지 않습니다.");
 
         if(!file.delete()) throw new FileSystemException("파일을 삭제할 수 없습니다.");

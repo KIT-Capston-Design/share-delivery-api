@@ -742,7 +742,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .status(State.NORMAL)
                 .likeCount(0L)
                 .coordinate(accurateLocation)
-                .Address(address)
+                .address(address)
                 .postCategory(findPostCategory.get())
                 .account(findAccount.get())
                 .content(content)

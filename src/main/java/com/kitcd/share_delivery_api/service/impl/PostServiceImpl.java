@@ -122,27 +122,31 @@ public class PostServiceImpl implements PostService {
             throw new EntityNotFoundException("서버에 저장되어있지 않은 post 입니다.");
         }
 
+        PlaceShare placeShareTemp = null;
         //위치 찾고
-        Optional<PlaceShare> placeShareTarget = placeShareRepository.findById(dto.getSharePlace().getPlaceShareId());
+        if(dto.getPlaceShare() != null) {
+            Optional<PlaceShare> placeShareTarget = placeShareRepository.findById(dto.getPlaceShare().getPlaceShareId());
+            placeShareTemp = placeShareTarget.orElse(null);
 
+            if(placeShareTemp != null) {
+                //만약 다른 위치거나 다른 content 라면...!
+                if(!placeShareTemp.getCoordinate().equals(dto.getCoordinate()) || !placeShareTemp.getContent().equals(dto.getPlaceShare().getDescription())){
+                    String sharedPlaceAddress = findAddressWithLocation.coordToAddr(new Location(dto.getPlaceShare().getLatitude(), dto.getPlaceShare().getLongitude()));
+                    placeShareTemp = placeShareTemp.updatePlaceShare(dto.getPlaceShare(), sharedPlaceAddress);
+                    placeShareTemp = placeShareRepository.save(placeShareTemp);
+                }
+
+            }else{
+                throw new EntityNotFoundException("서버에 저장되어있지 않은 장소공유입니다");
+            }
+
+        }
         //get 때기 위해
         Post postTemp = postTarget.get();
-        PlaceShare placeShareTemp = placeShareTarget.orElse(null);
 
         //연관관계를 위해 필요한 Entity 찾기
         PostCategory postCategory = postCategoryRepository.findByCategoryName(dto.getCategory());
         String postCity = findAddressWithLocation.getCity(dto.getCoordinate());
-        String sharedPlaceAddress = findAddressWithLocation.coordToAddr(new Location(dto.getSharePlace().getLatitude(), dto.getSharePlace().getLongitude()));
-
-        //만약 null이 아닌 아이디라면..( null 일수도 있음. )
-        if(placeShareTemp != null) {
-            //만약 다른 위치거나 다른 content 라면...!
-            if(!placeShareTemp.getCoordinate().equals(dto.getCoordinate()) || !placeShareTemp.getContent().equals(dto.getSharePlace().getDescription())){
-                placeShareTemp = placeShareTemp.updatePlaceShare(dto.getSharePlace(), sharedPlaceAddress);
-                placeShareTemp = placeShareRepository.save(placeShareTemp);
-            }
-
-        }
 
         // 만약 위치 데이터가 다르다면..!
         if(!postTemp.getCoordinate().equals(dto.getCoordinate())) {
@@ -158,7 +162,6 @@ public class PostServiceImpl implements PostService {
         if(dto.getDeletedImages() != null) {
             //파일
             List<String> fileNames = dto.getDeletedImages().stream().map(ImageFile::getFileName).collect(Collectors.toList());
-
             fileNames.forEach(postImageService::delete);
         }
 
@@ -170,7 +173,7 @@ public class PostServiceImpl implements PostService {
                 throw new RuntimeException(e.getMessage());
             }
         }
-
+        postRepository.flush();
         return postTemp.toDTO(isLiked);
     }
 
@@ -215,5 +218,7 @@ public class PostServiceImpl implements PostService {
         if(findSharePlace != null){
             placeShareRepository.delete(findSharePlace);
         }
+
+        postRepository.delete(findPost);
     }
 }

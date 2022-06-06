@@ -15,7 +15,7 @@ public class UpdatePostDTO {
     private Location coordinate;
     private String content;
     private String category;
-    private PlaceShareDTO sharePlace;
+    private PlaceShareDTO placeShare;
     private List<String> deletedImages;
 
 }

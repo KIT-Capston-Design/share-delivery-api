@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.io.FileNotFoundException;
 import java.nio.file.FileSystemException;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Transactional
 public class PostImageServiceImpl implements PostImageService {
 
     private final PostImageRepository postImageRepository;
@@ -56,15 +58,14 @@ public class PostImageServiceImpl implements PostImageService {
     }
 
     @Override
-    public void delete(String filePath){
+    public void delete(String fileName){
+        ImageFile imageFile = imageFileRepository.getImageFileByFileName(fileName);
 
-        PostImage postImage = postImageRepository.getPostImagesWithFileName(filePath);
-
-        imageFileRepository.delete(postImage.getImageFile());
-
+        PostImage postImage = postImageRepository.findPostImageByImageFile(imageFile);
         postImageRepository.delete(postImage);
+        imageFileRepository.delete(imageFile);
         try {
-            imageFileService.delete(filePath);
+            imageFileService.delete(imageFile.extractUrl().replaceFirst("/", ""));
         } catch (FileSystemException e) {
             throw new RuntimeException(e);
         }

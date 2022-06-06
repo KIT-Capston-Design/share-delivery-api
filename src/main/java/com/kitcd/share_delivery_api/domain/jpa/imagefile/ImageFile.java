@@ -6,6 +6,7 @@ import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
@@ -14,6 +15,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "IMAGE_FILE")
+@Slf4j
 public class ImageFile extends BaseTimeEntity {
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "IMAGE_FILE_ID", nullable = false)
@@ -42,9 +44,9 @@ public class ImageFile extends BaseTimeEntity {
 
       String[] arr = extractUrl.replaceFirst("/", "").split("/");
 
-      String[] fileNamePlusExtension = arr[1].split(".");
+      String[] fileNamePlusExtension = arr[1].split("[.]");
 
-      filename = fileNamePlusExtension[1];
+      filename = fileNamePlusExtension[0];
 
       return filename;
    }
