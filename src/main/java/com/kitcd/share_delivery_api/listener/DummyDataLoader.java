@@ -369,14 +369,14 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createOrderMenuIfNotFound(37L,1L,500000L, 16L,"DUMMY MENU 12", null);
 
         //6번 방 참여
-        createOrderMenuIfNotFound(30L,1L,500000L, 18L,"DUMMY MENU 7", null);
-        createOrderMenuIfNotFound(31L,1L,500000L, 18L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(38L,1L,500000L, 18L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(39L,1L,500000L, 18L,"DUMMY MENU 8", null);
 
         //2번 방 참여
-        createOrderMenuIfNotFound(32L,1L,500000L, 19L,"DUMMY MENU 7", null);
-        createOrderMenuIfNotFound(33L,1L,500000L, 19L,"DUMMY MENU 8", null);
-        createOrderMenuIfNotFound(34L,1L,500000L, 20L,"DUMMY MENU 7", null);
-        createOrderMenuIfNotFound(35L,1L,500000L, 20L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(40L,1L,500000L, 19L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(41L,1L,500000L, 19L,"DUMMY MENU 8", null);
+        createOrderMenuIfNotFound(42L,1L,500000L, 20L,"DUMMY MENU 7", null);
+        createOrderMenuIfNotFound(43L,1L,500000L, 20L,"DUMMY MENU 8", null);
 
 
 
