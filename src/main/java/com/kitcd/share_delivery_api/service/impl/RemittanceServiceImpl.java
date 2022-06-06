@@ -53,10 +53,7 @@ public class RemittanceServiceImpl implements RemittanceService {
 
     @Override
     public long getNumberOfPeopleRemittedWith(Long deliveryRoomId) {
-
-        List<Remittance> list = remittanceRepository.getRemittancesByDeliveryRoomId(deliveryRoomId);
-
-        return list.stream().filter(Remittance::getIsRemitted).count();
+        return remittanceRepository.getNumberOfPeopleRemittedWith(deliveryRoomId);
     }
 
     @Override
