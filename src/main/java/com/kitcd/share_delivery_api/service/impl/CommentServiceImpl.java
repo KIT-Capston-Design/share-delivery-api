@@ -17,6 +17,7 @@ import com.kitcd.share_delivery_api.utils.ContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bytecode.Throw;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -110,5 +111,26 @@ public class CommentServiceImpl implements CommentService {
                 })
                 .collect(Collectors.toList());
         return findList;
+    }
+
+    @Override
+    public CommentDTO updateComment(Long commentId, String content) {
+        Optional<Comment> findComment = commentRepository.findById(commentId);
+
+        if(findComment.isEmpty()){
+            throw new EntityNotFoundException(Comment.class.toString());
+        }
+        //유저 id가 서로 다른 경우
+        if(!ContextHolder.getAccountId()
+                .equals(findComment.get().getAccount().getAccountId())){
+            throw new AccessDeniedException("부적절한 접근입니다.");
+        }
+
+        findComment.get().update(content);
+
+        commentRepository.save(findComment.get());
+
+        Boolean isLiked = commentLikeService.isLiked(commentId, ContextHolder.getAccountId());
+        return findComment.get().toDTO(isLiked);
     }
 }

@@ -23,7 +23,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("")
-    public ResponseEntity<?> writePost(@RequestBody CommentWriteDTO dto){
+    public ResponseEntity<?> writeComment(@RequestBody CommentWriteDTO dto){
         CommentDTO comment = commentService.writeComment(dto);
 
         return ResponseEntity.status(HttpStatus.OK).body(comment);
@@ -34,5 +34,12 @@ public class CommentController {
         List<CommentDTO> list = commentService.getCommentsByPostId(postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<?> updateComments(@PathVariable Long commentId, @RequestBody String content){
+        CommentDTO comment = commentService.updateComment(commentId, content);
+
+        return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 }
