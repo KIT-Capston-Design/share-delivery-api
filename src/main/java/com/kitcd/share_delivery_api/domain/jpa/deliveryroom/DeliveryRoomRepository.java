@@ -33,6 +33,7 @@ public interface DeliveryRoomRepository extends JpaRepository<DeliveryRoom, Long
     DeliveryRoom getDeliveryRoomByDeliveryRoomId(Long deliveryRoomId);
 
 //    @Query("select eo.account.accountId from DeliveryRoom dr join EntryOrder eo where dr.deliveryRoomId = :roomId and eo.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED")
-    @Query("select eo.account.accountId from EntryOrder eo join eo.deliveryRoom dr where dr.deliveryRoomId = :roomId and eo.status = :state")
+    @Query("select eo.account.accountId from EntryOrder eo join eo.deliveryRoom dr " +
+            "where dr.deliveryRoomId = :roomId and eo.status = :state and dr.leader.accountId <> eo.account.accountId")
     List<Long> getParticipantsIds(Long roomId, State state);
 }

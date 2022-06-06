@@ -2,14 +2,13 @@ package com.kitcd.share_delivery_api.controller.deliveryroom;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
-import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
 import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
 import com.kitcd.share_delivery_api.dto.deliveryroom.*;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
-import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
 import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.service.*;
@@ -20,15 +19,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-
-import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -44,8 +38,14 @@ public class DeliveryRoomController {
     private final EntryOrderService entryOrderService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final LoggedOnInformationService loggedOnInformationService;
-    private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
 
+
+    @GetMapping("delivery-rooms/{deliveryRoomId}/completed-delivery")
+    public ResponseEntity<?> deliveryComplete(@PathVariable Long deliveryRoomId){
+        DeliveryRoomState deliveryRoomState = deliveryRoomService.deliveryComplete(deliveryRoomId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryRoomState);
+    }
 
     @GetMapping("delivery-rooms/{deliveryRoomId}/order-detail")
     public ResponseEntity<?> getFinalOrderInformation(@PathVariable Long deliveryRoomId) {

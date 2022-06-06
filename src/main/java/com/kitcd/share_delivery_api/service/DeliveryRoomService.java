@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.service;
 
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
+import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
@@ -43,4 +44,5 @@ public interface DeliveryRoomService {
 
     FinalOrderInformationDTO getFinalOrderInformation(Long deliveryRoomId);
 
+    DeliveryRoomState deliveryComplete(Long deliveryRoomId);
 }

@@ -50,18 +50,29 @@ public class PaymentServiceImpl implements PaymentService {
 
         room.enrollPaymentStatusCheck();
 
+        if(images == null || images.isEmpty()){
+            throw new IllegalArgumentException("주문서 이미지가 존재해야 합니다.");
+        }
+
+
         Payment payment = paymentRepository.save(dto.toEntity(room));
 
-
+        //주문서 등록
         paymentOrderFormService.enrollPaymentOrderForm(images, payment);
 
-        List<PaymentDiscount> paymentDiscounts = paymentDiscountService.enrollPaymentDiscount(dto.getDiscounts(), payment);
+        long totalDiscounts = 0;
 
-        long totalDiscounts = paymentDiscounts.stream().map(PaymentDiscount::getAmount).mapToLong(Long::longValue).sum();
+        //할인 객체 등록
+        List<PaymentDiscountEnrollRequestDTO> discounts = dto.getDiscounts();
+
+        if(discounts != null && !discounts.isEmpty()){
+            List<PaymentDiscount> paymentDiscounts = paymentDiscountService.enrollPaymentDiscount(discounts, payment);
+            totalDiscounts = paymentDiscounts.stream().map(PaymentDiscount::getAmount).mapToLong(Long::longValue).sum();
+        }
+
 
         //Remittance Entity 생성
         remittanceService.createRemittanceEntities(room, payment, totalDiscounts);
-
 
         //그룹키 가져오고
 
