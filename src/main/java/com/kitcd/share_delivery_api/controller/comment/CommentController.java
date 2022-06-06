@@ -2,6 +2,7 @@ package com.kitcd.share_delivery_api.controller.comment;
 
 
 import com.kitcd.share_delivery_api.dto.comment.CommentDTO;
+import com.kitcd.share_delivery_api.dto.comment.CommentUpdateDTO;
 import com.kitcd.share_delivery_api.dto.comment.CommentWriteDTO;
 import com.kitcd.share_delivery_api.dto.commentlike.CommentLikeDTO;
 import com.kitcd.share_delivery_api.dto.postlike.PostLikeDTO;
@@ -42,8 +43,8 @@ public class CommentController {
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody String content){
-        CommentDTO comment = commentService.updateComment(commentId, content);
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO content){
+        CommentDTO comment = commentService.updateComment(commentId, content.getContent());
 
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
