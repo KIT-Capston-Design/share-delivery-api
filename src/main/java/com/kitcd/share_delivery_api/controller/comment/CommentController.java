@@ -2,7 +2,11 @@ package com.kitcd.share_delivery_api.controller.comment;
 
 
 import com.kitcd.share_delivery_api.dto.comment.CommentDTO;
+import com.kitcd.share_delivery_api.dto.comment.CommentUpdateDTO;
 import com.kitcd.share_delivery_api.dto.comment.CommentWriteDTO;
+import com.kitcd.share_delivery_api.dto.commentlike.CommentLikeDTO;
+import com.kitcd.share_delivery_api.dto.postlike.PostLikeDTO;
+import com.kitcd.share_delivery_api.service.CommentLikeService;
 import com.kitcd.share_delivery_api.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +26,10 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    private final CommentLikeService commentLikeService;
+
     @PostMapping("")
-    public ResponseEntity<?> writePost(@RequestBody CommentWriteDTO dto){
+    public ResponseEntity<?> writeComment(@RequestBody CommentWriteDTO dto){
         CommentDTO comment = commentService.writeComment(dto);
 
         return ResponseEntity.status(HttpStatus.OK).body(comment);
@@ -34,5 +40,26 @@ public class CommentController {
         List<CommentDTO> list = commentService.getCommentsByPostId(postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO content){
+        CommentDTO comment = commentService.updateComment(commentId, content.getContent());
+
+        return ResponseEntity.status(HttpStatus.OK).body(comment);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
+    }
+
+    @PostMapping("/{commentId}/toggle-likes")
+    public ResponseEntity<?> commentLikeToggle(@PathVariable Long commentId){
+        CommentLikeDTO commentLikeDTO = commentLikeService.clickedLike(commentId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commentLikeDTO);
     }
 }

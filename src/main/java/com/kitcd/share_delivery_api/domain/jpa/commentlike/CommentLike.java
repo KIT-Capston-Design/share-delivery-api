@@ -4,6 +4,7 @@ import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
 import com.kitcd.share_delivery_api.domain.jpa.common.BaseTimeEntity;
 
 import com.kitcd.share_delivery_api.domain.jpa.account.Account;
+import com.kitcd.share_delivery_api.dto.commentlike.CommentLikeDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -28,5 +29,10 @@ public class CommentLike extends BaseTimeEntity {
    @JoinColumn(name = "COMMENT_ID", nullable = false)
    private Comment comment;
 
-
+   public static CommentLikeDTO toDTO(Long commentId, Long likeNum, Boolean isLiked){
+      return CommentLikeDTO.builder()
+              .commentId(commentId)
+              .likes(likeNum)
+              .isLiked(isLiked).build();
+   }
 }

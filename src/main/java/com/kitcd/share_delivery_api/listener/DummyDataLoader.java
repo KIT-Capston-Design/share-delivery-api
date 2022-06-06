@@ -3,6 +3,8 @@ package com.kitcd.share_delivery_api.listener;
 import com.kitcd.share_delivery_api.domain.jpa.account.*;
 import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
 import com.kitcd.share_delivery_api.domain.jpa.comment.CommentRepository;
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLike;
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLikeRepository;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
@@ -33,6 +35,8 @@ import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
 import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImageRepository;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLikeRepository;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
@@ -52,9 +56,11 @@ import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,6 +99,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
     private final ActivatedDeliveryRoomInfoRedisService activatedDeliveryRoomInfoRedisService;
     private final DeliveryRoomService deliveryRoomService;
+    private final PostLikeRepository postLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Override
     @Transactional
@@ -116,6 +124,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadEvaluationCategory();
         loadReportCategory();
         loadDeliveryRoomRedisData();
+        loadPostLikeData();
+        loadCommentLikeData();
     }
     private void loadDeliveryRoomRedisData(){
         createDeliveryRoomRedisData(1L);
@@ -146,6 +156,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                         .users(deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED))
                         .build()
         );
+
     }
 
     private void loadRemittanceData(){
@@ -166,6 +177,23 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createRemittanceIfNotFound(9L, 12L, 5L, 3L, 998800L, true);
 
     }
+
+    private void loadPostLikeData(){
+        createPostLikeIfNotFound(1L, 1L, 1L);
+        createPostLikeIfNotFound(2L, 2L, 1L);
+        createPostLikeIfNotFound(3L, 3L, 1L);
+
+        createPostLikeIfNotFound(1L, 1L, 2L);
+        createPostLikeIfNotFound(2L, 2L, 2L);
+        createPostLikeIfNotFound(3L, 3L, 2L);
+
+    }
+    private void loadCommentLikeData(){
+        createCommentLikeIfNotFound(1L, 1L, 1L);
+        createCommentLikeIfNotFound(2L, 2L, 1L);
+        createCommentLikeIfNotFound(3L, 3L, 1L);
+    }
+
 
     private Remittance createRemittanceIfNotFound(Long remittanceId, Long remitterId, Long recipientId, Long paymentId, Long amount, boolean isRemitted) {
 
@@ -283,20 +311,20 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadAccountData(){
-        createAccountDataIfNotFound(1L,"01000000001", "DUMMY USER 1", RoleType.ROLE_USER, 1L, BankType.SHB);
-        createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER, 2L, BankType.NONGHYUP);
-        createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER, 3L, BankType.KAKAO);
-        createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER, 4L, BankType.SUHYUP);
-        createAccountDataIfNotFound(5L,"01000000005", "DUMMY USER 5", RoleType.ROLE_USER, 5L, BankType.EPOST);
-        createAccountDataIfNotFound(6L,"01000000006", "DUMMY USER 6", RoleType.ROLE_USER, 6L, BankType.HANA);
-        createAccountDataIfNotFound(7L,"01000000007", "DUMMY USER 7", RoleType.ROLE_USER, 1L, BankType.KAKAO);
-        createAccountDataIfNotFound(8L,"01000000008", "DUMMY USER 8", RoleType.ROLE_USER, 2L, BankType.KAKAO);
-        createAccountDataIfNotFound(9L,"01000000009", "DUMMY USER 9", RoleType.ROLE_USER, 3L, BankType.DGB);
-        createAccountDataIfNotFound(10L,"010000000010", "DUMMY USER 10", RoleType.ROLE_USER, 4L, BankType.WOORI);
-        createAccountDataIfNotFound(11L,"01000000011", "DUMMY USER 11", RoleType.ROLE_USER, 5L, BankType.WOORI);
-        createAccountDataIfNotFound(12L,"01000000012", "DUMMY USER 12", RoleType.ROLE_USER, 6L, BankType.EPOST);
-        createAccountDataIfNotFound(13L,"01000000013", "DUMMY USER 13", RoleType.ROLE_USER, 1L, BankType.JBB);
-        createAccountDataIfNotFound(14L,"01000000014", "DUMMY USER 14", RoleType.ROLE_USER, 2L, BankType.IBK);
+        createAccountDataIfNotFound(1L,"01000000001", "DUMMY USER 1", RoleType.ROLE_USER, 1L);
+        createAccountDataIfNotFound(2L, "01000000002", "DUMMY USER 2", RoleType.ROLE_USER, 2L);
+        createAccountDataIfNotFound(3L, "01000000003", "DUMMY USER 3", RoleType.ROLE_USER, 3L);
+        createAccountDataIfNotFound(4L,"01000000004", "DUMMY USER 4", RoleType.ROLE_USER, 4L);
+        createAccountDataIfNotFound(5L,"01000000005", "DUMMY USER 5", RoleType.ROLE_USER, 5L);
+        createAccountDataIfNotFound(6L,"01000000006", "DUMMY USER 6", RoleType.ROLE_USER, 6L);
+        createAccountDataIfNotFound(7L,"01000000007", "DUMMY USER 7", RoleType.ROLE_USER, 1L);
+        createAccountDataIfNotFound(8L,"01000000008", "DUMMY USER 8", RoleType.ROLE_USER, 2L);
+        createAccountDataIfNotFound(9L,"01000000009", "DUMMY USER 9", RoleType.ROLE_USER, 3L);
+        createAccountDataIfNotFound(10L,"010000000010", "DUMMY USER 10", RoleType.ROLE_USER, 4L);
+        createAccountDataIfNotFound(11L,"01000000011", "DUMMY USER 11", RoleType.ROLE_USER, 5L);
+        createAccountDataIfNotFound(12L,"01000000012", "DUMMY USER 12", RoleType.ROLE_USER, 6L);
+        createAccountDataIfNotFound(13L,"01000000013", "DUMMY USER 13", RoleType.ROLE_USER, 1L);
+        createAccountDataIfNotFound(14L,"01000000014", "DUMMY USER 14", RoleType.ROLE_USER, 2L);
     }
 
     private void loadReceivingLocationData(){
@@ -433,7 +461,6 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createPostCategoryIfNotFound(4L, "취미생활");
         createPostCategoryIfNotFound(5L, "분실/실종");
         createPostCategoryIfNotFound(6L, "품앗이");
-        createPostCategoryIfNotFound(7L, "기타");
 
     }
 
@@ -490,7 +517,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .build());
     }
 
-    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName, RoleType role, Long profileImageId, BankType bankType){
+    private Account createAccountDataIfNotFound(Long userId, String phoneNum, String nickName, RoleType role, Long profileImageId){
 
         Account account = accountRepository.findByPhoneNumber(phoneNum);
         Optional<ImageFile> image = imageFileRepository.findById(profileImageId);
@@ -518,7 +545,7 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .bankAccount(BankAccount.builder()
                         .accountHolder("DUMMY NAME")
                         .accountNumber("DUMMY ACCOUNT NUMBER")
-                        .bank(bankType)
+                        .bank(BankType.KAKAO)
                         .build()
                 )
                 .role(role)
@@ -917,6 +944,57 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .categoryName(categoryName)
                 .level(0L)
                 .build());
+
+    }
+
+    private CommentLike createCommentLikeIfNotFound(Long commentLikeId, Long commentId, Long accountId){
+        Optional<CommentLike> findCommentLike = commentLikeRepository.findById(commentLikeId);
+
+        if (findCommentLike.isPresent()){
+            return findCommentLike.get();
+        }
+
+        Optional<Comment> findComment = commentRepository.findById(commentId);
+        Optional<Account> findAccount = accountRepository.findById(accountId);
+
+        if(findComment.isEmpty() || findAccount.isEmpty()){
+            log.warn("DummyDataLoader::createCommentLikeIfNotFound() : 필요 객체 null");
+            log.warn("Comment = " + findComment);
+            log.warn("Account = " + findAccount);
+            return null;
+        }
+        findComment.get().increaseLikeCount();
+        commentRepository.save(findComment.get());
+        return commentLikeRepository.save(CommentLike.builder()
+                .comment(findComment.get())
+                .account(findAccount.get())
+                .commentLikeId(commentLikeId).build());
+
+    }
+
+    private PostLike createPostLikeIfNotFound(Long postLikeId, Long postId, Long accountId){
+        Optional<PostLike> findPostLike = postLikeRepository.findById(postLikeId);
+
+        if (findPostLike.isPresent()){
+            return findPostLike.get();
+        }
+
+        Optional<Post> findPost = postRepository.findById(postId);
+        Optional<Account> findAccount = accountRepository.findById(accountId);
+
+        if(findPost.isEmpty() || findAccount.isEmpty()){
+            log.warn("DummyDataLoader::createPostLikeIfNotFound() : 필요 객체 null");
+            log.warn("Post = " + findPost);
+            log.warn("Account = " + findAccount);
+            return null;
+        }
+
+        findPost.get().increaseLikeCount();
+        postRepository.save(findPost.get());
+        return postLikeRepository.save(PostLike.builder()
+                .post(findPost.get())
+                .account(findAccount.get())
+                .postLikeId(postLikeId).build());
 
     }
 }
