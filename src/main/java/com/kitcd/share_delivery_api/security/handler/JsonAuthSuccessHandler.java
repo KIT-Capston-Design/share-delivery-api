@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.security.handler;
 
+import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -35,9 +36,10 @@ public class JsonAuthSuccessHandler implements AuthenticationSuccessHandler {
     //LocalDateTime 타입을 ISO_DATE_TIME 포맷으로 반환하기 위한 '.registerModule()' 이하 코드
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(
             new JavaTimeModule().addDeserializer(
-                    LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME)
+                    LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME))
             )
-    ).configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            .configure(JsonWriteFeature.ESCAPE_NON_ASCII.mappedFeature(), true);
 
 
 

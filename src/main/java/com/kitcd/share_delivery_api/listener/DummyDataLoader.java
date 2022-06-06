@@ -46,7 +46,11 @@ import com.kitcd.share_delivery_api.domain.jpa.reportcategory.ReportCategoryRepo
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategoryRepository;
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformation;
+import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfo;
+import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryRoomInfoRedisRepository;
+import com.kitcd.share_delivery_api.service.ActivatedDeliveryRoomInfoRedisService;
 import com.kitcd.share_delivery_api.service.AuthService;
+import com.kitcd.share_delivery_api.service.DeliveryRoomService;
 import com.kitcd.share_delivery_api.utils.geometry.GeometriesFactory;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
 import lombok.AllArgsConstructor;
@@ -92,6 +96,9 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private final RemittanceRepository remittanceRepository;
     private final EvaluationCategoryRepository evaluationCategoryRepository;
     private final ReportCategoryRepository reportCategoryRepository;
+    private final ActivatedDeliveryRoomInfoRedisRepository activatedDeliveryRoomInfoRedisRepository;
+    private final ActivatedDeliveryRoomInfoRedisService activatedDeliveryRoomInfoRedisService;
+    private final DeliveryRoomService deliveryRoomService;
     private final PostLikeRepository postLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
 
@@ -116,8 +123,40 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadRemittanceData();
         loadEvaluationCategory();
         loadReportCategory();
+        loadDeliveryRoomRedisData();
         loadPostLikeData();
         loadCommentLikeData();
+    }
+    private void loadDeliveryRoomRedisData(){
+        createDeliveryRoomRedisData(1L);
+        createDeliveryRoomRedisData(3L);
+        createDeliveryRoomRedisData(4L);
+        createDeliveryRoomRedisData(5L);
+
+
+    }
+    private ActivatedDeliveryRoomInfo createDeliveryRoomRedisData(Long deliveryRoomId){
+
+        DeliveryRoom deliveryRoom = deliveryRoomRepository.findByDeliveryRoomId(deliveryRoomId);
+
+        if(deliveryRoom == null){
+            log.warn("DummyDataLoader.createDeliveryRoomRedisDataIfNotFound() : deliveryRoom " + deliveryRoomId + " is null");
+            return null;
+        }
+
+        if(deliveryRoom.getStatus().equals(DeliveryRoomState.OPEN)){
+            return null;
+        }
+
+        //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
+        return activatedDeliveryRoomInfoRedisRepository.save(
+                ActivatedDeliveryRoomInfo.builder()
+                        .deliveryRoomId(deliveryRoomId)
+                        .fcmGroupToken("DUMMY FCM GROUP TOKEN")
+                        .users(deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED))
+                        .build()
+        );
+
     }
 
     private void loadRemittanceData(){

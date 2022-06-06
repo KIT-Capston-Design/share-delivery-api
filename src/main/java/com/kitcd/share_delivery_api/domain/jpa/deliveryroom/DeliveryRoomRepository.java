@@ -22,7 +22,7 @@ public interface DeliveryRoomRepository extends JpaRepository<DeliveryRoom, Long
     @Query("select new com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO" +
         "(dr.deliveryRoomId, ac.nickname, dr.content, dr.peopleNumber, dr.limitPerson, dr.storeName, dr.linkPlatformType, dr.createdDate, dr.status, rl.description, cat.categoryName) " +
         "from EntryOrder o join o.account ac0 join o.deliveryRoom dr join dr.leader ac join dr.receivingLocation rl join dr.storeCategory cat " +
-            "where ac0.accountId = :accountId and (o.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED or o.status = com.kitcd.share_delivery_api.domain.jpa.common.State.PENDING)")
+            "where ac0.accountId = :accountId and (o.status = com.kitcd.share_delivery_api.domain.jpa.common.State.ACCEPTED or o.status = com.kitcd.share_delivery_api.domain.jpa.common.State.PENDING) order by dr.createdDate desc ")
     List<ParticipatedDeliveryRoomDTO> getDeliveryHistory(Long accountId);
 
     DeliveryRoom findByLeader_AccountId(Long accountId);
