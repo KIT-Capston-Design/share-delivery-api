@@ -13,6 +13,7 @@ import com.kitcd.share_delivery_api.domain.jpa.account.Account;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.common.LocationDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.UpdateDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
 import lombok.Getter;
@@ -186,5 +187,20 @@ public class DeliveryRoom extends BaseTimeEntity {
          throw new IllegalStateException("송금 대기 상태 이외의 상태에서 모집글 완료 상태로 이전 불가능");
       }
       return status = DeliveryRoomState.COMPLETED;
+   }
+
+   public void updateDeliveryRoom(UpdateDeliveryRoomDTO dto){
+      String newContent = dto.getContent();
+      Long newDeliveryTip = dto.getDeliveryTip();
+      Long newLimitPerson = dto.getLimitPerson();
+
+      if(newContent == null && newDeliveryTip == null && newLimitPerson == null){
+         throw new IllegalArgumentException("적어도 하나 이상의 수정사항이 있어야 합니다.");
+      }
+      if(newLimitPerson < peopleNumber) throw new AccessDeniedException("수정할 수 없는 인원수입니다.");
+
+      if(newContent != null) content = newContent;
+      if(newDeliveryTip != null) estimatedDeliveryTip = newDeliveryTip;
+      if(newLimitPerson != null) limitPerson = newLimitPerson;
    }
 }

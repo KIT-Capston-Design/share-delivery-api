@@ -5,6 +5,7 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomState;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.UpdateDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.ordermenu.OrderMenuRequestDTO;
 import com.kitcd.share_delivery_api.dto.payment.FinalOrderInformationDTO;
 import com.kitcd.share_delivery_api.utils.geometry.Location;
@@ -45,4 +46,6 @@ public interface DeliveryRoomService {
     FinalOrderInformationDTO getFinalOrderInformation(Long deliveryRoomId);
 
     DeliveryRoomState deliveryComplete(Long deliveryRoomId);
+
+    DeliveryRoom updateDeliveryRoom(UpdateDeliveryRoomDTO dto, Long deliveryRoomId);
 }

@@ -186,4 +186,11 @@ public class DeliveryRoomController {
 
     }
 
+    @PatchMapping("delivery-rooms/{deliveryRoomId}")
+    public ResponseEntity<?> updateDeliveryRoom(@PathVariable Long deliveryRoomId, @RequestBody UpdateDeliveryRoomDTO dto){
+        deliveryRoomService.updateDeliveryRoom(dto, deliveryRoomId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
 }
