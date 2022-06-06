@@ -3,6 +3,8 @@ package com.kitcd.share_delivery_api.listener;
 import com.kitcd.share_delivery_api.domain.jpa.account.*;
 import com.kitcd.share_delivery_api.domain.jpa.comment.Comment;
 import com.kitcd.share_delivery_api.domain.jpa.comment.CommentRepository;
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLike;
+import com.kitcd.share_delivery_api.domain.jpa.commentlike.CommentLikeRepository;
 import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoomRepository;
@@ -33,6 +35,8 @@ import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategory;
 import com.kitcd.share_delivery_api.domain.jpa.postcategory.PostCategoryRepository;
 import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImage;
 import com.kitcd.share_delivery_api.domain.jpa.postimage.PostImageRepository;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLike;
+import com.kitcd.share_delivery_api.domain.jpa.postlike.PostLikeRepository;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocation;
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
@@ -88,6 +92,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private final RemittanceRepository remittanceRepository;
     private final EvaluationCategoryRepository evaluationCategoryRepository;
     private final ReportCategoryRepository reportCategoryRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Override
     @Transactional
@@ -110,6 +116,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadRemittanceData();
         loadEvaluationCategory();
         loadReportCategory();
+        loadPostLikeData();
+        loadCommentLikeData();
     }
 
     private void loadRemittanceData(){
@@ -130,6 +138,23 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createRemittanceIfNotFound(9L, 12L, 5L, 3L, 998800L, true);
 
     }
+
+    private void loadPostLikeData(){
+        createPostLikeIfNotFound(1L, 1L, 1L);
+        createPostLikeIfNotFound(2L, 2L, 1L);
+        createPostLikeIfNotFound(3L, 3L, 1L);
+
+        createPostLikeIfNotFound(1L, 1L, 2L);
+        createPostLikeIfNotFound(2L, 2L, 2L);
+        createPostLikeIfNotFound(3L, 3L, 2L);
+
+    }
+    private void loadCommentLikeData(){
+        createCommentLikeIfNotFound(1L, 1L, 1L);
+        createCommentLikeIfNotFound(2L, 2L, 1L);
+        createCommentLikeIfNotFound(3L, 3L, 1L);
+    }
+
 
     private Remittance createRemittanceIfNotFound(Long remittanceId, Long remitterId, Long recipientId, Long paymentId, Long amount, boolean isRemitted) {
 
@@ -880,6 +905,57 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .categoryName(categoryName)
                 .level(0L)
                 .build());
+
+    }
+
+    private CommentLike createCommentLikeIfNotFound(Long commentLikeId, Long commentId, Long accountId){
+        Optional<CommentLike> findCommentLike = commentLikeRepository.findById(commentLikeId);
+
+        if (findCommentLike.isPresent()){
+            return findCommentLike.get();
+        }
+
+        Optional<Comment> findComment = commentRepository.findById(commentId);
+        Optional<Account> findAccount = accountRepository.findById(accountId);
+
+        if(findComment.isEmpty() || findAccount.isEmpty()){
+            log.warn("DummyDataLoader::createCommentLikeIfNotFound() : 필요 객체 null");
+            log.warn("Comment = " + findComment);
+            log.warn("Account = " + findAccount);
+            return null;
+        }
+        findComment.get().increaseLikeCount();
+        commentRepository.save(findComment.get());
+        return commentLikeRepository.save(CommentLike.builder()
+                .comment(findComment.get())
+                .account(findAccount.get())
+                .commentLikeId(commentLikeId).build());
+
+    }
+
+    private PostLike createPostLikeIfNotFound(Long postLikeId, Long postId, Long accountId){
+        Optional<PostLike> findPostLike = postLikeRepository.findById(postLikeId);
+
+        if (findPostLike.isPresent()){
+            return findPostLike.get();
+        }
+
+        Optional<Post> findPost = postRepository.findById(postId);
+        Optional<Account> findAccount = accountRepository.findById(accountId);
+
+        if(findPost.isEmpty() || findAccount.isEmpty()){
+            log.warn("DummyDataLoader::createPostLikeIfNotFound() : 필요 객체 null");
+            log.warn("Post = " + findPost);
+            log.warn("Account = " + findAccount);
+            return null;
+        }
+
+        findPost.get().increaseLikeCount();
+        postRepository.save(findPost.get());
+        return postLikeRepository.save(PostLike.builder()
+                .post(findPost.get())
+                .account(findAccount.get())
+                .postLikeId(postLikeId).build());
 
     }
 }
