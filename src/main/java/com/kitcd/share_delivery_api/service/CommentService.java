@@ -16,4 +16,6 @@ public interface CommentService {
     List<CommentDTO> getCommentsByPostId(Long postId);
 
     CommentDTO updateComment(Long commentId, String content);
+
+    void deleteComment(Long commentId);
 }

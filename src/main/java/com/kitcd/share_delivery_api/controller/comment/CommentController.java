@@ -37,9 +37,16 @@ public class CommentController {
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<?> updateComments(@PathVariable Long commentId, @RequestBody String content){
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody String content){
         CommentDTO comment = commentService.updateComment(commentId, content);
 
         return ResponseEntity.status(HttpStatus.OK).body(comment);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
     }
 }

@@ -7,5 +7,6 @@ public enum State {
     REJECTED, // 거절됨
     ACCEPTED, // 승인됨
     CANCELLED, // 퇴장함
-    WITHDRAWN // 탈퇴된
+    WITHDRAWN, // 탈퇴된
+    DELETED //삭제된
 }

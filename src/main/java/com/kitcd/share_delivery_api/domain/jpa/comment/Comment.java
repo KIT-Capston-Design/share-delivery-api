@@ -77,10 +77,15 @@ public class Comment extends BaseTimeEntity {
                       .build())
               .parentId(!(null==parent) ? parent.getCommentId() : commentId)
               .content(content)
+              .state(status)
               .build();
    }
 
    public void update(String content){
       this.content = content;
+   }
+
+   public void delete(){
+      this.status = State.DELETED;
    }
 }

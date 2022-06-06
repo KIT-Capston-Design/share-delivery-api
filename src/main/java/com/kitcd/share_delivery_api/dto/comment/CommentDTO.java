@@ -1,5 +1,6 @@
 package com.kitcd.share_delivery_api.dto.comment;
 
+import com.kitcd.share_delivery_api.domain.jpa.common.State;
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import lombok.*;
 
@@ -18,4 +19,5 @@ public class CommentDTO {
     private Boolean isLiked;
     private LocalDateTime createdDateTime;
     private Long parentId;
+    private State state;
 }
