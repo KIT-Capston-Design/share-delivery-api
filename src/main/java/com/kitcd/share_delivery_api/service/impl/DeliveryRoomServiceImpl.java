@@ -10,6 +10,7 @@ import com.kitcd.share_delivery_api.domain.redis.deliveryroom.ActivatedDeliveryR
 import com.kitcd.share_delivery_api.dto.account.SimpleAccountDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.DeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.deliveryroom.ParticipatedDeliveryRoomDTO;
+import com.kitcd.share_delivery_api.dto.deliveryroom.UpdateDeliveryRoomDTO;
 import com.kitcd.share_delivery_api.dto.entryorder.OrderResDTO;
 import com.kitcd.share_delivery_api.dto.fcm.FCMDataType;
 import com.kitcd.share_delivery_api.dto.fcm.FCMGroupRequest;
@@ -22,6 +23,8 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.DeliveryRoom;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -260,6 +264,21 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
         return deliveryRoomId;
     }
 
+    @Override
+    public DeliveryRoom updateDeliveryRoom(UpdateDeliveryRoomDTO dto, Long deliveryRoomId) {
+        Optional<DeliveryRoom> findDeliveryRoom = deliveryRoomRepository.findById(deliveryRoomId);
+                    //비었거나              리더가 아니라면
+        if(findDeliveryRoom.isEmpty() || findDeliveryRoom.get().getLeader().getAccountId().equals(ContextHolder.getAccountId())){
+            throw new IllegalArgumentException("부적절한 방의 접근입니다.");
+        }
 
+        if(!findDeliveryRoom.get().getStatus().equals(DeliveryRoomState.OPEN)){
+            throw new AccessDeniedException("방을 수정할 수 없습니다.");
+        }
 
+        findDeliveryRoom.get().updateDeliveryRoom(dto);
+        deliveryRoomRepository.save(findDeliveryRoom.get());
+
+        return null;
+    }
 }
