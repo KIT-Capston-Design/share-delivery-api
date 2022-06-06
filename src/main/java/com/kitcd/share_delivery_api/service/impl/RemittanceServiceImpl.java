@@ -80,7 +80,7 @@ public class RemittanceServiceImpl implements RemittanceService {
             //FCM
             Map<String, Object> data = new HashMap<>();
             data.put("type", FCMDataType.COMPLETE_DELIVERY_ROOM);
-            data.put("roomId", deliveryRoom.getDeliveryRoomId());
+            data.put("roomId", deliveryRoom.getDeliveryRoomId().toString());
 
             String groupFcmToken = activatedDeliveryRoomInfoRedisService.getGroupFcmToken(deliveryRoom.getDeliveryRoomId());
             firebaseCloudMessageService.sendMessageTo(

@@ -84,7 +84,7 @@ public class DeliveryRoomController {
         // 거절된 참여자에게 push 알림 전송
         Map<String, Object> data = new HashMap<>();
         data.put("type", FCMDataType.ORDER_REJECTED);
-        data.put("roomId", roomId);
+        data.put("roomId", roomId.toString());
 
 
         firebaseCloudMessageService.sendMessageTo(
@@ -165,7 +165,7 @@ public class DeliveryRoomController {
         // 방의 주도자에게 참가 신청 알람 전송.
         Map<String, Object> data = new HashMap<>();
         data.put("type", FCMDataType.ENTRY_ORDERS);
-        data.put("roomId", deliveryRoomId);
+        data.put("roomId", deliveryRoomId.toString());
 
         firebaseCloudMessageService.sendMessageTo(
                 loggedOnInformationService.getFcmTokenByAccountId(room.getLeader().getAccountId()),

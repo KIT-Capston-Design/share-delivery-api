@@ -81,7 +81,7 @@ public class PaymentServiceImpl implements PaymentService {
         //전송할 메시지 생성
         HashMap<String, Object> data = new HashMap<>();
         data.put("type", FCMDataType.COMPLETED_ORDER);
-        data.put("roomId", room.getDeliveryRoomId());
+        data.put("roomId", room.getDeliveryRoomId().toString());
 
         //전송
         firebaseCloudMessageService.sendMessageTo(
