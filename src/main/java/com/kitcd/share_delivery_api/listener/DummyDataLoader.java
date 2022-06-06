@@ -11,6 +11,8 @@ import com.kitcd.share_delivery_api.domain.jpa.deliveryroom.PlatformType;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrder;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderRepository;
 import com.kitcd.share_delivery_api.domain.jpa.entryorder.EntryOrderType;
+import com.kitcd.share_delivery_api.domain.jpa.evaluationcategory.EvaluationCategory;
+import com.kitcd.share_delivery_api.domain.jpa.evaluationcategory.EvaluationCategoryRepository;
 import com.kitcd.share_delivery_api.domain.jpa.friend.Friend;
 import com.kitcd.share_delivery_api.domain.jpa.friend.FriendRepository;
 import com.kitcd.share_delivery_api.domain.jpa.imagefile.ImageFile;
@@ -35,6 +37,8 @@ import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocati
 import com.kitcd.share_delivery_api.domain.jpa.receivinglocation.ReceivingLocationRepository;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.Remittance;
 import com.kitcd.share_delivery_api.domain.jpa.remittance.RemittanceRepository;
+import com.kitcd.share_delivery_api.domain.jpa.reportcategory.ReportCategory;
+import com.kitcd.share_delivery_api.domain.jpa.reportcategory.ReportCategoryRepository;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategory;
 import com.kitcd.share_delivery_api.domain.jpa.storecategory.StoreCategoryRepository;
 import com.kitcd.share_delivery_api.domain.redis.auth.loggedoninf.LoggedOnInformation;
@@ -82,6 +86,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
     private final PlaceShareRepository placeShareRepository;
     private final CommentRepository commentRepository;
     private final RemittanceRepository remittanceRepository;
+    private final EvaluationCategoryRepository evaluationCategoryRepository;
+    private final ReportCategoryRepository reportCategoryRepository;
 
     @Override
     @Transactional
@@ -102,6 +108,8 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         loadPlaceShareData();
         loadCommentData();
         loadRemittanceData();
+        loadEvaluationCategory();
+        loadReportCategory();
     }
 
     private void loadRemittanceData(){
@@ -389,6 +397,32 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
         createPostCategoryIfNotFound(4L, "취미생활");
         createPostCategoryIfNotFound(5L, "분실/실종");
         createPostCategoryIfNotFound(6L, "품앗이");
+
+    }
+
+    private void loadEvaluationCategory() {
+
+        // Positive evaluation category
+        createEvaluationCategoryIfNotFound("시간 약속을 잘 지켜요", 1L);
+        createEvaluationCategoryIfNotFound("친절해요", 1L);
+        createEvaluationCategoryIfNotFound("응답이 빨라요", 1L);
+
+        // Negative evaluation category
+        createEvaluationCategoryIfNotFound("시간 약속을 안 지켜요", -1L);
+        createEvaluationCategoryIfNotFound("불친절해요", -1L);
+        createEvaluationCategoryIfNotFound("연락이 안돼요", -1L);
+
+    }
+
+    private void loadReportCategory() {
+
+        createReportCategoryIfNotFound("돈을 지불하지 않았어요");
+        createReportCategoryIfNotFound("욕설을 해요");
+        createReportCategoryIfNotFound("성희롱을 해요");
+        createReportCategoryIfNotFound("시간 약속을 안 지켜요");
+        createReportCategoryIfNotFound("비매너 행동을 했어요");
+        createReportCategoryIfNotFound("주문을 제대로 진행하지 않았어요");
+        createReportCategoryIfNotFound("연락이 두절됐어요");
 
     }
 
@@ -817,5 +851,35 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
                 .post(findPost.get())
                 .status(State.NORMAL)
                 .build());
+    }
+
+    private EvaluationCategory createEvaluationCategoryIfNotFound(String categoryName, Long value) {
+
+        EvaluationCategory evaluationCategory = evaluationCategoryRepository.findByCategoryName(categoryName);
+
+        if (evaluationCategory != null) {
+            return evaluationCategory;
+        }
+
+        return evaluationCategoryRepository.save(EvaluationCategory.builder()
+                .categoryName(categoryName)
+                .value(value)
+                .build());
+
+    }
+
+    private ReportCategory createReportCategoryIfNotFound(String categoryName) {
+
+        ReportCategory reportCategory = reportCategoryRepository.findByCategoryName(categoryName);
+
+        if (reportCategory != null) {
+            return reportCategory;
+        }
+
+        return reportCategoryRepository.save(ReportCategory.builder()
+                .categoryName(categoryName)
+                .level(0L)
+                .build());
+
     }
 }
