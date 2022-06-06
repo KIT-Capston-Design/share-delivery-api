@@ -180,4 +180,11 @@ public class DeliveryRoom extends BaseTimeEntity {
 
       return status = DeliveryRoomState.WAITING_REMITTANCE;
    }
+
+   public DeliveryRoomState remittancesComplete() {
+      if(!(status.equals(DeliveryRoomState.WAITING_REMITTANCE))){
+         throw new IllegalStateException("송금 대기 상태 이외의 상태에서 모집글 완료 상태로 이전 불가능");
+      }
+      return status = DeliveryRoomState.COMPLETED;
+   }
 }

@@ -8,6 +8,7 @@ public enum FCMDataType {
     POST_COMMENT, //댓글 -> 글작성자 알림
     ENTRY_ORDERS,
     ORDER_REJECTED,
-    COMPLETE_DELIVERY
+    COMPLETE_DELIVERY,
+    COMPLETE_DELIVERY_ROOM
 
 }
