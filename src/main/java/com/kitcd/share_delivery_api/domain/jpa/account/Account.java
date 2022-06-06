@@ -191,6 +191,11 @@ public class Account extends BaseTimeEntity {
 
    }
 
+   public void updateMannerScore(Double point) {
+
+      this.mannerScore += point;
+   }
+
    public void deleteBankAccount() {
 
       if(bankAccount == null) throw new IllegalStateException("은행계좌가 이미 존재하지 않아 삭제할 수 없습니다.");
