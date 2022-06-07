@@ -32,6 +32,7 @@ public class RemittanceServiceImpl implements RemittanceService {
     private final DeliveryRoomRepository deliveryRoomRepository;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final ActivatedDeliveryRoomInfoRedisService activatedDeliveryRoomInfoRedisService;
+    private final LoggedOnInformationService loggedOnInformationService;
 
     @Override
     public List<RemittanceDTO> getRemittanceDTOsByDeliveryRoomId(Long deliveryRoomId) {
@@ -73,18 +74,27 @@ public class RemittanceServiceImpl implements RemittanceService {
 
         //주도자를 제외한 인원이 송금하는 인원이기에 -1
         if(deliveryRoom.getPeopleNumber() - 1 == numberOfPeopleRemitted){
-            //모두 송금 완료됐을 경우 모집글 상태변경, 참여자들에게 FCM 송신
+            //모두 송금 완료됐을 경우
+            // 모집글 상태변경
             deliveryRoom.remittancesComplete();
             deliveryRoomRepository.save(deliveryRoom);
 
-            //FCM
+            // 참여자들에게 FCM 송신 +리더에게
             Map<String, Object> data = new HashMap<>();
             data.put("type", FCMDataType.COMPLETE_DELIVERY_ROOM);
             data.put("roomId", deliveryRoom.getDeliveryRoomId().toString());
-
+            // 참여자에게
             String groupFcmToken = activatedDeliveryRoomInfoRedisService.getGroupFcmToken(deliveryRoom.getDeliveryRoomId());
             firebaseCloudMessageService.sendMessageTo(
                     groupFcmToken,
+                    deliveryRoom.getContent(),
+                    "공유 배달이 모두 완료되었습니다.",
+                    data
+            );
+            // 리더에게
+            String leaderFcmToken = loggedOnInformationService.getFcmTokenByAccountId(deliveryRoom.getLeader().getAccountId());
+            firebaseCloudMessageService.sendMessageTo(
+                    leaderFcmToken,
                     deliveryRoom.getContent(),
                     "공유 배달이 모두 완료되었습니다.",
                     data
