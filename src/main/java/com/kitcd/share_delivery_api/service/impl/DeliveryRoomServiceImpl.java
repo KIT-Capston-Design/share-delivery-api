@@ -225,12 +225,16 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
 
         deliveryRoom.delete();
 
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", FCMDataType.DELETE_DELIVERY);
+        data.put("roomId", deliveryRoomId.toString());
+
         //fcm 메시지 발송
         State participantsOrderStatus = (status == DeliveryRoomState.OPEN) ? State.PENDING : State.ACCEPTED;
         List<String> participantFCMTokens = getParticipantFCMTokens(deliveryRoomId, participantsOrderStatus);
 
         //TODO: FCM 레거시 API 활용하여 여러 사용자에 한 번에 전송하도록 추후 개선 필요.
-        participantFCMTokens.forEach(token -> firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent(), null));
+        participantFCMTokens.forEach(token -> firebaseCloudMessageService.sendMessageTo(token, "참여한 모집글이 삭제되었습니다.", deliveryRoom.getContent(), data));
 
         return deliveryRoomId;
     }
