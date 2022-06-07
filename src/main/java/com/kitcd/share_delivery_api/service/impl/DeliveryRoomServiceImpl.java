@@ -202,12 +202,15 @@ public class DeliveryRoomServiceImpl implements DeliveryRoomService {
                 fcmGroupToken, "해당 모집글의 인원 모집이 종료되었습니다. 이제 주문이 시작됩니다.", deliveryRoom.getContent(), data
         );
 
+        List<Long> participantsIds = getParticipantsIds(deliveryRoomId, State.ACCEPTED);
+        participantsIds.add(deliveryRoom.getLeader().getAccountId());
+
         //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
         activatedDeliveryRoomInfoRedisRepository.save(
                 ActivatedDeliveryRoomInfo.builder()
                         .deliveryRoomId(deliveryRoomId)
                         .fcmGroupToken(fcmGroupToken)
-                        .users(getParticipantsIds(deliveryRoomId, State.ACCEPTED))
+                        .users(participantsIds)
                         .build()
         );
 
