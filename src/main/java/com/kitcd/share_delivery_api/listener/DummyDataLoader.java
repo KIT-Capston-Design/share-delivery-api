@@ -146,14 +146,18 @@ public class DummyDataLoader implements ApplicationListener<ContextRefreshedEven
 
         if(deliveryRoom.getStatus().equals(DeliveryRoomState.OPEN)){
             return null;
+
         }
+
+        List<Long> participantsIds = deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED);
+        participantsIds.add(deliveryRoom.getLeader().getAccountId());
 
         //redis에 '모집글 - 그룹fcm토큰' 형식으로 저장
         return activatedDeliveryRoomInfoRedisRepository.save(
                 ActivatedDeliveryRoomInfo.builder()
                         .deliveryRoomId(deliveryRoomId)
                         .fcmGroupToken("DUMMY FCM GROUP TOKEN")
-                        .users(deliveryRoomService.getParticipantsIds(deliveryRoomId, State.ACCEPTED))
+                        .users(participantsIds)
                         .build()
         );
 
